@@ -1,12 +1,8 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 //screens
-import ScreenOnboardEnterCode from '../onboard/ScreenOnboardEnterCode'
-import ScreenOnboardHome from '../onboard/ScreenOnboardHome'
-import ScreenOnboardCheckDetails from '../onboard/ScreenOnboardCheckDetails'
-import ScreenOnboardGDPR from '../onboard/ScreenOnboardGDPR'
-import ScreenLoginEnterDetails from '../login/ScreenLoginEnterDetails'
-import ScreenLoginForgottenPassword from '../login/ScreenLoginForgottenPassword'
+import StackOnboard from '../onboard/StackOnboard'
+import StackApp from '../app/StackApp'
 //navigation
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -15,18 +11,18 @@ const Stack = createNativeStackNavigator()
 
 const ScreenAuthFlow = () => {
 
-    const isAuthenticated = true;
-    
+    const isAuthenticated = false;
+
     return (
         <NavigationContainer>
             <StatusBar barStyle="light-content" />
             <Stack.Navigator>
-                <Stack.Screen name="ScreenOnboardHome" component={ScreenOnboardHome} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenOnboardEnterCode" component={ScreenOnboardEnterCode} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenOnboardCheckDetails" component={ScreenOnboardCheckDetails} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenOnboardGDPR" component={ScreenOnboardGDPR} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenLoginEnterDetails" component={ScreenLoginEnterDetails} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenLoginForgottenPassword" component={ScreenLoginForgottenPassword} options={{headerShown: false}} />
+                {isAuthenticated ?
+                <Stack.Screen name="StackApp" component={StackApp} options={{headerShown: false}} />
+                :
+                <Stack.Screen name="StackOnboard" component={StackOnboard} options={{headerShown: false}} />
+                }
+                
             </Stack.Navigator>
         </NavigationContainer>
     )
