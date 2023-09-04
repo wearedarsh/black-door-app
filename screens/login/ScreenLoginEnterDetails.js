@@ -6,6 +6,7 @@ import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentBackButton from '../../components/componentBackButton'
 import ComponentOnboardInput from '../../components/componentOnboardInput'
 import ComponentOnboardPasswordInput from '../../components/componentOnboardPasswordInput'
+import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
 //style
 import { colors } from '../../assets/style/theme'
 
@@ -28,10 +29,8 @@ const ScreenLoginEnterDetails = ({navigation}) => {
                         <TouchableOpacity style={styles.forgotten}><Text style={styles.forgottenText} onPress={() => {navigation.navigate('ScreenLoginForgottenPassword')}}>FORGOTTEN PASSWORD?</Text></TouchableOpacity>
                     </View>
                 </View>
-                <View style={{flex:1.2, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.gold}} onPress={()=>{navigation.navigate('ScreenAppHome')}}>
-                        <Text style={{...styles.authBtnText}}>ENTER</Text>
-                    </TouchableOpacity>
+                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                    <ComponentOnboardSubmitBtn label="LOG IN" onPress={()=>{navigation.navigate('ScreenAppHome')}} />
                 </View>
             </ImageBackground>
         </View>
@@ -62,25 +61,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%'
     },
-    authBtn: {
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    authBtnText:{
-        color: colors.white,
-        fontSize: 20,
-        fontFamily: 'primary-regular',
-        letterSpacing: 3,
-        paddingLeft: 3
-    },
     form:{
         width:'100%',
         paddingHorizontal: 32
-    },
-
-    
+    } 
 })
 
 export default ScreenLoginEnterDetails

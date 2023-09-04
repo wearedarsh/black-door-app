@@ -5,6 +5,7 @@ import ComponentCodeEntry from '../../components/componentCodeEntry'
 import ComponentLogo from '../../components/componentLogo'
 import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentBackButton from '../../components/componentBackButton'
+import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
 //style
 import { colors } from '../../assets/style/theme'
 
@@ -24,10 +25,8 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                     {/* <Text style={{...styles.hero,marginVertical:48}}>ENTER YOUR VIP ACCESS CODE</Text> */}
                     <ComponentCodeEntry/>
                 </View>
-                <View style={{flex:1.2, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.gold}} onPress={()=>{navigation.navigate('ScreenOnboardCheckDetails')}}>
-                        <Text style={{...styles.authBtnText}}>VERIFY CODE</Text>
-                    </TouchableOpacity>
+                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                    <ComponentOnboardSubmitBtn label="VERIFY CODE" onPress={()=>{navigation.navigate('ScreenOnboardCheckDetails')}} />  
                 </View>
             </ImageBackground>
         </View>
@@ -52,22 +51,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         width: '100%',
         height: '100%'
-    },
-    authBtn: {
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    authBtnText:{
-        color: colors.white,
-        fontSize: 20,
-        fontFamily: 'primary-regular',
-        letterSpacing: 3,
-        paddingLeft: 3
     }
-
-    
 })
 
 export default ScreenOnboardEnterCode

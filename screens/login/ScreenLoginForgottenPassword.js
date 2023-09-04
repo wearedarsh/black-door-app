@@ -5,7 +5,7 @@ import ComponentLogo from '../../components/componentLogo'
 import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentBackButton from '../../components/componentBackButton'
 import ComponentOnboardInput from '../../components/componentOnboardInput'
-import ComponentOnboardPasswordInput from '../../components/componentOnboardPasswordInput'
+import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
 //style
 import { colors } from '../../assets/style/theme'
 
@@ -27,10 +27,8 @@ const ScreenLoginForgottenPassword = ({navigation}) => {
                         <Text style={styles.label}>ENTER YOUR EMAIL ADDRESS AND WE'LL SEND YOU AN EMAIL TO RESET YOUR PASSWORD</Text>
                     </View>
                 </View>
-                <View style={{flex:1.2, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.gold}} onPress={()=>{}}>
-                        <Text style={{...styles.authBtnText}}>RESET PASSWORD</Text>
-                    </TouchableOpacity>
+                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                    <ComponentOnboardSubmitBtn label="RESET PASSWORD" onPress={()=>{}} />
                 </View>
             </ImageBackground>
         </View>

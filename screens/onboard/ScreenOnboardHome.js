@@ -18,7 +18,7 @@ const ScreenOnboardHome = ({navigation}) => {
                 <View style={{flex:8, justifyContent: 'center'}}>
                     <Text style={styles.hero}>{brand.appHomeStrapline}</Text>
                 </View>
-                <View style={{flex:1.2, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
                     <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.gold}} onPress={() => {navigation.navigate('ScreenOnboardEnterCode')}}>
                         <Text style={{...styles.authBtnText}}>{brand.signupButton}</Text>
                     </TouchableOpacity>

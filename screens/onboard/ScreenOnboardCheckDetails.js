@@ -6,6 +6,7 @@ import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentBackButton from '../../components/componentBackButton'
 import ComponentOnboardInput from '../../components/componentOnboardInput'
 import ComponentOnboardPasswordInput from '../../components/componentOnboardPasswordInput'
+import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
 //style
 import { colors } from '../../assets/style/theme'
 
@@ -37,9 +38,9 @@ const ScreenOnboardCheckDetails = ({navigation}) => {
                     <View style={styles.form}>
                         <ComponentOnboardPasswordInput />
                     </View>
-                    <TouchableOpacity style={{...styles.btn, backgroundColor:colors.gold, marginTop:32}} onPress={()=>{navigation.navigate('ScreenOnboardGDPR')}}>
-                            <Text style={{...styles.authBtnText}}>CONFIRM</Text>
-                    </TouchableOpacity>
+                    <View style={{height:80,marginTop:32}}>
+                        <ComponentOnboardSubmitBtn label="CONFIRM" onPress={()=>{navigation.navigate('ScreenOnboardGDPR')}} />
+                    </View>
                 </View>
             </ImageBackground>
         </ScrollView>
@@ -64,25 +65,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-    btn: {
-        height:80,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     form:{
         width:'100%',
         paddingHorizontal: 32
-    },
-
-    authBtnText:{
-        color: colors.white,
-        fontSize: 20,
-        fontFamily: 'primary-regular',
-        letterSpacing: 3,
-        paddingLeft: 3
     }
-
-    
 })
 
 export default ScreenOnboardCheckDetails

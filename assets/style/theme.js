@@ -9,5 +9,5 @@ export const brand = {
     logoStrapline: 'VIP',
     appHomeStrapline: 'EXCLUSIVE ACCESS TO SUPER PRIME PROPERTY',
     signupButton: 'VIP ACCESS',
-    loginButton: 'LOGIN'
+    loginButton: 'LOG IN'
 }
