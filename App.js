@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from 'expo-font';
+//components
+import ScreenAuthFlow from './screens/auth/ScreenAuthFlow'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const getFonts = () => {
+  return Font.loadAsync({
+    'primary-regular' : require('./assets/fonts/brandon-regular.otf'),
+    'primary-medium' : require('./assets/fonts/brandon-medium.otf'),
+    'primary-bold' : require('./assets/fonts/brandon-bold.otf'),
+    'hero' : require('./assets/fonts/engravers-gothic.ttf')
+  })
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+export default function App() {
+
+  const [fontsLoaded] = useFonts({
+    'primary-regular' : require('./assets/fonts/brandon-regular.otf'),
+    'primary-medium' : require('./assets/fonts/brandon-medium.otf'),
+    'primary-bold' : require('./assets/fonts/brandon-bold.otf'),
+    'hero' : require('./assets/fonts/engravers-gothic.ttf')
+  })
+
+  if (!fontsLoaded){
+    return null
+  }
+
+  return (
+      <ScreenAuthFlow />
+  )
+}
+
