@@ -2,10 +2,10 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { colors } from '../../assets/style/theme'
 
-const ScreenAppHome = () => {
+const ScreenAppPropertyView = () => {
     return(
         <View style={styles.container}>
-            <Text>Home screen ready for action</Text>
+            <Text>Property View screen ready for action</Text>
         </View>
     )
 }
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ScreenAppHome
+export default ScreenAppPropertyView

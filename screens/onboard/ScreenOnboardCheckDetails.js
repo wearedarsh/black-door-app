@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {View, TouchableOpacity, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native'
+import {View, StyleSheet, ImageBackground, ScrollView } from 'react-native'
 //components
 import ComponentLogo from '../../components/componentLogo'
 import ComponentHeroTitle from '../../components/componentHeroTitle'
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         width: '100%',
         height: '100%',
+        backgroundColor:colors.slate
     },
     form:{
         width:'100%',
