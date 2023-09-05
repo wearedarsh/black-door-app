@@ -12,6 +12,7 @@ const Stack = createNativeStackNavigator()
 const ScreenAuthFlow = () => {
 
     const isAuthenticated = true;
+    const isAdmin = false;
 
     return (
         <NavigationContainer>

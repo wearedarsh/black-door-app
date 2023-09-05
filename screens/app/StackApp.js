@@ -5,6 +5,8 @@ import ScreenAppHome from '../app/ScreenAppHome'
 import ScreenAppSettings from '../app/ScreenAppSettings'
 import ScreenAppPropertyListing from '../app/ScreenAppPropertyListing'
 import ScreenAppViewings from '../app/ScreenAppViewings'
+import ScreenAppPropertyView from '../app/ScreenAppPropertyView'
+//components
 import ComponentAppTabItem from '../../components/componentAppTabItem'
 
 //colors
@@ -47,7 +49,7 @@ const StackApp = () => {
             />
             <Tabs.Screen 
               name="ScreenAppPropertyListing" 
-              component={ScreenAppPropertyListing} 
+              component={ScreenAppPropertyView} 
               options={{
                 tabBarIcon: ({ focused }) => (
                   <ComponentAppTabItem label={'PROPERTIES'} icon={'earth'} focused={focused} />
