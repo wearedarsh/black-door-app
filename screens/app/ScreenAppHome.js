@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 //style
 import { colors } from '../../assets/style/theme'
 //components
-import ComponentAppLogoGradient from '../../components/componentAppLogoGradient';
+import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader';
 import ComponentAppPropertyListing from '../../components/componentAppPropertyListing';
 
 
@@ -14,11 +14,11 @@ const DATA = {
 }
 
 
-const ScreenAppHome = () => {
+const ScreenAppHome = ({navigation}) => {
     return(
         <View style={styles.container}>
-            <ComponentAppLogoGradient />
-            <ComponentAppPropertyListing />
+            <ComponentAppBrandingHeader gradient={true} />
+            <ComponentAppPropertyListing onPress={()=> {}} />
         </View>
     )
 }

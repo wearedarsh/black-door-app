@@ -4,9 +4,9 @@ import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native
 import { colors } from '../assets/style/theme'
 
 const ComponentAppBtnPrimary = (props) => {
-    const {label = 'SET MY LABEL PROP', onPress = () => {}} = props
+    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16} = props
     return( 
-        <TouchableOpacity style={styles.btn} onPress={onPress}>
+        <TouchableOpacity style={{...styles.btn, marginTop:marginTop}} onPress={onPress}>
             <Text style={styles.btnText}>{label}</Text>
         </TouchableOpacity>
     )

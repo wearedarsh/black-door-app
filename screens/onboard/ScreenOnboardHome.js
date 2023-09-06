@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, TouchableOpacity, Text, StyleSheet, ImageBackground } from 'react-native'
 //components
-import ComponentLogo from '../../components/componentLogo'
+import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader';
 //style
 import { colors, brand } from '../../assets/style/theme'
 
@@ -10,11 +10,7 @@ const ScreenOnboardHome = ({navigation}) => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
-                <View style={{flex:2}}>
-                    <View style={{marginTop:64}}>  
-                        <ComponentLogo />
-                    </View>
-                </View>
+            <ComponentAppBrandingHeader />
                 <View style={{flex:8, justifyContent: 'center'}}>
                     <Text style={styles.hero}>{brand.appHomeStrapline}</Text>
                 </View>

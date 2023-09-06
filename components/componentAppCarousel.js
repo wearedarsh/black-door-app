@@ -5,11 +5,13 @@ import ComponentAppCarouselBullets from './componentAppCarouselBullets'
 import ComponentAppCarouselSlide from './componentAppCarouselSlide'
 
 const ComponentAppCarousel = (props) => {
-    const { data } = props
+    const { data, heightPercent } = props
     const [currentIndex, setCurrentIndex] = useState(0)
-    const windowWidth = Dimensions.get('window').width;
+    const windowWidth = Dimensions.get('window').width
+    const windowHeight = Dimensions.get('window').height
+    const carouselHeight = windowHeight/100 * heightPercent
     return(
-        <View style={style.container}>
+        <View style={{...style.container, height: carouselHeight }}>
             <FlatList
             data={data}
             horizontal
@@ -33,7 +35,6 @@ const ComponentAppCarousel = (props) => {
 
 const style = StyleSheet.create({
     container:{
-        height:'70%',
         width: '100%',
         alignItems: 'center',
     }

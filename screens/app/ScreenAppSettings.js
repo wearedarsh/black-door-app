@@ -3,15 +3,15 @@ import { View, StyleSheet } from 'react-native'
 //styles
 import { colors } from '../../assets/style/theme'
 //components
-import ComponentAppLogoGradient from '../../components/componentAppLogoGradient'
 import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
+import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader'
 
 const ScreenAppSettings = () => {
     return(
         <View style={styles.container}>
-            <ComponentAppLogoGradient />
+            <ComponentAppBrandingHeader />
             <View style={styles.form}>
-                <ComponentAppBtnSecondary  label="LOG OUT" icon={'exit-outline'} />
+                <ComponentAppBtnSecondary  label="LOG OUT" iconName={'exit-outline'} />
             </View>
         </View>
     )

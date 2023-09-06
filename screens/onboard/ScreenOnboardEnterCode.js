@@ -2,10 +2,10 @@ import React from 'react'
 import {View, TouchableOpacity, Text, StyleSheet, ImageBackground } from 'react-native'
 //components
 import ComponentCodeEntry from '../../components/componentCodeEntry'
-import ComponentLogo from '../../components/componentLogo'
 import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentBackButton from '../../components/componentBackButton'
 import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
+import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader';
 //style
 import { colors } from '../../assets/style/theme'
 
@@ -14,13 +14,9 @@ const ScreenOnboardEnterCode = ({navigation}) => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
-                <View style={{flex:2}}>
-                    <View style={{marginTop:64}}>
-                        <ComponentBackButton onPress={() => {navigation.navigate('ScreenOnboardHome')}} />
-                        <ComponentLogo />
-                    </View>
-                </View>
-                <View style={{flex:8, justifyContent: 'flex-start'}}>
+                <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardHome')}}/>
+                
+                <View style={{flex:8, justifyContent: 'center'}}>
                     <ComponentHeroTitle title="ENTER YOUR VIP ACCESS CODE" style={{marginVertical:48}} />
                     {/* <Text style={{...styles.hero,marginVertical:48}}>ENTER YOUR VIP ACCESS CODE</Text> */}
                     <ComponentCodeEntry/>

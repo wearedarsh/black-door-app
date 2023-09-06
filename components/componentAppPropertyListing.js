@@ -8,6 +8,7 @@ import { BlurView } from 'expo-blur';
 import ComponentAppBtnPrimary from '../components/componentAppBtnPrimary'
 
 const ComponentAppPropertyListing = (props) => {
+    const { onPress } = props
     return (
         <ImageBackground source={require('../assets/img/demo-property-image.png')} style={styles.backgroundImage}>
             <View intensity={24} style={styles.blurView}>
@@ -22,7 +23,7 @@ const ComponentAppPropertyListing = (props) => {
                 <Text style={styles.textContent}>3,000 SQ FT</Text>
             </View>
             <View style={styles.btnHolder}>
-                <ComponentAppBtnPrimary label={'VIEW PROPERTY'} />
+                <ComponentAppBtnPrimary label={'VIEW PROPERTY'} onPress={onPress} />
             </View>
         </ImageBackground>
     )
