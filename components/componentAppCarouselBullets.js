@@ -7,7 +7,7 @@ const ComponentAppCarouselBullets = (props) => {
     const { data, currentIndex } = props
     return (
         <View style={styles.container}>
-            {data.map((_, index) => <View key={index} style={{...styles.bullet, backgroundColor: index === currentIndex ? colors.gold : colors.white}}></View> )}
+            {data.map((_, index) => <View key={index} style={{...styles.bullet, backgroundColor: index === currentIndex ? colors.white : 'rgba(255, 255, 255, 0.5)'}}></View> )}
         </View>
     )
 }

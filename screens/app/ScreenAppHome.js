@@ -18,7 +18,7 @@ const ScreenAppHome = ({navigation}) => {
     return(
         <View style={styles.container}>
             <ComponentAppBrandingHeader gradient={true} />
-            <ComponentAppPropertyListing onPress={()=> {}} />
+            <ComponentAppPropertyListing onPress={()=> {}} title={'PENTHOUSE APARTMENT'} location={'SF'} cta={'VIEW PROPERTY'} size={'2,450 SQ FT'} />
         </View>
     )
 }

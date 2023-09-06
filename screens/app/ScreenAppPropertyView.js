@@ -21,9 +21,9 @@ const ScreenAppPropertyView = ({ navigation }) => {
                 <View style={styles.content}>
                     <Text style={{...styles.header}}>PENTHOUSE APARTMENT DOWNTOWN VIEWS</Text>
                     <Text style={{...styles.copy}}>LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT. INTEGER TINCIDUNT LIGULA DUI, NON LOBORTIS JUSTO VENENATIS VEL. SED NISL PURUS, CURSUS SED VENENATIS IN</Text>
-                    <ComponentAppIconCopy icon={'map-outline'} copy={'NYC'} marginTop={32} />
-                    <ComponentAppIconCopy icon={'resize-outline'} copy={'3,000 SQ FT'} />
-                    <ComponentAppIconCopy icon={'cash-outline'} copy={'20M USD'} />
+                    <ComponentAppIconCopy iconName={'map-outline'} copy={'NYC'} marginTop={32} />
+                    <ComponentAppIconCopy iconName={'resize-outline'} copy={'3,000 SQ FT'} />
+                    <ComponentAppIconCopy iconName={'cash-outline'} copy={'20M USD'} />
                     <ComponentAppBtnPrimary label={'SPEAK TO AGENT'} onPress={()=>{}} marginTop={32} />
                     <ComponentAppBtnSecondary icon={false} label={'DOWNLOAD FLOORPLAN'} />
                 </View>

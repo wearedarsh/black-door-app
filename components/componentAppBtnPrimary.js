@@ -2,11 +2,14 @@ import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native'
 //styles
 import { colors } from '../assets/style/theme'
+//icons
+import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAppBtnPrimary = (props) => {
-    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16} = props
+    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth'} = props
     return( 
         <TouchableOpacity style={{...styles.btn, marginTop:marginTop}} onPress={onPress}>
+            { icon && <Ionicons style={styles.icon} size={24} name={iconName} color={colors.white} />}
             <Text style={styles.btnText}>{label}</Text>
         </TouchableOpacity>
     )
@@ -17,7 +20,11 @@ const styles = StyleSheet.create({
         height:48,
         backgroundColor: colors.gold,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'row'
+    },
+    icon: {
+        marginRight: 8
     },
     btnText: {
         textAlign:'center',

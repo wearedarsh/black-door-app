@@ -19,7 +19,6 @@ const ComponentAppBrandingHeader = (props) => {
     )
 }
 
-
 const styles = StyleSheet.create({
     container: {
         height: Platform.OS === 'ios' ? 128 : 100, 

@@ -5,7 +5,7 @@ import { colors } from '../assets/style/theme'
 
 const ComponentHeroTitle = (props) => {
 
-    const { title, style } = props
+    const { title = 'SET TITLE PROP', style } = props
     return(
         <View>
             <Text style={{...styles.hero, ...style}}>{title}</Text>
@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: colors.white,
         textAlign: 'center',
-        letterSpacing: 8,
-        paddingLeft: Platform.OS === 'ios' ? 8 : 0
+        letterSpacing: 5,
+        paddingLeft: Platform.OS === 'ios' ? 5 : 0
     }
 })
 
