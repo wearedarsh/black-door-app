@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
         letterSpacing: 2, 
         marginTop: 4, 
         paddingLeft: Platform.OS === 'ios' ? 2 : 0,
-        color: colors.white
+        color: colors.white,
+        textAlign:'center'
       }
 })
 

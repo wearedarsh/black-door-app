@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native'
+
 const UtilsHelpers = {
     showAndHideFeedback: function(payload){
         const { dispatch, message, icon, visible, duration = 4000 } = payload
@@ -33,7 +35,8 @@ const UtilsHelpers = {
     scrollToTop: function(payload){
         const { ref, animated } = payload
         ref.current?.scrollToPosition(0, 0, animated); 
-    }
+    },
+    
 }
 
 export default UtilsHelpers
