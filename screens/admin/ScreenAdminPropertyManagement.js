@@ -1,15 +1,36 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, FlatList} from 'react-native';
+import { colors } from '../../assets/style/theme'
+
+//components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
+import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
+import ComponentAdminSearch from '../../components/admin/componentAdminSearch'
+import ComponentAdminListItem from '../../components/admin/componentAdminListItem'
+import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback';
 
 const ScreenAdminPropertyManagement = (props) => {
-  return (
-    <>
-    <ComponentAdminHeader />
-    <View style={styles.container}>
-      <Text>Screen admin property management</Text>
-    </View>
-    </>
+
+    const data =[{id:0, title: 'title one'}, {id:1, title: 'title two'}, {id:2, title: 'title three'}]
+
+
+    return (
+      <>
+        <ComponentAdminHeader />
+            <View style={styles.container}>
+                <ComponentAdminTitle title={'PROPERTY MANAGEMENT'} />
+                <ComponentAdminSearch />
+                <ComponentAdminFeedback icon='warning' title={'please complete all fields'} />
+                
+                <FlatList style={{width:'100%'}}
+                  data={data}
+                  renderItem={({ item }) => <ComponentAdminListItem title={item.title.toUpperCase()} onPress={() => {}} />}
+                  keyExtractor={(item) => item.id}
+                  showVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                />
+            </View>
+      </>
   );
 };
 
@@ -17,8 +38,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-start'
   }
+  
 });
 
 export default ScreenAdminPropertyManagement;
