@@ -1,17 +1,31 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-//Components
+import { StyleSheet, View, FlatList, ScrollView} from 'react-native';
+
+//components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
+import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
+import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
+import ComponentAdminInput from '../../components/admin/componentAdminInput'
+import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary';
+
 
 const ScreenAdminUserAdd = (props) => {
-  return (
-    <>
-    <ComponentAdminHeader />
-    <View style={styles.container}>
-      <Text>Screen admin user add</Text>
-    </View>
-    </>
-    
+    const feedback = false
+
+
+    return (
+      <>
+        <ComponentAdminHeader />
+            <View style={styles.container}>
+                <ComponentAdminTitle title={'USER ADD'} />
+                {feedback && <ComponentAdminFeedback /> }
+                <ScrollView style={styles.form}>
+                  <ComponentAdminInput placeholder={'Enter first name...'} label={'FIRST NAME'} />
+                  <ComponentAdminInput placeholder={'Enter last name...'} label={'LAST NAME'} />
+                  <ComponentAppBtnPrimary label={'ADD USER'} />
+                </ScrollView>
+            </View>
+      </>
   );
 };
 
@@ -19,8 +33,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
-  }
+    justifyContent: 'flex-start'
+  },
+  form: {
+    width:'100%',
+    paddingHorizontal: 32,
+    paddingVertical: 16, 
+  } 
+  
 });
 
 export default ScreenAdminUserAdd;

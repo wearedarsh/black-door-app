@@ -12,10 +12,9 @@ const StackAdminUser = () => {
     
     return (
             <Stack.Navigator>
-                <Stack.Screen name="ScreenAdminUserManagement" component={ScreenAdminUserManagement} options={{headerShown: false}} />
-                <Stack.Screen name="ScreenAdminUserAdd" component={ScreenAdminUserAdd} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenAdminUserEdit" component={ScreenAdminUserEdit} options={{headerShown: false}} />
-        
+                <Stack.Screen name="ScreenAdminUserAdd" component={ScreenAdminUserAdd} options={{headerShown: false}} />
+                <Stack.Screen name="ScreenAdminUserManagement" component={ScreenAdminUserManagement} options={{headerShown: false}} />
             </Stack.Navigator>
     )
 }

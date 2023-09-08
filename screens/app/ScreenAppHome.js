@@ -18,7 +18,7 @@ const ScreenAppHome = ({navigation}) => {
     return(
         <View style={styles.container}>
             <ComponentAppBrandingHeader gradient={true} />
-            <ComponentAppPropertyListing onPress={()=> {}} title={'PENTHOUSE APARTMENT'} location={'SF'} cta={'VIEW PROPERTY'} size={'2,450 SQ FT'} />
+            <ComponentAppPropertyListing onPress={()=> {}} title={'PENTHOUSE APARTMENT'} location={'SF'} cta={'VIEW PROPERTY'} size={'2,450 SQ FT'} badge={'VIP ACCESS'} />
         </View>
     )
 }
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         width:'100%',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor: colors.white,
+        backgroundColor: colors.slate,
     },
     text: { 
         color: colors.white

@@ -8,14 +8,19 @@ import { Ionicons } from '@expo/vector-icons'
 const ComponentAppBtnPrimary = (props) => {
     const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth'} = props
     return( 
-        <TouchableOpacity style={{...styles.btn, marginTop:marginTop}} onPress={onPress}>
-            { icon && <Ionicons style={styles.icon} size={24} name={iconName} color={colors.white} />}
-            <Text style={styles.btnText}>{label}</Text>
-        </TouchableOpacity>
+        <View style={{...styles.bgrWrapper, marginTop:marginTop}}>
+            <TouchableOpacity style={{...styles.btn}} onPress={onPress}>
+                { icon && <Ionicons style={styles.icon} size={24} name={iconName} color={colors.white} />}
+                <Text style={styles.btnText}>{label}</Text>
+            </TouchableOpacity>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
+    bgrWrapper: {
+        backgroundColor:colors.gold
+    },
     btn: {
         height:48,
         backgroundColor: colors.gold,

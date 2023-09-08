@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontFamily: 'primary-regular',
         fontSize: 16,
-        marginLeft:16,
+        marginLeft:8,
         letterSpacing: 3,
         paddingLeft: Platform.OS === 'ios' ? 3 : 0,
         textAlign:'center'
