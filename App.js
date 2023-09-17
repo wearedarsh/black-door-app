@@ -1,6 +1,9 @@
 import { useFonts } from 'expo-font';
 //components
 import ScreenAuthFlow from './screens/auth/ScreenAuthFlow'
+//Redux
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
 const getFonts = () => {
   return Font.loadAsync({
@@ -26,7 +29,9 @@ export default function App() {
   }
 
   return (
+    <Provider store={store}>
       <ScreenAuthFlow />
+    </Provider>
   )
 }
 

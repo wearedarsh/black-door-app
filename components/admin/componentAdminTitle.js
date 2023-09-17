@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
         fontFamily: 'primary-medium',
         textAlign:'center',
         padding:4,
+        paddingBottom: 16,
         letterSpacing: 4,
         paddingLeft: Platform.OS === 'ios' ? 4 : 0
       }

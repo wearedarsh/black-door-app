@@ -5,6 +5,7 @@ const db = getFirestore(app)
 
 const UtilsFirestore = {
     addDocument: async function(payload){
+        //ADD DOCUMENT TO A FIRESTORE COLLECTION
         const { currentCollection, data } = payload
         try{
             const collectionRef = collection(db, currentCollection);
@@ -15,6 +16,7 @@ const UtilsFirestore = {
         }
     },
     setDocument: async function(payload){
+        //UPDATE A SPECIFIC DOCUMENT IN A FIRESTORE COLLECTION
         const { currentCollection, data, key } = payload
         try{
             const docRef = doc(db, currentCollection, key)
@@ -25,6 +27,7 @@ const UtilsFirestore = {
         }
     },
     getDocumentByKey: async function(payload){
+        //RETRIEVE A SPECIFIC DOCUMENT WITHIN A SPECIFIC COLLECTION FROM FIRESTORE
         const { currentCollection, key } = payload
         try{
             const collectionRef = collection(db, currentCollection)

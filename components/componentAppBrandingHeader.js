@@ -7,10 +7,10 @@ import ComponentBackButton from './componentBackButton'
 import { LinearGradient } from 'expo-linear-gradient';
 
 const ComponentAppBrandingHeader = (props) => {
-    const { backButton = false, gradient = false, gradientHeight = Platform.OS === 'ios' ? 128 : 100, onPress = () => {}} = props
+    const { backButton = false, gradient = false, gradientHeight = Platform.OS === 'ios' ? 128 : 100, onPress = () => {}, gradientFrom = 'rgba(35, 31, 32, 1)', gradientTo = 'rgba(35, 31, 32, 1)'} = props
     return(
         <>
-            { gradient && <View style={styles.gradient}><LinearGradient style={{...styles.gradient,height:gradientHeight}} colors={['rgba(35, 31, 32, 1)', 'rgba(35, 31, 32, 1)']} /></View>}
+            { gradient && <View style={styles.gradient}><LinearGradient style={{...styles.gradient,height:gradientHeight}} colors={[gradientFrom, gradientTo]} /></View>}
             <View style={styles.container}>
                 { backButton && <ComponentBackButton onPress={onPress} /> }
                 <ComponentLogo />

@@ -10,9 +10,9 @@ import ComponentAppTitle from '../../components/componentAppTitle'
 const ScreenAppPropertyListing = () => {
     const data = [
         {id:0, title:'PENTHOUSE ONE', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location: 'NYC', size:'3,100 SQ FT', badge: false},
-        {id:1, title:'PENTHOUSE TWO', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location: 'SF', size:'2,200 SQ FT', badge: 'PINKLES BUM'},
-        {id:2, title:'PENTHOUSE THREE', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location: 'FLORIDA', size:'1,800 SQ FT', badge: false},
-        {id:3, title:'PENTHOUSE FOUR', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location: 'LONDON', size:'5,000 SQ FT', badge: false}]
+        {id:1, title:'PENTHOUSE TWO', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/02.png', location: 'SF', size:'2,200 SQ FT', badge: false},
+        {id:2, title:'PENTHOUSE THREE', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/03.png', location: 'FLORIDA', size:'1,800 SQ FT', badge: false},
+        {id:3, title:'PENTHOUSE FOUR', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/04.png', location: 'LONDON', size:'5,000 SQ FT', badge: false}]
     return(
         <>
         <ComponentAppBrandingHeader gradient={true} />
@@ -21,7 +21,7 @@ const ScreenAppPropertyListing = () => {
             <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
                 <FlatList
                 data={data}
-                renderItem={({ item }) => <ComponentAppPropertyListing title={item.title} location={item.location} size={item.size} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.badge}  />}
+                renderItem={({ item }) => <ComponentAppPropertyListing image={item.imageURL} title={item.title} location={item.location} size={item.size} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.badge} marginBottom={16}  />}
                 keyExtractor={(item) => item.id}
                 showVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}

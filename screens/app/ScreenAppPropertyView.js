@@ -16,7 +16,7 @@ const ScreenAppPropertyView = ({ navigation }) => {
         <ComponentAppBrandingHeader gradient={true} backButton={true} onPress={()=>{navigation.navigate('ScreenAppHome')}} />
         <View style={styles.wrapper}>
             <ScrollView contentContainerStyle={styles.container}>
-                <ComponentAppCarousel data={data} heightPercent={60} />
+                <ComponentAppCarousel data={data} heightPercent={50} />
                 
                 <View style={styles.content}>
                     <Text style={{...styles.header}}>PENTHOUSE APARTMENT DOWNTOWN VIEWS</Text>
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: colors.slate,
+        marginTop: Platform.OS === 'ios' ? 128 : 100
     },
     wrapper: {
         backgroundColor: colors.slate

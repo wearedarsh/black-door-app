@@ -13,7 +13,7 @@ const ComponentAdminSearch = (props) => {
 
 const styles = StyleSheet.create({
     wrapper: {
-        paddingVertical:16,
+        paddingBottom:16,
         paddingHorizontal: 32,
         backgroundColor:colors.slate,
         alignItems: 'center',

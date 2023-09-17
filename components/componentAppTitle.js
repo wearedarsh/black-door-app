@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.slate,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom:8
+        paddingBottom:16
     },
     title: {
         color: colors.white,

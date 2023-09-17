@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons'
 const ComponentAdminListItem = (props) => {
     const { title = 'SET TITLE PROP', onPress=()=>{}} = props
   return (
-    <TouchableOpacity style={styles.listItem}>
+    <TouchableOpacity style={styles.listItem} onPress={onPress}>
         <Text style={styles.title}>{title}</Text>
         <Ionicons name="chevron-forward" size={32} color={colors.gold} />
     </TouchableOpacity>
@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
         color:colors.slate,
         fontSize: 16,
         fontFamily: 'primary-medium',
-        letterSpacing: 3,
-        paddingLeft: Platform.OS === 'ios' ? 3 : 0
+        letterSpacing: 2,
+        paddingLeft: Platform.OS === 'ios' ? 2 : 0
       }
       
 });

@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width:'100%',
         marginBottom: 8,
-        letterSpacing: 3,
-        paddingLeft: Platform.OS === 'ios' ? 3 : 0
+        letterSpacing: 2,
+        paddingLeft: Platform.OS === 'ios' ? 2 : 0
     },
     input: {
         borderWidth:1,

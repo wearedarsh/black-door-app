@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Touchable, ImageBackground, Text, StyleSheet, Platform, Dimensions  } from 'react-native'
+import { View, ImageBackground, Text, StyleSheet, Platform, Dimensions  } from 'react-native'
 //styles
 import { colors } from '../assets/style/theme'
 import { Ionicons } from '@expo/vector-icons'
@@ -9,12 +9,12 @@ import ComponentAppPropertyBadge from './componentAppPropertyBadge'
 
 const ComponentAppPropertyListing = (props) => {
     
-    const { onPress = () => {}, cta = 'CTA PROP', title = 'SET TITLE PROP', image = 'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location = 'SET LOCATION PROP', size = 'SET SIZE PROP', heightPercent=100, badge =false } = props
+    const { onPress = () => {}, cta = 'CTA PROP', title = 'SET TITLE PROP', image = 'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location = 'SET LOCATION PROP', size = 'SET SIZE PROP', heightPercent=100, badge =false, marginBottom=0 } = props
     const windowHeight = Dimensions.get('window').height
     const windowWidth = Dimensions.get('window').width
     const height = (windowHeight/100 * heightPercent) - 100 //bottom tabs are 100
     return (
-        <View style={{...styles.wrapper, height: height, width: windowWidth}}>
+        <View style={{...styles.wrapper, height: height, width: windowWidth, marginBottom: marginBottom}}>
             <ImageBackground source={{uri: image}} style={{...styles.backgroundImage}}>
                 {badge && <ComponentAppPropertyBadge title={badge} /> }
                 <View style={styles.info}>
@@ -39,7 +39,6 @@ const ComponentAppPropertyListing = (props) => {
 const styles = StyleSheet.create({
     wrapper: {
         width:'100%',
-        padding: 16
     },
     backgroundImage: {
         flex:1,
@@ -47,6 +46,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width:'100%', 
         backgroundColor: colors.slate,
+
 
     },
     info: {
