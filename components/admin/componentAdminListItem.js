@@ -18,8 +18,8 @@ const ComponentAdminListItem = (props) => {
 const styles = StyleSheet.create({
     listItem: {
         width:'100%',
-        height:48,
         paddingHorizontal: 32,
+        paddingVertical: 8,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

@@ -67,6 +67,15 @@ const UtilsValidation = {
         }else{
             return false
         }
+    },
+    showHideFeedback: function(payload){
+        const { duration = 2000, setterFunc, data } = payload
+        setterFunc(data)
+        const timer = setInterval(clearTimer, duration)
+        function clearTimer(){
+            clearInterval(timer)
+            setterFunc(false)
+        }
     }
 }
 

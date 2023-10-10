@@ -4,11 +4,11 @@ import { StyleSheet, Text, TextInput, Platform } from 'react-native'
 import { colors } from '../../assets/style/theme'
 
 const ComponentAdminInput = (props) => {
-    const { label = 'SET LABEL PROP', placeholder = 'Set placeholder prop...'} = props
+    const { label = 'SET LABEL PROP', multiline = false, numberoflines = 1, placeholder = 'Set placeholder prop...', value = '',  onChangeText = null, height = 48 } = props
     return (
             <>
             <Text style={styles.label}>{label}</Text>
-            <TextInput style={styles.input} placeholder={placeholder} />
+            <TextInput style={{...styles.input, height: height}} placeholder={placeholder} value={value} numberoflines={numberoflines} onChangeText={onChangeText} multiline={multiline} />
             </>
     );
 };

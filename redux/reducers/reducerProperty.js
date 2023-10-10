@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { setProperties,removeProperty, updateProperty } from '../actions/actionProperty'
+import { setProperties,removeProperty, updateProperty, addProperty } from '../actions/actionProperty'
 
 const initialState = {
     properties: {}
@@ -17,7 +17,13 @@ const reducerProperty = createReducer(initialState, (builder) => {
     .addCase(updateProperty, (state, action) => {
         console.log('update property')
     })
-
+    .addCase(addProperty, (state, action) => {
+        const { data, key } = action.payload
+        state.properties = {
+            ...state.properties,
+            [key]: { ...state.properties[key], ...data }
+          }
+    })
 })
 
 export default reducerProperty

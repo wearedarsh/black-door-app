@@ -1,5 +1,5 @@
 import { app } from '../config/configFirebase'
-import { getFirestore, collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -10,7 +10,7 @@ const UtilsFirestore = {
         try{
             const collectionRef = collection(db, currentCollection);
             const response = await addDoc(collectionRef, data);
-            return { response: response}
+            return { response: response, key: response.id}
         }catch(error){
             return {error: error}
         }
@@ -33,12 +33,17 @@ const UtilsFirestore = {
             const collectionRef = collection(db, currentCollection)
             const docRef = doc(collectionRef, key)
             const docSnapshot = await getDoc(docRef); 
-            const response = docSnapshot.data()
-            return response
+            if(docSnapshot.exists()){
+                const response = docSnapshot.data()
+                return response
+            }else{
+                return {error: 'document does not exist'}
+            }
         }catch(error){
-            return{error: error}
+            return {error: error}
         }
     }
+
 }
 
 export default UtilsFirestore

@@ -11,7 +11,7 @@ const ComponentAdminHeader = (props) => {
     const { backButton = false, onPress = () => {}} = props
     return (
             <View style={styles.wrapper}>
-                {backButton && <ComponentBackButton /> }
+                {backButton && <ComponentBackButton onPress={onPress} /> }
                 <ComponentAdminLogo />
 
             </View>

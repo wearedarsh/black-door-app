@@ -4,9 +4,11 @@ import { StyleSheet, View, TextInput } from 'react-native';
 import { colors } from '../../assets/style/theme'
 
 const ComponentAdminSearch = (props) => {
+  const { onChangeText, value } = props
+  
   return (
         <View style={styles.wrapper}>
-            <TextInput style={styles.searchInput} placeholder='Search...' placeholderTextColor={colors.white}  />
+            <TextInput style={styles.searchInput} placeholder='Search...' placeholderTextColor={colors.white} onChangeText={onChangeText} value={value}  />
         </View>
   );
 };
