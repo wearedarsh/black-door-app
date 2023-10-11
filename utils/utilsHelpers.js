@@ -34,7 +34,7 @@ const UtilsHelpers = {
     },
     scrollToTop: function(payload){
         const { ref, animated } = payload
-        ref.current?.scrollToPosition(0, 0, animated); 
+        ref.current.scrollTo({x:0, y:0, animated: animated}); 
     },
     
 }
