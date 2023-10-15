@@ -6,23 +6,26 @@ import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminInput from '../../components/admin/componentAdminInput'
-import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary';
+import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 
 
-const ScreenAdminUserAdd = (props) => {
+const ScreenAdminClientEdit = ({navigation}) => {
+
     const feedback = false
 
 
     return (
       <>
-        <ComponentAdminHeader />
+        <ComponentAdminHeader backButton={true} onPress={()=> {navigation.navigate('ScreenAdminClientManagement')}} />
             <View style={styles.container}>
-                <ComponentAdminTitle title={'USER ADD'} />
+                <ComponentAdminTitle title={'USER EDIT'} />
                 {feedback && <ComponentAdminFeedback /> }
                 <ScrollView style={styles.form}>
                   <ComponentAdminInput placeholder={'Enter first name...'} label={'FIRST NAME'} />
                   <ComponentAdminInput placeholder={'Enter last name...'} label={'LAST NAME'} />
-                  <ComponentAppBtnPrimary label={'ADD USER'} />
+                  <ComponentAdminInput placeholder={'Enter email address...'} label={'EMAIL ADDRESS'} />
+                  
+                  <ComponentAppBtnPrimary label={'EDIT USER'} />
                 </ScrollView>
             </View>
       </>
@@ -43,4 +46,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default ScreenAdminUserAdd;
+export default ScreenAdminClientEdit

@@ -23,9 +23,6 @@ const styles = StyleSheet.create({
         height:'100%',
         zIndex: 9,
         elevation: 9
-    },
-    indicator:{
-        //marginTop:Platform.OS === 'ios' ? -100 : -80,
     }
 })
 

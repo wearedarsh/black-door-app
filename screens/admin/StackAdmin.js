@@ -3,7 +3,7 @@ import { Platform, View, Text, StyleSheet } from 'react-native'
 //screens
 import ScreenAppSettings from '../app/ScreenAppSettings'
 import StackAdminProperty from '../admin/StackAdminProperty'
-import StackAdminUser from '../admin/StackAdminUser'
+import StackAdminClient from '../admin/StackAdminClient'
 
 //components
 import ComponentAppTabItem from '../../components/componentAppTabItem'
@@ -46,11 +46,11 @@ const StackApp = () => {
               }}  
             />
             <Tabs.Screen 
-              name="StackAdminUser" 
-              component={StackAdminUser} 
+              name="StackAdminClient" 
+              component={StackAdminClient} 
               options={{
                 tabBarIcon: ({ focused }) => (
-                  <ComponentAppTabItem label={'USERS'} icon={'person-outline'} focused={focused} />
+                  <ComponentAppTabItem label={'CLIENTS'} icon={'person-outline'} focused={focused} />
                 ),
               }}   
             />

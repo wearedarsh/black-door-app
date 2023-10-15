@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList} from 'react-native'
-//Firestore
+//firestore
 import { app } from '../../config/configFirebase'
 import { getFirestore, collection, onSnapshot } from "firebase/firestore"
+//utils
+import UtilsValidation from '../../utils/utilsValidation'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
 import ComponentAdminSearch from '../../components/admin/componentAdminSearch'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminListItem from '../../components/admin/componentAdminListItem'
+import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 
 
 const ScreenAdminPropertyManagement = ({ navigation }) => {
     //local state
-    const feedback = false
+    const [feedback, setFeedback] = useState(false)
+    const [loading, setLoading] = useState(false) 
     const [properties, setProperties] = useState([])
     const [searchText, setSearchText] = useState('')
     //firestore
@@ -21,6 +25,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     const collectionRef = collection(db, 'properties')
     //search filter
     const [filteredProperties, setFilteredProperties] = useState([])
+    //search function
     const onSearchChange = (searchString) => {
       setSearchText(searchString)
       const filteredArray = properties.filter((item) => item.docData.title.toLowerCase().includes(searchString.toLowerCase()))
@@ -29,12 +34,17 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     //firestore listener
     useEffect(() => {
       const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+          setLoading(true)
           const propertiesArray = snapshot.docs.map((doc) => ({
             id: doc.id,
             docData: doc.data()
           }))
           setProperties(propertiesArray)
-        })
+          setLoading(false)
+      }, (error) => {
+        UtilsValidation.showHideFeedback({icon:'ios-warning', title: 'error', duration:3000, setterFunc: setFeedback})
+      })
+
       //clean up function
       return () => {
         unsubscribe()
@@ -47,10 +57,11 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     return (
       <>
         <ComponentAdminHeader />
+        {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
                 <ComponentAdminTitle title={'PROPERTY MANAGEMENT'} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
-                {feedback && <ComponentAdminFeedback icon='warning' title={'Please complete all fields'} />}
+                {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredProperties &&    
                   <FlatList style={{width:'100%'}}
                     data={filteredProperties}
