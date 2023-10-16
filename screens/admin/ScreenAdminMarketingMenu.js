@@ -1,21 +1,23 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
-//firestore
-import UtilsFirestore from '../../utils/utilsFirestore'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary';
 
 
-const ScreenAdminClientAdd = ({navigation}) => {
+const ScreenAdminMarketingMenu = ({navigation}) => {
 
     return (
       <>
         <ComponentAdminHeader />
             <View style={styles.container}>
-                <ComponentAdminTitle title={'ADD CLIENT'} />
-                  
+                <ComponentAdminTitle title={'MARKETING'} />
+                <View style={styles.form}>
+                  <ComponentAppBtnPrimary label={'MANAGE GROUPS'} onPress={() => {navigation.navigate('ScreenAdminMarketingGroupManagement')}} />
+                  <ComponentAppBtnPrimary label={'SEND NOTIFICATION'} onPress={() => {navigation.navigate('ScreenAdminMarketingNotificationManagement')}} />
+                 
+                </View>
             </View>
       </>
   );
@@ -35,4 +37,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default ScreenAdminClientAdd
+export default ScreenAdminMarketingMenu;

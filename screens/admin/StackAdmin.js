@@ -4,10 +4,9 @@ import { Platform, View, Text, StyleSheet } from 'react-native'
 import ScreenAppSettings from '../app/ScreenAppSettings'
 import StackAdminProperty from '../admin/StackAdminProperty'
 import StackAdminClient from '../admin/StackAdminClient'
-
+import StackAdminMarketing from '../admin/StackAdminMarketing'
 //components
 import ComponentAppTabItem from '../../components/componentAppTabItem'
-
 //colors
 import { colors } from '../../assets/style/theme'
 //navigation
@@ -51,6 +50,16 @@ const StackApp = () => {
               options={{
                 tabBarIcon: ({ focused }) => (
                   <ComponentAppTabItem label={'CLIENTS'} icon={'person-outline'} focused={focused} />
+                ),
+              }}   
+            />
+
+            <Tabs.Screen 
+              name="StackAdminMarketing" 
+              component={StackAdminMarketing} 
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <ComponentAppTabItem label={'MARKETING'} icon={'megaphone-outline'} focused={focused} />
                 ),
               }}   
             />

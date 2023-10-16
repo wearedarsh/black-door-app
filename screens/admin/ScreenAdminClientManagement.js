@@ -10,6 +10,7 @@ import ComponentAdminSearch from '../../components/admin/componentAdminSearch'
 import ComponentAdminListItem from '../../components/admin/componentAdminListItem'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
+import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
 
 
 const ScreenAdminClientManagement = ({ navigation }) => {
@@ -50,7 +51,6 @@ const ScreenAdminClientManagement = ({ navigation }) => {
     //update filtered clients with clients if updated
     useEffect(() => {
       setFilteredClients(clients)
-      console.log(JSON.stringify(filteredClients))
     }, [clients])
     return (
       <>
@@ -58,8 +58,9 @@ const ScreenAdminClientManagement = ({ navigation }) => {
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
                 <ComponentAdminTitle title={'CLIENT MANAGEMENT'} />
+                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminClientAdd')}} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
-                {feedback && <ComponentAdminFeedback icon='warning' title={'please complete all fields'} />}
+                {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
@@ -67,7 +68,6 @@ const ScreenAdminClientManagement = ({ navigation }) => {
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
-
                 />
                 }
             </View>
