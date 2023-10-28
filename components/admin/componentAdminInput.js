@@ -16,7 +16,7 @@ const ComponentAdminInput = (props) => {
 const styles = StyleSheet.create({
     label: {
         fontSize: 16,
-        fontFamily: 'primary-bold',
+        fontFamily: 'primary-regular',
         color: colors.gold,
         textAlign: 'center',
         width:'100%',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         color: colors.slate,
         fontSize: 16,
-        fontFamily: 'primary-medium',
+        fontFamily: 'primary-regular',
         marginBottom: 16
 
     }

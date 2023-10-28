@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList} from 'react-native'
+//config
+import ConfigApp from '../../config/configApp'
 //firestore
 import { app } from '../../config/configFirebase'
 import { getFirestore, collection, onSnapshot, orderBy, limit, query } from "firebase/firestore"
@@ -23,7 +25,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     //firestore
     const db = getFirestore(app)
     const collectionRef = collection(db, 'groups')
-    const queryRef = query(collectionRef, orderBy("order", "asc"), limit(10))
+    const queryRef = query(collectionRef, orderBy("order", "asc"), limit(ConfigApp.GroupLimit))
     //search filter
     const [filteredGroups, setFilteredGroups] = useState([])
     //search function
