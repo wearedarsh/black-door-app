@@ -9,7 +9,7 @@ const ComponentAdminSelectButton = (props) => {
     const { selected = false, onPress = () => {}, label = "set label prop"} = props
     return (
         <TouchableOpacity style={{...styles.btn, ...(selected ? styles.btnSelected : styles.btnUnselected)}} onPress={onPress}>
-            <Text styles={{...styles.label, ...(selected ? styles.labelSelected : styles.labelUnselected)}}>{label}</Text><Ionicons style={selected ? styles.iconSelected : styles.iconUnselected} size={24} name={selected ? "checkmark" : "close"}  />
+            <Text style={{...styles.label, ...(selected ? styles.labelSelected : styles.labelUnselected)}}>{label.toUpperCase()}</Text><Ionicons style={selected ? styles.iconSelected : styles.iconUnselected} size={24} name={selected ? "checkmark" : "close"}  />
         </TouchableOpacity>
     )
 }

@@ -47,7 +47,6 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
       }, (error) => {
         UtilsValidation.showHideFeedback({icon:'ios-warning', title: 'error', duration:3000, setterFunc: setFeedback})
       })
-
       //clean up function
       return () => {
         unsubscribe()
@@ -59,10 +58,10 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     }, [groups])
     return (
       <>
-        <ComponentAdminHeader />
+        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminMarketingMenu')}} />
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
-                <ComponentAdminTitle title={'GROUP MANAGEMENT'} />
+                <ComponentAdminTitle title={'GROUP MANAGEMENT'}  />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredGroups &&    

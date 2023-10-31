@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsValidation from '../../utils/utilsValidation'
+import UtilsEncryption from '../../utils/utilsEncryption'
+import UtilsCodeManagement from '../../utils/utilsCodeManagement'
 //config
 import ConfigApp from '../../config/configApp'
 //components
@@ -16,6 +18,7 @@ import ComponentAdminInput from '../../components/admin/componentAdminInput'
 import ComponentAdminToggle from '../../components/admin/componentAdminToggle'
 import ComponentAppSpacerView from '../../components/componentAppSpacerView'
 import ComponentAdminSelectButton from '../../components/admin/componentAdminSelectButton'
+import ComponentAdminCodeEntry from '../../components/admin/componentAdminCodeEntry'
 //firestore
 import { app } from '../../config/configFirebase'
 import { getFirestore, collection, orderBy, limit, query, getDocs } from "firebase/firestore"
@@ -29,12 +32,24 @@ const ScreenAdminClientAdd = ({navigation}) => {
     const [groupsComponentArray, setGroupsComponentArray] = useState(false)
     const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
+    //initialise form fields
+    const [formValues, setFormValues] = useState({
+      firstName: '',
+      lastName: '',
+      emailAddress: '',
+      mobileNumber: '',
+      status: 1,
+      groups:[],
+      emailOptIn: true,
+      pushOptIn: true,
+    })
+  //initialise code
+  const [codeValue, setCodeValue] = useState('')
     //firestore
     const db = getFirestore(app)
     const collectionRef = collection(db, "groups")
     const orderByRef = orderBy("order", "asc")
     const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-    
     //update groups selected value
     const updateGroupSelected = (key) => {
       setGroups(prevState => ({
@@ -74,56 +89,98 @@ const ScreenAdminClientAdd = ({navigation}) => {
     },[])
     //set groups components
     useEffect(() => {
-      //Create array of components for rendering
+      //create array of components for rendering
       const groupKeys = Object.keys(groups)
       const groupsComponentTempArray = groupKeys.map((key) => {
       return (
+        <View key={key + '2'}>
           <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
+          <ComponentAppSpacerView key={key + '1'} height={16} />
+        </View>
       )
       })
       //update local state
       setGroupsComponentArray(groupsComponentTempArray)
     }, [groups])
     //form fields
-    const [formValues, setFormValues] = useState({
-        firstName: '',
-        lastName: '',
-        emailAddress: '',
-        mobileNumber: '',
-        approved: false,
-        groups:[],
-        emailOptIn: true,
-        pushOptIn: true
-    })
+    const updateFormFields = (string, key) => {
+        setFormValues(prevState => ({
+          ...prevState,
+          [key]: string
+        }))
+    }
     //submit form
     const submitForm = async () => {
+        
         setLoading(true)
         //check inputs are populated
        if(!UtilsValidation.inputsPopulated({data: {
           firstName: formValues.firstName,
           surName: formValues.lastName,
           emailAddress: formValues.emailAddress,
-          mobileNumber: formValues.mobileNumber
+          mobileNumber: formValues.mobileNumber,
+          code: codeValue
         }})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
           return
         }
         //check email address correct format
-        if(!UtilsValidation.isEmail){
+        if(!UtilsValidation.isEmail({email: formValues.emailAddress})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
           return
         }
-        
-        const response = UtilsFirestore.addDocument({currentCollection: 'clients', data: formValues})
-        if(response.error){
+        //check if code exists in code management
+        if(!UtilsCodeManagement.checkCodeExists(codeValue)){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
+          return
+        }
+        //Update formValues with code and groups ready for submit
+        const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
+        const formValuesForSubmit = ({
+          ...formValues,
+          groups: selectedGroups,
+          code: UtilsEncryption.encrypt(codeValue)
+        })
+        //try to add client to firestore
+        try{
+          setLoading(true)
+          const response = UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
+          if(response.error){
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+              return
+          }  
+        }catch(error){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+          return
+        }
+        //add code to config file
+        try{
+          setLoading(true)
+          const response = UtilsCodeManagement.addCodeToConfig({ code:codeValue })
+          if(response.error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
-        }else{
+            return
+          }
+        }catch(error){
           setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client has been successfully added', icon:'checkmark'}})
-        }  
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+          return
+        }
+        //ask user if they would like to notify user
+        Alert.alert('Client Added', 'Would you like to send an email notification?', [
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+          {text: 'Yes', onPress: () => {sendConfirmationEmail({ name: formValues.firstName, email: formValues.emailAddress })}},
+        ])
+        setLoading(false)
     }
     return (
       <>
@@ -145,7 +202,11 @@ const ScreenAdminClientAdd = ({navigation}) => {
                     <ComponentAppSpacerView height={8} />
                     <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
-                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{testActionDispatch()}} />
+                    <Text style={styles.subTitle}>INVITE CODE</Text>
+                    <ComponentAdminCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
+                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm()}} />
+                    <ComponentAppSpacerView height={120} />
+
                   </ScrollView>
             </View>
       </>
@@ -154,7 +215,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
     alignItems: 'center',
     justifyContent: 'flex-start'
   },

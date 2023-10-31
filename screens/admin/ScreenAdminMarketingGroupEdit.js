@@ -69,7 +69,7 @@ const ScreenAdminMarketingGroupEdit = ({route, navigation}) => {
                 <ComponentAdminTitle title={'GROUP EDIT'} />
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} /> }
                 <ScrollView style={styles.form}>
-                  <ComponentAdminInput placeholder={'Enter first name...'} label={'TITLE ORANGO'} value={formFields.title} onChangeText={newValue => updateFormFields(newValue, 'title')} />
+                  <ComponentAdminInput placeholder={'Enter first name...'} label={'TITLE'} value={formFields.title} onChangeText={newValue => updateFormFields(newValue, 'title')} />
 
                   
                   <ComponentAppBtnPrimary label={'EDIT GROUP'} onPress={() => {submitForm()}} />
