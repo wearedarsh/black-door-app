@@ -24,41 +24,66 @@ import { colors } from '../../assets/style/theme'
 import { setGroups } from '../../redux/actions/actionGroups'
 
 const ScreenAdminClientAdd = ({navigation}) => {
-    //redux
-    const dispatch = useDispatch()
+    //local state
+    const [groups, setGroups] = useState(false)
+    const [groupsComponentArray, setGroupsComponentArray] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [feedback, setFeedback] = useState(false)
     //firestore
     const db = getFirestore(app)
     const collectionRef = collection(db, "groups")
     const orderByRef = orderBy("order", "asc")
     const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-
+    
+    //update groups selected value
+    const updateGroupSelected = (key) => {
+      setGroups(prevState => ({
+        ...prevState,
+        [key] : {
+          ...prevState[key],
+          selected: !prevState[key].selected
+        }
+      }))
+    }
+    //fetch groups
     useEffect(() => {
       const fetchGroups = async () => {
         try{
           const groupsSnapshot = await getDocs(queryRef)
           if(groupsSnapshot){
-            console.log(JSON.stringify(groupsSnapshot, null, 2))
             let groupsTempObject = {}
+            let groupsTempComponentArray = []
+            //grab documents and add object to local state
             groupsSnapshot.forEach((doc) =>{
               const data = doc.data()
-              groupsTempObject[doc.id] = data
+              groupsTempObject[doc.id] = {
+                active: data.active,
+                order: data.order,
+                title: data.title,
+                selected: false
+              }
             })
-            //dispatch(setGroups({data: groupsTempObject}))
+            //update local state
+            setGroups(groupsTempObject)
           }
-
         }catch(error){
           console.log(error)
         }
       }
-
       fetchGroups()
-      
     },[])
-
-
-    
-
-
+    //set groups components
+    useEffect(() => {
+      //Create array of components for rendering
+      const groupKeys = Object.keys(groups)
+      const groupsComponentTempArray = groupKeys.map((key) => {
+      return (
+          <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
+      )
+      })
+      //update local state
+      setGroupsComponentArray(groupsComponentTempArray)
+    }, [groups])
     //form fields
     const [formValues, setFormValues] = useState({
         firstName: '',
@@ -119,7 +144,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
                     <ComponentAdminToggle title={'PUSH OPT IN'} selectedValue={formValues.pushOptIn} setterFunction={() => {setFormValues({...formValues, pushOptIn: !formValues.pushOptIn})}} />
                     <ComponentAppSpacerView height={8} />
                     <Text style={styles.subTitle}>MARKETING GROUPS</Text>
-                    {groupsArray}
+                    {groupsComponentArray && groupsComponentArray}
                     <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{testActionDispatch()}} />
                   </ScrollView>
             </View>

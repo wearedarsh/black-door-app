@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView} from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
@@ -27,7 +27,7 @@ const ScreenAdminMarketingGroupEdit = ({route, navigation}) => {
         const fetchClient = async () => {
           setLoading(true)
           const response = await UtilsFirestore.getDocumentByKey({currentCollection: 'groups', key: key})
-          if(response.error){
+          if(response.error){ 
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, data: {title:response.error, icon: 'ios-warning'}, setterFunc: setFeedback})
           }else{
