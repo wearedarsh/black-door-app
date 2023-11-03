@@ -4,21 +4,23 @@ import UtilsEncryption from './utilsEncryption'
 const UtilsCodeManagement = {
     checkCodeExists: async function(payload){
         const { code } = payload
-        //encrypt code
-        const encryptedCode = UtilsEncryption.encrypt(code)
+        console.log('my code is: ' + code)
         try{
             //get codes config document from firestore
             const codesDocument = await UtilsFirestore.getDocumentByKey({currentCollection: 'config', key: 'inviteCodes'})
             //if no error fecthing the document
             if(!codesDocument.error){
                 //get encrypted codes array from document
-                const codes = codesDocument.codes
-                //check if encrypted code exists in encrypted array
-                if(codes.includes(encryptedCode)){
-                    return true
-                }else{
-                    return false
+                const encryptedCodes = codesDocument.codes
+                //loop through and see if code exists
+                for(let encryptedCode of encryptedCodes){
+                    console.log(UtilsEncryption.decrypt(encryptedCode))
+                    if(UtilsEncryption.decrypt(encryptedCode) == code){
+                        return true
+                    }
                 }
+                //if code does nto exist return false
+                return false
             }else{
                 return {error: codesDocument.error}
             }
@@ -28,6 +30,7 @@ const UtilsCodeManagement = {
     },
     addCodeToConfig: async function(payload){
         const { code } = payload
+        console.log('im adding to config document: ' + code)
         //encrypt code
         const encryptedCode = UtilsEncryption.encrypt(code)
         try{
@@ -38,8 +41,9 @@ const UtilsCodeManagement = {
                 const codes = codesDocument.codes
                 //add code to codesArray
                 const updatedCodesArray = [...codes, encryptedCode]
+                console.log('my codes array is: ' + updatedCodesArray)
                 //set the codes array on firestore
-                const response  = await UtilsFirestore.setDocument({key: 'inviteCodes', collection: 'config', data: {codes: updatedCodesArray}})
+                const response  = await UtilsFirestore.setDocument({key: 'inviteCodes', currentCollection: 'config', data: {codes: updatedCodesArray}})
                 if(response.error){
                     return {error: response.error}
                 }else {

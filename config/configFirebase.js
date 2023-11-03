@@ -10,7 +10,6 @@ const FIREBASE_MESSAGINGSENDERID = Constants.expoConfig.extra.FIREBASE_MESSAGING
 const FIREBASE_APPID = Constants.expoConfig.extra.FIREBASE_APPID
 const FIREBASE_MEASUREMENTID = Constants.expoConfig.extra.FIREBASE_MEASUREMENTID
 
-
 const ConfigFirebase = {
   apiKey: FIREBASE_APIKEY,
   authDomain: FIREBASE_AUTHDOMAIN,

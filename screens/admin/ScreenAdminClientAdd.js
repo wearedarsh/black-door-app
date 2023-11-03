@@ -132,11 +132,18 @@ const ScreenAdminClientAdd = ({navigation}) => {
           return
         }
         //check if code exists in code management
-        if(!UtilsCodeManagement.checkCodeExists(codeValue)){
+        try{
+          const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
+          if(response){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
+            return
+          }
+        }catch(error){
           setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
-          return
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
         }
+        
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
         const formValuesForSubmit = ({
@@ -147,7 +154,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
         //try to add client to firestore
         try{
           setLoading(true)
-          const response = UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
+          const response = await UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
           if(response.error){
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})

@@ -9,6 +9,9 @@ const FIREBASE_APPID = process.env.FIREBASE_APPID
 const FIREBASE_MEASUREMENTID = process.env.FIREBASE_MEASUREMENTID
 const SALT = process.env.SALT
 const EXPO_PROJECT_ID = process.env.EXPO_PROJECT_ID
+const EMAIL_HOST = process.env.EMAIL_HOST
+const EMAIL_AUTH_USER = process.env.EMAIL_AUTH_USER
+const EMAIL_AUTH_PASS = process.env.EMAIL_AUTH_PASS
 
 
 export default {
@@ -21,6 +24,9 @@ export default {
         FIREBASE_MESSAGINGSENDERID: FIREBASE_MESSAGINGSENDERID,
         FIREBASE_APPID: FIREBASE_APPID,
         FIREBASE_MEASUREMENTID: FIREBASE_MEASUREMENTID,
+        EMAIL_HOST: EMAIL_HOST,
+        EMAIL_AUTH_USER: EMAIL_AUTH_USER,
+        EMAIL_AUTH_PASS: EMAIL_AUTH_PASS,
         SALT: SALT,
         "eas": {
             "projectId": EXPO_PROJECT_ID
