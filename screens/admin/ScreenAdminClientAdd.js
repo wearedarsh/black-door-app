@@ -6,6 +6,7 @@ import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsValidation from '../../utils/utilsValidation'
 import UtilsEncryption from '../../utils/utilsEncryption'
 import UtilsCodeManagement from '../../utils/utilsCodeManagement'
+import UtilsEmail from '../../utils/utilsEmail'
 //config
 import ConfigApp from '../../config/configApp'
 //components
@@ -179,14 +180,43 @@ const ScreenAdminClientAdd = ({navigation}) => {
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
           return
         }
+
+        const sendInviteEmailToCustomer = async () => {
+          setLoading(true)
+          try{
+            const response = await UtilsEmail.sendSingleTemplateEmail({
+              emailSubjectTemplate: 'invite', 
+              emailContentTemplate: 'invite',
+              fromEmailNameTemplate: 'adminStandard',
+              fromEmail: 'adminStandard',
+              recipient: formValues.emailAddress,
+              mergeFieldsArray: [{
+                field: '%firstName%', 
+                value: formValues.firstName}, 
+                {field: '%inviteCode%', 
+                value: codeValue}]
+            })
+            if(!response.error){
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client added and invite email sent', icon:'ios-checkmark'}})
+              return
+            }
+          }catch(error){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+
+          }
+        }
         //ask user if they would like to notify user
         Alert.alert('Client Added', 'Would you like to send an email notification?', [
           {
             text: 'No',
             style: 'cancel',
           },
-          {text: 'Yes', onPress: () => {sendConfirmationEmail({ name: formValues.firstName, email: formValues.emailAddress })}},
+          {text: 'Yes', onPress: () => {sendInviteEmailToCustomer()}},
         ])
+
         setLoading(false)
     }
     return (

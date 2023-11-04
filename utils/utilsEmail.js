@@ -5,6 +5,7 @@ import { systemEmailHTMLTemplate } from '../email/emailTemplates'
 import { systemEmailSubjectTemplates } from '../email/emailSubjectTemplates'
 import { systemEmailContentTemplates } from '../email/emailContentTemplates'
 import { systemEmailFromNameTemplates } from '../email/emailFromNameTemplates'
+import { systemEmailAddresses } from '../email/emailAddresses'
 import ConfigEmail from '../config/configEmail'
 
 const UtilsEmail = {
@@ -22,7 +23,6 @@ const UtilsEmail = {
        return contentTemplate
     },
     sendSingleTemplateEmail: async function(payload){
-        console.log(JSON.stringify(payload))
         //destruct payload mergefields array requires [{field: '%firstName%', value: 'string'}]
         const { emailSubjectTemplate, fromEmailNameTemplate, fromEmail, recipient, emailContentTemplate, mergeFieldsArray, configEmail =  ConfigEmail} = payload
         //merge content with variables
@@ -35,19 +35,16 @@ const UtilsEmail = {
             const response  = await sendEmail({
                 body: mergedHTMLTemplate, 
                 subject: systemEmailSubjectTemplates[emailSubjectTemplate], 
-                fromName: systemEmailFromNameTemplates[fromEmailNameTemplate], 
-                fromEmail,
+                fromName: { name: systemEmailFromNameTemplates[fromEmailNameTemplate], address: fromEmail }, 
+                fromEmail: systemEmailAddresses[fromEmail],
                 recipient, 
                 config: configEmail
             })
-
             if(!response.error){
-                console.log('I succeeded Tommy boy')
                 return { success: true }
             }else{
                 return { error: response.error }
-            }
-            
+            }  
         }catch(error){
             return {error: error}
         }
