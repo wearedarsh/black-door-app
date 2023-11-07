@@ -69,12 +69,26 @@ const UtilsValidation = {
         }
     },
     showHideFeedback: function(payload){
-        const { duration = 2000, setterFunc, data } = payload
+        const { duration, setterFunc, data } = payload
         setterFunc(data)
         const timer = setInterval(clearTimer, duration)
         function clearTimer(){
             clearInterval(timer)
             setterFunc(false)
+        }
+    },
+    formFeedback: function(payload){
+        const { type, message, duration = 3000 } = payload
+        switch(type){
+            case 'error':
+
+            break
+            case 'confirmation':
+
+            break
+            case 'info':
+            
+            break
         }
     }
 }

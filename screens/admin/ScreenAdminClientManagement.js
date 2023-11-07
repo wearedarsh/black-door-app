@@ -12,7 +12,6 @@ import ComponentAdminFeedback from '../../components/admin/componentAdminFeedbac
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
 
-
 const ScreenAdminClientManagement = ({ navigation }) => {
     //local state
     const [feedback, setFeedback] = useState(false)
@@ -37,6 +36,12 @@ const ScreenAdminClientManagement = ({ navigation }) => {
             id: doc.id,
             docData: doc.data()
           }))
+
+          clientsArray.sort((a,b) => {
+            const statusA = a.docData.status === 1 ? -1 : 1;
+            const statusB = b.docData.status === 1 ? -1 : 1;
+            return statusA - statusB;
+          })
           
           setClients(clientsArray)
           setLoading(false)
@@ -64,7 +69,7 @@ const ScreenAdminClientManagement = ({ navigation }) => {
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {key:item.id})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem status={item.docData.status === 1 ? 'email-sent' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {key:item.id})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}

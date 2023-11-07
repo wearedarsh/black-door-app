@@ -4,6 +4,7 @@ const functions = require("firebase-functions");
 exports.sendSingleEmailWithTemplate = functions.https.onCall(async (data) => {
     //destruct payload
     const { recipient, body, subject, fromName, fromEmail, config } = data
+    const { name, address } = fromName
     //create nodemailer transporter from config
     const transporter = nodemailer.createTransport(config)
     //try to send mail

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, ScrollView, Text, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 //utils
@@ -7,12 +7,13 @@ import UtilsValidation from '../../utils/utilsValidation'
 import UtilsEncryption from '../../utils/utilsEncryption'
 import UtilsCodeManagement from '../../utils/utilsCodeManagement'
 import UtilsEmail from '../../utils/utilsEmail'
+import UtilsHelpers from '../../utils/utilsHelpers'
 //config
 import ConfigApp from '../../config/configApp'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
-import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary';
+import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 import ComponentAdminInput from '../../components/admin/componentAdminInput'
@@ -51,6 +52,9 @@ const ScreenAdminClientAdd = ({navigation}) => {
     const collectionRef = collection(db, "groups")
     const orderByRef = orderBy("order", "asc")
     const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
+    //local variables 
+    const formRef = useRef()
+    const firstFormFieldRef = useRef()
     //update groups selected value
     const updateGroupSelected = (key) => {
       setGroups(prevState => ({
@@ -112,12 +116,11 @@ const ScreenAdminClientAdd = ({navigation}) => {
     }
     //submit form
     const submitForm = async () => {
-        
         setLoading(true)
         //check inputs are populated
-       if(!UtilsValidation.inputsPopulated({data: {
+        if(!UtilsValidation.inputsPopulated({data: {
           firstName: formValues.firstName,
-          surName: formValues.lastName,
+          lastName: formValues.lastName,
           emailAddress: formValues.emailAddress,
           mobileNumber: formValues.mobileNumber,
           code: codeValue
@@ -144,7 +147,6 @@ const ScreenAdminClientAdd = ({navigation}) => {
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
         }
-        
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
         const formValuesForSubmit = ({
@@ -180,7 +182,6 @@ const ScreenAdminClientAdd = ({navigation}) => {
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
           return
         }
-
         const sendInviteEmailToCustomer = async () => {
           setLoading(true)
           try{
@@ -190,8 +191,8 @@ const ScreenAdminClientAdd = ({navigation}) => {
               fromEmailNameTemplate: 'adminStandard',
               fromEmail: 'adminStandard',
               recipient: formValues.emailAddress,
-              mergeFieldsArray: [{
-                field: '%firstName%', 
+              mergeFieldsArray: [
+                {field: '%firstName%', 
                 value: formValues.firstName}, 
                 {field: '%inviteCode%', 
                 value: codeValue}]
@@ -205,18 +206,53 @@ const ScreenAdminClientAdd = ({navigation}) => {
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
-
+          }
+        }
+        const sendEmailToClient = async () => {
+          Alert.alert('Client Added', 'Would you like to send an email notification?', [
+            {
+              text: 'No',
+              style: 'cancel',
+              onPress: () => {
+                setLoading(false)
+                UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client added', icon:'ios-checkmark'}})
+                return
+              }
+            },
+            {
+              text: 'Yes', 
+              onPress: () => {
+                sendInviteEmailToCustomer()
+                setLoading(false)
+              }
+            },
+          ])
+        }
+        const resetGroupsSelected = () => {
+          const keys = Object.keys(groups).filter(key => groups[key].selected)
+          for(let key of keys){
+            setGroups(prevState => ({
+              ...prevState,
+              [key] : {
+                ...prevState[key],
+                  selected : false
+                }
+            }))
           }
         }
         //ask user if they would like to notify user
-        Alert.alert('Client Added', 'Would you like to send an email notification?', [
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-          {text: 'Yes', onPress: () => {sendInviteEmailToCustomer()}},
-        ])
-
+        setLoading(true)
+        await sendEmailToClient()
+        //clear the form fields
+        await UtilsHelpers.clearFormValuesObject({setFunction: setFormValues, object: formValues})
+        //reset the code field value
+        setCodeValue('')
+        //reset all group components selected to false
+        await resetGroupsSelected()
+        //scroll the form to top on completion
+        UtilsHelpers.scrollToTop({animated: true, ref: formRef})
+        //Set focus to first form field
+        UtilsHelpers.nextFormFocus({ref: firstFormFieldRef})
         setLoading(false)
     }
     return (
@@ -226,9 +262,9 @@ const ScreenAdminClientAdd = ({navigation}) => {
             <View style={styles.container}>
                 <ComponentAdminTitle title={'ADD CLIENT'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} />}
-                  <ScrollView style={styles.form}>
+                  <ScrollView style={styles.form} ref={formRef}>
                     <Text style={styles.subTitle}>PERSONAL DETAILS</Text>
-                    <ComponentAdminInput placeholder={'Enter first name...'} label={'FIRST NAME'} value={formValues.firstName} onChangeText={newValue => updateFormFields(newValue, 'firstName')} />
+                    <ComponentAdminInput placeholder={'Enter first name...'} label={'FIRST NAME'} value={formValues.firstName} onChangeText={newValue => updateFormFields(newValue, 'firstName')} inputRef={firstFormFieldRef} />
                     <ComponentAdminInput placeholder={'Enter last name...'} label={'LAST NAME'} value={formValues.lastName} onChangeText={newValue => updateFormFields(newValue, 'lastName')} />
                     <ComponentAdminInput placeholder={'Enter email address...'} label={'EMAIL ADDRESS'} value={formValues.emailAddress} onChangeText={newValue => updateFormFields(newValue, 'emailAddress')} />
                     <ComponentAdminInput placeholder={'Enter mobile number...'} label={'MOBILE NUMBER'} value={formValues.mobileNumber} onChangeText={newValue => updateFormFields(newValue, 'mobileNumber')} />
@@ -243,7 +279,6 @@ const ScreenAdminClientAdd = ({navigation}) => {
                     <ComponentAdminCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
                     <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm()}} />
                     <ComponentAppSpacerView height={120} />
-
                   </ScrollView>
             </View>
       </>

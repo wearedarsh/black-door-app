@@ -1,15 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 //style
 import { colors } from '../../assets/style/theme'
 //icons
 import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAdminListItem = (props) => {
-    const { title = 'SET TITLE PROP', onPress=()=>{}} = props
+    const { title = 'SET TITLE PROP', onPress=()=>{}, status} = props
+    let icon = ''
+    let style = {}
+    switch(status){
+      case 'email-sent':
+      icon = 'mail'
+      break 
+    }
   return (
     <TouchableOpacity style={styles.listItem} onPress={onPress}>
-        <Text style={styles.title}>{title}</Text>
+       <View style={styles.row}>{icon && <Ionicons name={icon} size={16} color={colors.slate} style={{marginRight:8}} />}<Text style={styles.title}>{title}</Text></View>
         <Ionicons name="chevron-forward" size={32} color={colors.gold} />
     </TouchableOpacity>
   );
@@ -32,6 +39,10 @@ const styles = StyleSheet.create({
         fontFamily: 'primary-medium',
         letterSpacing: 2,
         paddingLeft: Platform.OS === 'ios' ? 2 : 0
+      },
+      row:{
+        flexDirection: 'row',
+        alignItems: 'center'
       }
       
 });

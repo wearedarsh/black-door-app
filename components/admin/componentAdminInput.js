@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, Text, TextInput, Platform } from 'react-native'
 //style
 import { colors } from '../../assets/style/theme'
 
 const ComponentAdminInput = (props) => {
-    const { label = 'SET LABEL PROP', multiline = false, numberoflines = 1, placeholder = 'Set placeholder prop...', value = '',  onChangeText = null, height = 48 } = props
+    const { inputRef, label = 'SET LABEL PROP', multiline = false, numberoflines = 1, placeholder = 'Set placeholder prop...', value = '',  onChangeText = null, height = 48 } = props
     return (
             <>
             <Text style={styles.label}>{label}</Text>
-            <TextInput style={{...styles.input, height: height}} placeholder={placeholder} value={value} numberoflines={numberoflines} onChangeText={onChangeText} multiline={multiline} />
+            <TextInput ref={inputRef ? inputRef : null} style={{...styles.input, height: height}} placeholder={placeholder} value={value} numberoflines={numberoflines} onChangeText={onChangeText} multiline={multiline} />
             </>
     );
 };

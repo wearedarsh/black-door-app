@@ -36,8 +36,9 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     }
     //firestore listener
     useEffect(() => {
+      setLoading(true)
       const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-          setLoading(true)
+          
           const groupsArray = snapshot.docs.map((doc) => ({
             id: doc.id,
             docData: doc.data()

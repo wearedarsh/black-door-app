@@ -30,7 +30,6 @@ const ScreenAuthFlow = () => {
             const fetchGroups = async () => {
                 //assign query
                 const db = getFirestore(app)
-                
                 const collectionRef = collection(db, 'groups')
                 const orderByRef = orderBy("order", "asc")
                 const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
@@ -44,9 +43,7 @@ const ScreenAuthFlow = () => {
                             title: data.title
                         }
                     })
-
                 dispatch(setGroups({groups: tempData}))
-
                 }catch(error){
                     //catch error here
                     console.log(error)
@@ -55,7 +52,6 @@ const ScreenAuthFlow = () => {
             fetchGroups()
         }
     }, [])
-
     return (
         <NavigationContainer>
             <StatusBar barStyle="light-content" />
