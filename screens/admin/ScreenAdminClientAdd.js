@@ -36,10 +36,10 @@ const ScreenAdminClientAdd = ({navigation}) => {
     const [feedback, setFeedback] = useState(false)
     //initialise form fields
     const [formValues, setFormValues] = useState({
-      firstName: '',
-      lastName: '',
-      emailAddress: '',
-      mobileNumber: '',
+      firstName: 'Porky',
+      lastName: 'Windsford',
+      emailAddress: 'porky@wearedarsh.com',
+      mobileNumber: '07812036791',
       status: 1,
       groups:[],
       emailOptIn: true,
@@ -55,6 +55,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
     //local variables 
     const formRef = useRef()
     const firstFormFieldRef = useRef()
+    let userKey
     //update groups selected value
     const updateGroupSelected = (key) => {
       setGroups(prevState => ({
@@ -126,33 +127,41 @@ const ScreenAdminClientAdd = ({navigation}) => {
           code: codeValue
         }})){
           setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
+          UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
           return
         }
         //check email address correct format
         if(!UtilsValidation.isEmail({email: formValues.emailAddress})){
           setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
+          UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
           return
         }
         //check if code exists in code management
         try{
-          const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
-          if(response){
+          const codeExists = await UtilsCodeManagement.checkCodeExists({code: codeValue})
+          if(codeExists.exists){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This code is already in use', icon:'ios-warning'}})
+            return
+          }
+          if(codeExists.error){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:codeExists.error, icon:'ios-warning'}})
             return
           }
         }catch(error){
           setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
+          UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
+          return
         }
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
+        //encrypt code for inserting
+        const encryptedCode = UtilsEncryption.encrypt(codeValue)
         const formValuesForSubmit = ({
           ...formValues,
           groups: selectedGroups,
-          code: UtilsEncryption.encrypt(codeValue)
+          code: encryptedCode
         })
         //try to add client to firestore
         try{
@@ -160,9 +169,12 @@ const ScreenAdminClientAdd = ({navigation}) => {
           const response = await UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
           if(response.error){
               setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+              UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
               return
-          }  
+          }else{
+            //get user document key to add to the code config file
+            userKey = response.key
+          }
         }catch(error){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
@@ -171,7 +183,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
         //add code to config file
         try{
           setLoading(true)
-          const response = UtilsCodeManagement.addCodeToConfig({ code:codeValue })
+          const response = await UtilsCodeManagement.addCodeToConfig({ encryptedCode:encryptedCode, userKey: userKey})
           if(response.error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})

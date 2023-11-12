@@ -77,14 +77,17 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
         }
         //add authkey to user on firestore
         try{
-            console.log('ive got this far')
-            const responseAuth = await UtilsFirestore.setDocument({currentCollection: 'clients', data: {authId: userAuthId}, key: userKey})
+            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {authId: userAuthId}, key: userKey})
             if(responseAuth.error){
                 setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})
                 return   
+            }else{
+                setLoading(false)
+                navigation.navigate('ScreenLoginEnterDetails', {feedback: 'Account successfully created, please log in'})
             }
         }catch(error){
+            console.log(error)
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
             return

@@ -1,5 +1,5 @@
 import { app } from '../config/configFirebase'
-import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -7,8 +7,8 @@ const UtilsFirestore = {
     addDocument: async function(payload){
         const { currentCollection, data } = payload
         try{
-            const collectionRef = collection(db, currentCollection);
-            const response = await addDoc(collectionRef, data);
+            const collectionRef = collection(db, currentCollection)
+            const response = await addDoc(collectionRef, data)
             return { response: response, key: response.id}
         }catch(error){
             return {error: error}
@@ -18,8 +18,18 @@ const UtilsFirestore = {
         const { currentCollection, data, key } = payload
         try{
             const docRef = doc(db, currentCollection, key)
-            const response = setDoc(docRef, data)
-            return response
+            const response = await setDoc(docRef, data)
+            return { success: true, message: 'document set successfully'}
+        }catch(error){
+            return { error: error }
+        }
+    },
+    updateDocumentByKey: async function(payload){
+        try{
+            const { currentCollection, data, key } = payload
+            const docRef = doc(db, currentCollection, key)
+            const response = await updateDoc(docRef, data)
+            return { success: true, message: 'document updated successfully'}
         }catch(error){
             return { error: error }
         }

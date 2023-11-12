@@ -26,29 +26,31 @@ const ScreenOnboardEnterCode = ({navigation}) => {
         setLoading(true)
         //check code exists in live codes table
         try{
-            const userKey = await UtilsCodeManagement.checkCodeExists({code: codeValue})
+            const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
             //if yes then 
-            if(userKey.error){
+            if(response.error){
                 setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userKey.error, icon:'ios-warning'}})
                 return
-            }else{
-                if(userKey){
+            }else if(response.userKey){
+                    const { userKey } = response
                     //grab the user details and pass the data through root params to next screen
                     const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey})
                     if(!userDetails.error){
                         setLoading(false)
-                        navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, key: userKey})
+                        navigation.navigate('ScreenOnboardPushPermission', {clientData: userDetails, userKey: userKey})
                         return
                     }else{
+                        setLoading(false)
                         UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDetails.error, icon:'ios-checkmark'}})
+                        return
                     }
-                }else{
+            }else{
                     setLoading(false)
                     UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Invalid Code', icon:'ios-warning'}})
                     return
-                }
             }
+            
         }catch(error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
