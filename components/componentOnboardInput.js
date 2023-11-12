@@ -5,13 +5,12 @@ import { colors } from '../assets/style/theme'
 
 
 const ComponentOnboardInput = (props) => {
-    const { label, value } = props
+    const { label, value, onChangeText } = props
     return (
         <View style={styles.container}>
             <Text style={styles.label}>{label}</Text>
-            <TextInput style={styles.input} value={value} />
+            <TextInput style={styles.input} value={value} onChangeText={onChangeText} />
         </View>
-
     )
 }
 

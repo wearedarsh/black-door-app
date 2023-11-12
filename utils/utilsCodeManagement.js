@@ -3,18 +3,27 @@ import UtilsEncryption from './utilsEncryption'
 
 const UtilsCodeManagement = {
     checkCodeExists: async function(payload){
-        const { code } = payload
+        const { code, expectedLength = 4 } = payload
+        //check code is not empty
+        if(code == ''){
+            return {error: 'Please enter your code'}
+        }
+        //check code is expected length
+        if(code.length != expectedLength){
+            return {error: `Please enter ${expectedLength} characters`}
+        }
         try{
             //get codes config document from firestore
             const codesDocument = await UtilsFirestore.getDocumentByKey({currentCollection: 'config', key: 'inviteCodes'})
             //if no error fecthing the document
             if(!codesDocument.error){
                 //get encrypted codes array from document
-                const encryptedCodes = codesDocument.codes
+                const encryptedCodesArray = Object.keys(codesDocument)
+                
                 //loop through and see if code exists
-                for(let encryptedCode of encryptedCodes){
+                for(let encryptedCode of encryptedCodesArray){
                     if(UtilsEncryption.decrypt(encryptedCode) == code){
-                        return true
+                        return codesDocument[encryptedCode]
                     }
                 }
                 //if code does nto exist return false

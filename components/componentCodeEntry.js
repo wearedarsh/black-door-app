@@ -12,23 +12,23 @@ import {
 
 
 
-const ComponentCodeEntry = () => {
-    const codeLength = 4
+const ComponentCodeEntry = (props) => {
+    const { codeLength = 4, codeValue = '', setCodeValue = () => {} } = props
     const [value, setValue] = useState('')
     const ref = useBlurOnFulfill({value, cellCount: codeLength});
-    const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-        value,
-        setValue,
+    const [propsForClearFocusCell, getCellOnLayoutHandler] = useClearByFocusCell({
+        value: codeValue,
+        setValue: setCodeValue,
     });
     
 
     return (
         <CodeField
         ref={ref}
-        {...props}
+        {...propsForClearFocusCell}
         // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
-        value={value}
-        onChangeText={setValue}
+        value={codeValue}
+        onChangeText={setCodeValue}
         cellCount={codeLength}
         rootStyle={styles.codeFieldRoot}
         keyboardType="number-pad"
@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 32,
         fontFamily: 'primary-regular',
-        color: colors.white
+        color: colors.white,
+        justifyContent: 'center'
       }
 })
 

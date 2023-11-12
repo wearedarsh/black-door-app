@@ -7,16 +7,16 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 
 
 const ComponentOnboardPasswordInput = (props) => {
-    const { label = 'PASSWORD', value = '', information = 'PASSWORD MUST BE A MINIMUM OF 8 CHARACTERS AND CONTAIN AT LEAST ONE NUMBER' } = props
+    const { label = 'PASSWORD', value = '', information = 'PASSWORD MUST BE A MINIMUM OF 8 CHARACTERS AND CONTAIN AT LEAST ONE NUMBER', onChangeText } = props
     const [showPassword, setShowPassword] = useState(false)
 
     return (
         <View style={styles.holder}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.container}>
-                <TextInput style={styles.input} value={value} secureTextEntry={!showPassword} />
+                <TextInput style={styles.input} value={value} secureTextEntry={!showPassword} onChangeText={onChangeText} />
                 <View style={styles.passwordBtn}>
-                    <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={32} color={colors.white} onPress={()=>setShowPassword(!showPassword)} />
+                    <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={32} color={colors.gold} onPress={()=>setShowPassword(!showPassword)} />
                 </View>
             </View>
             <Text style={styles.information}>{information}</Text>

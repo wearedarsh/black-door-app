@@ -1,7 +1,10 @@
 import { app } from '../config/configFirebase'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import { getAuth, initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getReactNativePersistence } from "firebase/auth"
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
 
-const auth = getAuth(app)
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+})
 
 const UtilsFirebaseAuth = {
     createAuthUser: async function(payload){
@@ -26,11 +29,9 @@ const UtilsFirebaseAuth = {
         }
     },
     checkAuthUser: async function(payload){
-        //{ PAYLOAD }
         const { email, password } = payload
         try{
             const response = await signInWithEmailAndPassword(auth, email, password)
-            //{ RESPONSE PAYLOAD }
             return {uid: response.user.uid, idToken:response._tokenResponse.idToken}
         }catch(error){
             let errorMessage
@@ -45,7 +46,6 @@ const UtilsFirebaseAuth = {
             }else {
                 errorMessage = `There has been a problem logging in, please try again ${error.code}`  
             }
-            //{ ERROR PAYLOAD }
             return {error: errorMessage}
         }
     },

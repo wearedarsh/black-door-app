@@ -18,14 +18,16 @@ const UtilsValidation = {
         }
     },
     isValidPassword: function(payload){
-        const { password } = payload
+        const { password, length = 8 } = payload
          
-        if (password.trim().length < 8) {
-            return {error: 'Please enter a password that is 8 characters or more'}
+        if (password.trim().length < length) {
+            return {error: `Please enter a password that is ${length} characters or longer`}
         }
-
         if (/\s/g.test(password.trim())) {
             return {error: 'Password cannot contain spaces'}
+        }
+        if (!/\d/.test(password)) {
+            return {error: 'Password must contain at least one number'}
         }
         
           // Check for at least one uppercase letter
@@ -47,7 +49,7 @@ const UtilsValidation = {
           // if (!/[!@#$%&*]/.test(password)) {
           //   return false;
           // }
-          return {isValid: true}
+          return true
     },
     inputsPopulated: function(payload){
         const { data } = payload

@@ -21,8 +21,8 @@ const Stack = createNativeStackNavigator()
 const ScreenAuthFlow = () => {
     //redux 
     const dispatch  = useDispatch()
-    const isAuthenticated = true;
-    const isAdmin = true;
+    const isAuthenticated = false;
+    const isAdmin = false;
     //fetch relevant documents from firestore
     useEffect(() => {
         if(isAdmin){

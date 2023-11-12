@@ -8,7 +8,6 @@ import ScreenAppViewings from '../app/ScreenAppViewings'
 import ScreenAppPropertyView from '../app/ScreenAppPropertyView'
 //components
 import ComponentAppTabItem from '../../components/componentAppTabItem'
-
 //colors
 import { colors } from '../../assets/style/theme'
 //navigation
@@ -19,8 +18,6 @@ const Tabs = createBottomTabNavigator()
 import { Ionicons } from '@expo/vector-icons'
 
 const StackApp = () => {
-
-    
     return (
         <>
         <Tabs.Navigator 
@@ -83,8 +80,7 @@ const StackApp = () => {
               }}   
             />
             </Tabs.Navigator>
-            </>
-            
+            </> 
     )
 }
 
