@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {View, StyleSheet, ImageBackground, ScrollView, Modal } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //components
 import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentOnboardInput from '../../components/componentOnboardInput'
@@ -60,43 +61,14 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
             return
         }
-        //if ok then create a firebase auth user
-        try{
-            const response = await UtilsFirebaseAuth.createAuthUser({email: formValues.emailAddress, password: formValues.password})
-            if(response.error){
-                setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
-                return   
-            }else{
-                userAuthId = response
-            }
-        }catch(error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
-            return
-        }
-        //add authkey to user on firestore
-        try{
-            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {authId: userAuthId}, key: userKey})
-            if(responseAuth.error){
-                setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})
-                return   
-            }else{
-                setLoading(false)
-                navigation.navigate('ScreenLoginEnterDetails', {feedback: 'Account successfully created, please log in'})
-            }
-        }catch(error){
-            console.log(error)
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
-            return
-        }
+        //if checks are ok, move to push permission and pass all vars ready for submit
+        navigation.navigate('ScreenOnboardPushPermission', {key: userKey, formValues: formValues})
+       
 
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
             {loading && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppLoadingIndicator /></View></Modal>}
             {feedback && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppFeedback title={feedback.title} icon={feedback.icon} /></View></Modal>}
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
@@ -118,7 +90,7 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
                     </View>
                 </View>
             </ImageBackground>
-        </ScrollView>
+        </KeyboardAwareScrollView>
     )
 }
 

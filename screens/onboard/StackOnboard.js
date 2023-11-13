@@ -4,6 +4,7 @@ import ScreenOnboardEnterCode from '../onboard/ScreenOnboardEnterCode'
 import ScreenOnboardHome from '../onboard/ScreenOnboardHome'
 import ScreenOnboardCheckDetails from '../onboard/ScreenOnboardCheckDetails'
 import ScreenOnboardGDPR from '../onboard/ScreenOnboardGDPR'
+import ScreenOnboardPushPermission from '../onboard/ScreenOnboardPushPermission'
 import ScreenLoginEnterDetails from '../login/ScreenLoginEnterDetails'
 import ScreenLoginForgottenPassword from '../login/ScreenLoginForgottenPassword'
 //navigation
@@ -19,6 +20,7 @@ const StackOnboard = () => {
                 <Stack.Screen name="ScreenOnboardEnterCode" component={ScreenOnboardEnterCode} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenOnboardCheckDetails" component={ScreenOnboardCheckDetails} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenOnboardGDPR" component={ScreenOnboardGDPR} options={{headerShown: false}} />
+                <Stack.Screen name="ScreenOnboardPushPermission" component={ScreenOnboardPushPermission} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenLoginEnterDetails" component={ScreenLoginEnterDetails} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenLoginForgottenPassword" component={ScreenLoginForgottenPassword} options={{headerShown: false}} />
             </Stack.Navigator>

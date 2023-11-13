@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import {View, TouchableOpacity, Text, StyleSheet, ImageBackground, Modal } from 'react-native'
+import {View, Keyboard, TouchableOpacity, Text, StyleSheet, ImageBackground, Modal, Platform } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //components
 import ComponentCodeEntry from '../../components/componentCodeEntry'
 import ComponentHeroTitle from '../../components/componentHeroTitle'
@@ -22,15 +23,16 @@ const ScreenOnboardEnterCode = ({navigation}) => {
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const verifyCode = async () => {
+    const verifyCode = async (code) => {
+        
         setLoading(true)
         //check code exists in live codes table
         try{
-            const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
+            const response = await UtilsCodeManagement.checkCodeExists({code: code})
             //if yes then 
             if(response.error){
                 setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userKey.error, icon:'ios-warning'}})
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }else if(response.userKey){
                     const { userKey } = response
@@ -38,7 +40,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                     const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey})
                     if(!userDetails.error){
                         setLoading(false)
-                        navigation.navigate('ScreenOnboardPushPermission', {clientData: userDetails, userKey: userKey})
+                        navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userKey})
                         return
                     }else{
                         setLoading(false)
@@ -50,16 +52,12 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                     UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Invalid Code', icon:'ios-warning'}})
                     return
             }
-            
         }catch(error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
             return
         }
-
     }
-
-
     return (
         <View style={styles.container}>
             {loading && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppLoadingIndicator /></View></Modal>}
@@ -67,13 +65,14 @@ const ScreenOnboardEnterCode = ({navigation}) => {
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
                 <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardHome')}}/>
                 
-                <View style={{flex:8, justifyContent: 'center'}}>
-                    <ComponentHeroTitle title="ENTER YOUR VIP ACCESS CODE" style={{marginVertical:48}} />
-                    <ComponentCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
-                </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                    <KeyboardAwareScrollView contentContainerStyle={{flex:1, justifyContent: 'center'}}>
+                        <ComponentHeroTitle title="ENTER YOUR VIP ACCESS CODE" style={{marginVertical:48}} />
+                        <ComponentCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} fulfillFunction={verifyCode} />
+                    </KeyboardAwareScrollView>
+                
+                {/* <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="VERIFY CODE" onPress={()=>{verifyCode()}} />  
-                </View>
+                </View> */}
             </ImageBackground>
         </View>
     )

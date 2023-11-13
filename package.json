@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@babel/traverse": "^7.23.3",
     "@react-native-async-storage/async-storage": "^1.19.5",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
@@ -18,7 +19,9 @@
     "expo": "~49.0.8",
     "expo-blur": "~12.4.1",
     "expo-constants": "^14.4.2",
+    "expo-device": "~5.4.0",
     "expo-linear-gradient": "~12.3.0",
+    "expo-notifications": "~0.20.1",
     "expo-status-bar": "~1.6.0",
     "firebase": "^10.3.0",
     "react": "18.2.0",
@@ -26,6 +29,7 @@
     "react-native-async-storage": "^0.0.1",
     "react-native-confirmation-code-field": "^7.3.1",
     "react-native-crypto-js": "^1.0.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-redux": "^8.1.2"
   },
   "devDependencies": {

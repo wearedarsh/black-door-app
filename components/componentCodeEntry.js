@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {View, Text, StyleSheet } from 'react-native'
+import {View, Text, StyleSheet, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
 //style
 import { colors } from '../assets/style/theme'
 //components
@@ -13,39 +13,53 @@ import {
 
 
 const ComponentCodeEntry = (props) => {
-    const { codeLength = 4, codeValue = '', setCodeValue = () => {} } = props
+    const { codeLength = 4, codeValue = '', setCodeValue = () => {}, fulfillFunction = () => {} } = props
     const [value, setValue] = useState('')
     const ref = useBlurOnFulfill({value, cellCount: codeLength});
     const [propsForClearFocusCell, getCellOnLayoutHandler] = useClearByFocusCell({
-        value: codeValue,
-        setValue: setCodeValue,
+        value,
+        setValue,
     });
+
+    const handleFulfill = (code) => {
+      if(code.length === codeLength){
+        Keyboard.dismiss
+       fulfillFunction(code)
+      }
+    }
     
 
     return (
-        <CodeField
-        ref={ref}
-        {...propsForClearFocusCell}
-        // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
-        value={codeValue}
-        onChangeText={setCodeValue}
-        cellCount={codeLength}
-        rootStyle={styles.codeFieldRoot}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        renderCell={({index, symbol, isFocused}) => (
-          <Text
-            key={index}
-            style={[styles.codeInputCell, isFocused && styles.focusCell]}
-            onLayout={getCellOnLayoutHandler(index)}>
-            {symbol || (isFocused ? <Cursor /> : null)}
-          </Text>
-        )}
-      />
+          <CodeField
+          ref={ref}
+          {...propsForClearFocusCell}
+          // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+          value={value}
+          onChangeText={(code) => {
+            setValue(code)
+            handleFulfill(code)
+            }
+          }
+          cellCount={codeLength}
+          rootStyle={styles.codeFieldRoot}
+          keyboardType="number-pad"
+
+          renderCell={({index, symbol, isFocused}) => (
+            <Text
+              key={index}
+              style={[styles.codeInputCell, isFocused && styles.focusCell]}
+              onLayout={getCellOnLayoutHandler(index)}>
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
+          )}
+        />
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
     codeFieldRoot: {
         paddingHorizontal: 32
     },

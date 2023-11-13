@@ -28,7 +28,7 @@ const UtilsFirebaseAuth = {
             return { error: errorMessage }
         }
     },
-    checkAuthUser: async function(payload){
+    signInUser: async function(payload){
         const { email, password } = payload
         try{
             const response = await signInWithEmailAndPassword(auth, email, password)
