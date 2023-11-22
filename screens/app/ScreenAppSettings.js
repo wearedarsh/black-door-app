@@ -7,30 +7,28 @@ import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
 import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader'
 import ComponentAppTitle from '../../components/componentAppTitle'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
-//email stuff
-import UtilsEmail from '../../utils/utilsEmail'
-import ConfigEmail from '../../config/configEmail'
+//utils
+import UtilsSecureStorage from '../../utils/utilsSecureStorage'
+//redux
+import { removeUserAuth } from '../../redux/actions/actionUserAuth'
+import { setLoading } from '../../redux/actions/actionLoading'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ScreenAppSettings = () => {
+    //redux
+    const dispatch = useDispatch()
+    const loading = useSelector(state => state.loadingState.loading)
+    //log out function
+    const logOut = async () => {
+        dispatch(setLoading({loading: true}))
+        //remove from securestorage
+        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authToken'})
+        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authDoc'})
+        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authIsAdmin'})
+        //clear state
+        dispatch(setLoading({loading: false}))
+        dispatch(removeUserAuth())
 
-    const testEmailStuff = async () => {
-        try{
-            const response = await UtilsEmail.sendSingleTemplateEmail({
-                emailSubjectTemplate: 'invite', 
-                fromEmailNameTemplate: 'adminStandard', 
-                fromEmail: 'harley@wearedarsh.com',
-                recipient: 'info@wearedarsh.com', 
-                mergeFieldsArray: [{field: '%firstName%', value: 'Tom'},{field: '%inviteCode%',value: '4345'}], 
-                emailContentTemplate: 'invite'
-            })
-            if(!response.error){
-                console.log('I am sending an email')
-            }else{
-                console.log('I have tried to send but I cant: ' + response.error)
-            }
-        }catch(error){
-            console.log(error)
-        }
     }
 
     return(
@@ -40,8 +38,8 @@ const ScreenAppSettings = () => {
             <ComponentAppTitle title={'SETTINGS'} />
                 
                 <View style={styles.form}>
-                    <ComponentAppBtnPrimary  label="CHANGE PASSWORD" onPress={()=>{testEmailStuff()}} />
-                    <ComponentAppBtnSecondary  label="LOG OUT" iconName={'exit-outline'} />
+                    <ComponentAppBtnPrimary  label="CHANGE PASSWORD" onPress={()=>{}} />
+                    <ComponentAppBtnSecondary  label="LOG OUT" iconName={'exit-outline'} onPress={logOut} />
                     
                 </View>
             </View>

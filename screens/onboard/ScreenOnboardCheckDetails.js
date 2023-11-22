@@ -15,6 +15,9 @@ import { colors } from '../../assets/style/theme'
 import UtilsValidation from '../../utils/utilsValidation'
 import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
 import UtilsFirestore from '../../utils/utilsFirestore'
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoading } from '../../redux/actions/actionLoading'
 
 
 const ScreenOnboardCheckDetails = ({navigation, route}) => {
@@ -30,7 +33,6 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
         password: '',
         code
     })
-    const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
     //update form fields
     const updateFormFields = (string, key) => {
@@ -45,30 +47,33 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:message, icon:'ios-warning'}})
         }
     }, [])
-
+    //local variables
     let userAuthId
+    //redux
+    const dispatch = useDispatch()
+    const loading = useSelector(state => state.loadingState.loading)
 
     const confirmDetails = async () => {
-        setLoading(true)
+        dispatch(setLoading({loading: true}))
         //check all fields are populated
         if(!UtilsValidation.inputsPopulated({data: formValues})){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 2000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
         }
         //check email address is correct format
         if(!UtilsValidation.isEmail({email: formValues.emailAddress})){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 2000, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
             return
           }
         //check password valid
         const response = await UtilsValidation.isValidPassword({password: formValues.password})
         if(response.error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 2000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
             return
         }
-        setLoading(false)
+        dispatch(setLoading({loading: false}))
         //if checks are ok, move to push permission and pass all vars ready for submit
         navigation.navigate('ScreenOnboardPushPermission', {userKey: userKey, formValues: formValues})
     }

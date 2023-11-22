@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, ScrollView, Text, Alert } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 //custom
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //utils
@@ -29,6 +28,9 @@ import { getFirestore, collection, orderBy, limit, query, getDocs } from "fireba
 //styles
 import { colors } from '../../assets/style/theme'
 import { setGroups } from '../../redux/actions/actionGroups'
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoading } from '../../'
 
 const ScreenAdminClientAdd = ({navigation}) => {
     //local state
@@ -189,7 +191,8 @@ const ScreenAdminClientAdd = ({navigation}) => {
           const response = await UtilsCodeManagement.addCodeToConfig({ encryptedCode:encryptedCode, userKey: userKey})
           if(response.error){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 5000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+            console.log(response.error)
             return
           }
         }catch(error){

@@ -14,8 +14,15 @@ import ComponentAppLoadingIndicator from '../../components/componentAppLoadingIn
 import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader'
 //utils
 import UtilsValidation from '../../utils/utilsValidation'
+import UtilsFirestore from '../../utils/utilsFirestore'
+import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
+import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 //style
 import { colors } from '../../assets/style/theme'
+//redux
+import { useDispatch, useSelector } from 'react-redux'
+import { setUserAuth } from '../../redux/actions/actionUserAuth'
+import { setLoading } from '../../redux/actions/actionLoading'
 
 
 const ScreenLoginEnterDetails = ({navigation, route}) => {
@@ -23,7 +30,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
     const { message = '' } = route.params ?? {}
     //localstate
     const [feedback, setFeedback] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const loading = useSelector(state => state.loadingState.loading)
     //check to see if message passed
     useEffect(() => {
         if(message){
@@ -42,12 +49,87 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
           [key]: string
         }))
     }
+    //redux
+    const dispatch = useDispatch()
+    const userAuthState = useSelector(state => state.userAuthState)
 
-    const formSubmit = () => {
+    const formSubmit = async () => {
+        await dispatch(setLoading({loading: true}))
+        let authId
+        let authToken
+        let userDoc
+        let isAdmin
         //check both fields are populated
-
-
-
+        try{
+            const formPopulated  = await UtilsValidation.inputsPopulated({data: formValues})
+            if(!formPopulated){
+                await dispatch(setLoading({loading: false}))
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter your email and password', icon:'ios-warning'}})
+                return
+            }
+        }catch(error){
+            await dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        //check authentication and try to sign in user
+        try{
+            const response = await UtilsFirebaseAuth.signInUser({email: formValues.emailAddress, password: formValues.password})
+            if(response.error){
+                await dispatch(setLoading({loading: false}))
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+                return
+            }else{
+                authId = response.uid
+                authToken = response.idToken
+            }
+        }catch(error){
+            await dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        //request doc from firestore
+        try{
+            const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'clients', fieldName: 'authId', fieldValue: authId})
+            if(response.error){
+                await dispatch(setLoading({loading: false}))
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+                return
+            }else{
+                userDoc = response.docData
+                console.log(userDoc)
+            }
+        }catch(error){
+            await dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        //check to see if admin 
+        if(userDoc.isAdmin){
+            isAdmin = true
+        }else{
+            isAdmin = false
+        }
+        //add userDoc, authToken and admin to secure storage
+        try{
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authToken', value: authToken})
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authDoc', value: JSON.stringify(userDoc)})
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authIsAdmin', value: isAdmin ? 'true' : 'false' })
+            
+        }catch(error){
+            await dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        //add userDoc, authToken and admin to redux state
+        try{
+            await dispatch(setLoading({loading: false}))
+            await dispatch(setUserAuth({authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
+        }catch(error){
+            await dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
     }
 
     return (
@@ -57,7 +139,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
             <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardHome')}} />
                 <View style={{flex:8, justifyContent: 'flex-start', marginTop:128}}>
-                    <ComponentHeroTitle title="WELCOME BACK" style={{marginVertical:48}} />
+                    <ComponentHeroTitle title="ENTER YOUR DETAILS" style={{marginVertical:48}} />
                     <View style={styles.form}>
                         <ComponentOnboardInput label="EMAIL ADDRESS" value={formValues.emailAddress} onChangeText={newValue => updateFormFields(newValue, 'emailAddress')} />
                         <ComponentOnboardPasswordInput information={''} value={formValues.password} onChangeText={newValue => updateFormFields(newValue, 'password')} />
@@ -65,7 +147,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
                     </View>
                 </View>
                 <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <ComponentOnboardSubmitBtn label="LOG IN" onPress={()=>{navigation.navigate('ScreenAppHome')}} />
+                    <ComponentOnboardSubmitBtn label="LOG IN" onPress={formSubmit} />
                 </View>
             </ImageBackground>
         </KeyboardAwareScrollView>
@@ -77,6 +159,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.slate,
         alignItems: 'center',
         justifyContent: 'center',
+        flex:1
     },
     forgotten: {
         width:'100%',

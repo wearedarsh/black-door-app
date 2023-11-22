@@ -7,7 +7,7 @@ export default UtilsSecureStorage = {
         try{
             await SecureStore.setItemAsync(key, value)
         }catch(error){
-            console.log('There has been an error secure storage : ' + error)
+            return { error: error.message }
         }
     },
     fetchFromSecureStorage: async function(payload){
@@ -16,8 +16,7 @@ export default UtilsSecureStorage = {
             const value = await SecureStore.getItemAsync(key)
             return value 
         }catch(error){
-            console.log('There has been an error secure storage : ' + error)
-            return null
+            return { error: error.message }
         }
     },
     removeFromSecureStorage: async function(payload){
@@ -25,8 +24,7 @@ export default UtilsSecureStorage = {
         try{
             const value = await SecureStore.deleteItemAsync(key)
         }catch(error){
-            console.log('There has been an error secure storage : ' + error)
-            return null
+            return { error: error.message }
         }
     } 
 }

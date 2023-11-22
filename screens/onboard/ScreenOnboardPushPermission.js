@@ -17,6 +17,9 @@ import Constants from 'expo-constants'
 import * as Device from 'expo-device'
 //style
 import { colors } from '../../assets/style/theme'
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoading } from '../../redux/actions/actionLoading'
 
 
 const ScreenOnboardPushPermission = ({navigation, route}) => {
@@ -29,9 +32,10 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
     //local state
     const [pushConfirm, setPushConfirm] = useState(true)
     const [emailConfirm, setEmailConfirm] = useState(true)
-    const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
-
+    //redux
+    const dispatch = useDispatch()
+    const loading = useSelector(state => state.loadingState.loading)
     //push notifications register
     const registerForPushNotifications = async () => {
         
@@ -64,13 +68,13 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
     }
 
     const createUserAccount = async () => {
-        setLoading(true)
+        dispatch(setLoading({loading: true}))
         //first check to see if user has allowed push notifications
         if(pushConfirm){
             try{
                 const response = await registerForPushNotifications()
                 if(response.error){
-                    setLoading(false)
+                    dispatch(setLoading({loading: false}))
                     UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                     return
                 }else{
@@ -81,8 +85,8 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                     }
                 }
             }catch(error){
-                setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+                dispatch(setLoading({loading: false}))
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
                 return
             }
         }
@@ -97,7 +101,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
         try{
             const response = await UtilsFirebaseAuth.createAuthUser({email: formValues.emailAddress, password: formValues.password})
             if(response.error){
-                setLoading(false)
+                dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return   
             }else{
@@ -112,43 +116,39 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                 delete clientData.password
             }
         }catch(error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
         //add authkey to user on firestore
         try{
             const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {...clientData}, key: userKey})
             if(responseAuth.error){
-                setLoading(false)
+                dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})
                 return   
             }
 
         }catch(error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
         //remove code from codes document
         try{
-            console.log(clientData.code)
             const response = await UtilsFirestore.removeFieldFromDocument({currentCollection: 'config', key: 'inviteCodes', field: clientData.code})
             if(response.error){
-                console.log('I have an error removing code')
-                console.log('this is my error: ' + response.error)
-                setLoading(false)
+                dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }
         }catch(error){
-            console.log('this is my catch error: ' + error)
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+            dispatch(setLoading({loading: false}))
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
 
-        setLoading(false)
+        dispatch(setLoading({loading: false}))
         navigation.navigate('ScreenLoginEnterDetails', {message: 'Account created successfully'})
     }
      

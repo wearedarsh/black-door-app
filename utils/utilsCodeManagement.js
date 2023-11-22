@@ -40,6 +40,7 @@ const UtilsCodeManagement = {
             //add the code as key with userkey as value
             const response  = await UtilsFirestore.updateDocumentByKey({key: 'inviteCodes', currentCollection: 'config', data: {[encryptedCode]: userKey}})
             if(response.error){
+                console.log('I was the one to error')
                 return {error: response.error}
             }else {
                 return response

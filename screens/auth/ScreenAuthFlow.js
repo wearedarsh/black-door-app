@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'react-native'
 //screens
 import StackOnboard from '../onboard/StackOnboard'
@@ -13,45 +13,50 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { app } from '../../config/configFirebase'
 import { getFirestore, getDocs, collection, query, orderBy, limit } from 'firebase/firestore'
 //redux
-import { setGroups } from '../../redux/actions/actionGroups'
-import { useDispatch } from 'react-redux'
+import { setUserAuth } from '../../redux/actions/actionUserAuth'
+import { useDispatch, useSelector } from 'react-redux'
+//utils
+import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 //stack
 const Stack = createNativeStackNavigator()
 
+
+
 const ScreenAuthFlow = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
     //redux 
     const dispatch  = useDispatch()
-    const isAuthenticated = false;
-    const isAdmin = false;
-    //fetch relevant documents from firestore
+    const userAuthState = useSelector((state) => state.userAuthState)
+    
     useEffect(() => {
-        if(isAdmin){
-            //fetch groups from firestore
-            const fetchGroups = async () => {
-                //assign query
-                const db = getFirestore(app)
-                const collectionRef = collection(db, 'groups')
-                const orderByRef = orderBy("order", "asc")
-                const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-                //try to fetch data
-                try{
-                    const snapshot = await getDocs(queryRef)
-                    const tempData = {}
-                    snapshot.forEach((doc) => {
-                        const data = doc.data()
-                        tempData[doc.id] = {
-                            title: data.title
-                        }
-                    })
-                dispatch(setGroups({groups: tempData}))
-                }catch(error){
-                    //catch error here
-                    console.log(error)
-                }  
+        const checkAuthentication = async () => {
+            //check state to see if user saved in state
+            if(userAuthState.authToken){
+                //user logged in
+                setIsAuthenticated(true)
+                //user is admin
+                if(userAuthState.authIsAdmin === 'true'){
+                    setIsAdmin(true)
+                }
+                return
             }
-            fetchGroups()
+            //Check to see if user saved in secure storage
+            const authToken = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authToken'})
+            const authDoc = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authDoc'})
+            const authIsAdmin = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authIsAdmin'})
+            if(authToken && authDoc && authIsAdmin){
+                await dispatch(setUserAuth({authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
+                await setIsAuthenticated(true)
+                return
+            }else{
+                await setIsAuthenticated(false)
+                return
+            }
         }
-    }, [])
+        checkAuthentication();
+    }, [userAuthState])
+
     return (
         <NavigationContainer>
             <StatusBar barStyle="light-content" />
