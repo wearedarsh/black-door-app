@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {View, StyleSheet, ImageBackground, ScrollView, Modal } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //components
@@ -19,7 +19,7 @@ import UtilsFirestore from '../../utils/utilsFirestore'
 
 const ScreenOnboardCheckDetails = ({navigation, route}) => {
     //client object
-    const { clientData, userKey } = route.params
+    const { clientData, userKey, message = '' } = route.params
     const { firstName, lastName, emailAddress, mobileNumber, code } = clientData
     //local state
     const [formValues, setFormValues] = useState({
@@ -39,6 +39,12 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
           [key]: string
         }))
     }
+    //check to see if message passed in route params
+    useEffect(() => {
+        if(message){
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:message, icon:'ios-warning'}})
+        }
+    }, [])
 
     let userAuthId
 

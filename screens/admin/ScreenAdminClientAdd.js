@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, ScrollView, Text, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+//custom
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsValidation from '../../utils/utilsValidation'
@@ -36,14 +38,15 @@ const ScreenAdminClientAdd = ({navigation}) => {
     const [feedback, setFeedback] = useState(false)
     //initialise form fields
     const [formValues, setFormValues] = useState({
-      firstName: 'Porky',
-      lastName: 'Windsford',
-      emailAddress: 'porky@wearedarsh.com',
-      mobileNumber: '07812036791',
-      status: 1,
+      firstName: '',
+      lastName: '',
+      emailAddress: '',
+      mobileNumber: '',
+      status: 0,
       groups:[],
-      emailOptIn: true,
-      pushOptIn: true,
+      emailOptIn: false,
+      pushOptIn: false,
+      isAdmin: false
     })
   //initialise code
   const [codeValue, setCodeValue] = useState('')

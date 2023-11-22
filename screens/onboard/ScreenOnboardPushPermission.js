@@ -133,20 +133,23 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
         //remove code from codes document
         try{
             console.log(clientData.code)
-            const response = await removeFieldFromDocument({currentCollection: 'config', key: 'inviteCodes', field: clientData.code})
+            const response = await UtilsFirestore.removeFieldFromDocument({currentCollection: 'config', key: 'inviteCodes', field: clientData.code})
             if(response.error){
+                console.log('I have an error removing code')
+                console.log('this is my error: ' + response.error)
                 setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }
         }catch(error){
-                setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
-                return
+            console.log('this is my catch error: ' + error)
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+            return
         }
 
         setLoading(false)
-        UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Account created successfully', icon:'ios-warning'}})
+        navigation.navigate('ScreenLoginEnterDetails', {message: 'Account created successfully'})
     }
      
     return (

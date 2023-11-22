@@ -1,5 +1,5 @@
 import { app } from '../config/configFirebase'
-import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, doc, getDoc, onSnapshot, updateDoc, deleteField } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -55,7 +55,7 @@ const UtilsFirestore = {
         try{
             const docRef = doc(db, currentCollection, key)
             const response = await updateDoc(docRef, {
-                [field]: FieldValue.delete()
+                [field]: deleteField()
             })
             return { success: true, message: 'field removed succesfully'}
         }catch(error){

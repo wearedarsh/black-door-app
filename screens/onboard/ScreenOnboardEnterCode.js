@@ -40,7 +40,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                     const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey})
                     if(!userDetails.error){
                         setLoading(false)
-                        navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userKey})
+                        navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userKey, message: 'Code entered successfully'})
                         return
                     }else{
                         setLoading(false)
