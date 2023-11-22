@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react'
-import { View, TouchableOpacity, Text, StyleSheet, ImageBackground } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, TouchableOpacity, Text, StyleSheet, ImageBackground, ScrollView, Modal } from 'react-native'
 //components
 import ComponentHeroTitle from '../../components/componentHeroTitle'
 import ComponentOnboardToggle from '../../components/componentOnboardToggle'
 import ComponentOnboardSubmitBtn from '../../components/componentOnboardSubmitBtn'
 import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader'
+import ComponentAppFeedback from '../../components/componentAppFeedback'
+import ComponentAppLoadingIndicator from '../../components/componentAppLoadingIndicator'
+//utils
+import UtilsValidation from '../../utils/utilsValidation'
+import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
+import UtilsFirestore from '../../utils/utilsFirestore'
 //expo
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
@@ -14,12 +20,21 @@ import { colors } from '../../assets/style/theme'
 
 
 const ScreenOnboardPushPermission = ({navigation, route}) => {
+    //route params
     const { formValues, userKey } = route.params
+    //local variables
     let userAuthId
+    let userPushToken
+    let clientData = {}
+    //local state
+    const [pushConfirm, setPushConfirm] = useState(true)
+    const [emailConfirm, setEmailConfirm] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [feedback, setFeedback] = useState(false)
 
-
+    //push notifications register
     const registerForPushNotifications = async () => {
-        let token
+        
         const projectId = Constants.expoConfig.extra.eas.projectId
 
         if (Platform.OS === 'android') {
@@ -35,22 +50,49 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
             const { status: existingStatus } = await Notifications.getPermissionsAsync()
             let finalStatus = existingStatus
             if (existingStatus !== 'granted') {
-                console.log('I should be requesting permission now...')
                 const { status } = await Notifications.requestPermissionsAsync()
                 finalStatus = status
             }
             if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!')
-                return
+                return { error: 'Failed to get push token for push notification' }
             }
             token = (await Notifications.getExpoPushTokenAsync({ projectId: projectId })).data
         } else {
-            alert('Must use physical device for Push Notifications')
+            return { error: 'Must use physical device for Push Notifications'}
         }
-        return token;
+        return { token: token }
     }
 
     const createUserAccount = async () => {
+        setLoading(true)
+        //first check to see if user has allowed push notifications
+        if(pushConfirm){
+            try{
+                const response = await registerForPushNotifications()
+                if(response.error){
+                    setLoading(false)
+                    UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+                    return
+                }else{
+                    clientData = {
+                        ...formValues,
+                        pushToken: response.token,
+                        pushOptIn: true
+                    }
+                }
+            }catch(error){
+                setLoading(false)
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+                return
+            }
+        }
+        //check to see if user has opted in for email notifications
+        if(emailConfirm){
+            clientData = {
+                ...clientData,
+                emailOptIn: true
+            }
+        }
         //if ok then create a firebase auth user
         try{
             const response = await UtilsFirebaseAuth.createAuthUser({email: formValues.emailAddress, password: formValues.password})
@@ -60,6 +102,14 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                 return   
             }else{
                 userAuthId = response
+                //add userAuthID and update status to approved
+                clientData = {
+                    ...clientData,
+                    authId: userAuthId,
+                    status: 1
+                }
+                //remove password field from clientData
+                delete clientData.password
             }
         }catch(error){
             setLoading(false)
@@ -68,46 +118,60 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
         }
         //add authkey to user on firestore
         try{
-            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {authId: userAuthId}, key: userKey})
+            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {...clientData}, key: userKey})
             if(responseAuth.error){
                 setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})
                 return   
-            }else{
-                setLoading(false)
-                navigation.navigate('ScreenOnboardPushPermission', {key: userKey})
             }
+
         }catch(error){
-            console.log(error)
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
             return
         }
-    }
+        //remove code from codes document
+        try{
+            console.log(clientData.code)
+            const response = await removeFieldFromDocument({currentCollection: 'config', key: 'inviteCodes', field: clientData.code})
+            if(response.error){
+                setLoading(false)
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+                return
+            }
+        }catch(error){
+                setLoading(false)
+                UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+                return
+        }
 
+        setLoading(false)
+        UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Account created successfully', icon:'ios-warning'}})
+    }
      
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
+            {loading && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppLoadingIndicator /></View></Modal>}
+            {feedback && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppFeedback title={feedback.title} icon={feedback.icon} /></View></Modal>}
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
-            <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardCheckDetails')}} />
-                <View style={{flex:8, justifyContent: 'center', marginTop: 32}}>
-                <ComponentHeroTitle title="CLICK ALLOW TO RECEIVE YOUR EXCLUSIVE UPDATES" />
-                    {/* <View style={styles.form}>
-                        <ComponentOnboardToggle title="RECEIVE EXCLUSIVE NOTIFICATIONS" />
-                        <ComponentOnboardToggle title="RECEIVE EXCLUSIVE EMAILS" />
-                    </View> */}
+            <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardCheckDetails', {clientData: formValues, userKey})}} />
+                <View style={{flex:8, justifyContent: 'flex-start', marginTop:128}}>
+                    <ComponentHeroTitle title="CLICK ALLOW TO RECEIVE YOUR EXCLUSIVE UPDATES" />
+                        <View style={styles.form}>
+                            <ComponentOnboardToggle title="RECEIVE EXCLUSIVE NOTIFICATIONS" selected={pushConfirm} setterFunc={setPushConfirm} />
+                            <ComponentOnboardToggle title="RECEIVE EXCLUSIVE EMAILS" selected={emailConfirm} setterFunc={setEmailConfirm} />
+                        </View>
                 </View>
-                {/* <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <ComponentOnboardSubmitBtn label="GET VIP ACCESS" onPress={()=>{navigation.navigate('ScreenOnboardCheckDetails')}} />  
-                </View> */}
+                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row',marginTop: 32}}>
+                        <ComponentOnboardSubmitBtn label="GET VIP ACCESS" onPress={createUserAccount} />  
+                </View>
             </ImageBackground>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {        
-        flex: 1,
         backgroundColor: colors.slate,
         alignItems: 'center',
         justifyContent: 'center',
@@ -127,7 +191,15 @@ const styles = StyleSheet.create({
     form:{
         width:'100%',
         paddingHorizontal: 32
-    }   
+    },
+    modalView: { 
+        flex:1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 64,
+        backgroundColor: 'rgba(35, 31, 32, 0.8)'
+    }
 })
 
 export default ScreenOnboardPushPermission

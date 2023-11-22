@@ -4,11 +4,10 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { colors } from '../assets/style/theme'
 
 const ComponentOnboardToggle = (props) => {
-    const { title } = props
-    const [selected, setSelected] = useState(true)
+    const { title = 'set title prop', selected = true, setterFunc = () => {} } = props
 
     const toggleSelected = () => {
-        setSelected(!selected)
+        setterFunc(prevValue => !prevValue)
     }
     
     return (

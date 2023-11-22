@@ -16,6 +16,7 @@ const StackOnboard = () => {
     
     return (
             <Stack.Navigator>
+                
                 <Stack.Screen name="ScreenOnboardHome" component={ScreenOnboardHome} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenOnboardEnterCode" component={ScreenOnboardEnterCode} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenOnboardCheckDetails" component={ScreenOnboardCheckDetails} options={{headerShown: false}} />

@@ -20,14 +20,15 @@ import UtilsFirestore from '../../utils/utilsFirestore'
 const ScreenOnboardCheckDetails = ({navigation, route}) => {
     //client object
     const { clientData, userKey } = route.params
-    const { firstName, lastName, emailAddress, mobileNumber } = clientData
+    const { firstName, lastName, emailAddress, mobileNumber, code } = clientData
     //local state
     const [formValues, setFormValues] = useState({
         firstName,
         lastName,
         emailAddress,
         mobileNumber,
-        password: ''
+        password: '',
+        code
     })
     const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
@@ -61,10 +62,9 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
             return
         }
+        setLoading(false)
         //if checks are ok, move to push permission and pass all vars ready for submit
-        navigation.navigate('ScreenOnboardPushPermission', {key: userKey, formValues: formValues})
-       
-
+        navigation.navigate('ScreenOnboardPushPermission', {userKey: userKey, formValues: formValues})
     }
 
     return (
@@ -86,7 +86,7 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
                         <ComponentOnboardPasswordInput value={formValues.password}onChangeText={newValue => updateFormFields(newValue, 'password')} />
                     </View>
                     <View style={{height:80,marginTop:32}}>
-                        <ComponentOnboardSubmitBtn label="CONFIRM" onPress={()=>{confirmDetails()}} />
+                        <ComponentOnboardSubmitBtn label="CONTINUE" onPress={()=>{confirmDetails()}} />
                     </View>
                 </View>
             </ImageBackground>

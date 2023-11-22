@@ -47,6 +47,19 @@ const UtilsFirestore = {
                 return {error: 'document does not exist'}
             }
         }catch(error){
+            return { error: error }
+        }
+    },
+    removeFieldFromDocument: async function(payload){
+        const {currentCollection, key, field } = payload
+        try{
+            const docRef = doc(db, currentCollection, key)
+            const response = await updateDoc(docRef, {
+                [field]: FieldValue.delete()
+            })
+            return { success: true, message: 'field removed succesfully'}
+        }catch(error){
+            console.log(error)
             return {error: error}
         }
     }

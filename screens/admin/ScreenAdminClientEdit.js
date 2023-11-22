@@ -28,7 +28,12 @@ import { getFirestore, collection, orderBy, limit, query, getDocs } from "fireba
 import { colors } from '../../assets/style/theme'
 import { setGroups } from '../../redux/actions/actionGroups'
 
-const ScreenAdminClientEdit = ({navigation}) => {
+const ScreenAdminClientEdit = ({navigation, route}) => {
+    //route params
+    const { userKey } = route.params
+    //local variables
+    const formRef = useRef()
+    const firstFormFieldRef = useRef()
     //local state
     const [groups, setGroups] = useState(false)
     const [groupsComponentArray, setGroupsComponentArray] = useState(false)
@@ -44,17 +49,14 @@ const ScreenAdminClientEdit = ({navigation}) => {
       groups:[],
       emailOptIn: true,
       pushOptIn: true,
+      decryptedCode: '',
+      code: ''
     })
-  //initialise code
-  const [codeValue, setCodeValue] = useState('')
+    //initialise code
+    const [codeValue, setCodeValue] = useState('')
     //firestore
     const db = getFirestore(app)
-    const collectionRef = collection(db, "groups")
-    const orderByRef = orderBy("order", "asc")
-    const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-    //local variables 
-    const formRef = useRef()
-    const firstFormFieldRef = useRef()
+    
     //update groups selected value
     const updateGroupSelected = (key) => {
       setGroups(prevState => ({
@@ -67,7 +69,12 @@ const ScreenAdminClientEdit = ({navigation}) => {
     }
     //fetch groups
     useEffect(() => {
+      
       const fetchGroups = async () => {
+        //firestore config
+        const collectionRef = collection(db, "groups")
+        const orderByRef = orderBy("order", "asc")
+        const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
         try{
           const groupsSnapshot = await getDocs(queryRef)
           if(groupsSnapshot){
@@ -90,7 +97,46 @@ const ScreenAdminClientEdit = ({navigation}) => {
           console.log(error)
         }
       }
-      fetchGroups()
+
+      const setFormValues = async (userDoc) => {
+        const { firstName, lastName, emailAddress, mobileNumber, status, groups, emailOptIn, pushOptIn, code } = userDoc
+        const setForm = await setFormValues(prevState => ({
+          ...prevState,
+          firstName,
+          lastName,
+          emailAddress,
+          mobileNumber,
+          status,
+          groups,
+          emailOptIn,
+          pushOptIn, 
+          code
+      }))
+    }
+
+      const fetchUserDoc = async (userKey) => {
+        
+          try{
+            const userDoc = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey })
+            if(userDoc.error){
+              //output the error here
+              console.log(userDoc.error)
+            }else{
+              
+            }     
+            const setDecryptedCode = await setCodeValue(formValues.code)
+          }catch(error){
+            console.log(error)
+          }
+      }
+      const fetchData = async () => {
+        setLoading(true)
+        //const groups = await fetchGroups()
+        const userData = await fetchUserDoc(userKey)
+        setLoading(false)
+      }
+      fetchData()
+      
     },[])
     //set groups components
     useEffect(() => {
