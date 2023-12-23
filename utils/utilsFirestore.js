@@ -1,5 +1,5 @@
 import { app } from '../config/configFirebase'
-import { getFirestore, collection, addDoc, setDoc, doc, getDoc, getDocs, onSnapshot, updateDoc, deleteField, where, query } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, doc, getDoc, getDocs, onSnapshot, updateDoc, deleteField, where, query, get, Timestamp } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -9,7 +9,7 @@ const UtilsFirestore = {
         try{
             const collectionRef = collection(db, currentCollection)
             const response = await addDoc(collectionRef, data)
-            return { response: response, key: response.id}
+            return { response: response, key: response.id }
         }catch(error){
             return { error: error.message }
         }
@@ -19,7 +19,7 @@ const UtilsFirestore = {
         try{
             const docRef = doc(db, currentCollection, key)
             const response = await setDoc(docRef, data)
-            return { success: true, message: 'document set successfully'}
+            return { success: true, message: 'document set successfully' }
         }catch(error){
             return { error: error.message }
         }
@@ -29,7 +29,7 @@ const UtilsFirestore = {
             const { currentCollection, data, key } = payload
             const docRef = doc(db, currentCollection, key)
             const response = await updateDoc(docRef, data)
-            return { success: true, message: 'document updated successfully'}
+            return { success: true, message: 'document updated successfully' }
         }catch(error){
             return { error: error.message }
         }
@@ -50,25 +50,33 @@ const UtilsFirestore = {
             return { error: error.message }
         }
     },
-    getDocumentWhere: async function(payload){
-        const { currentCollection, fieldName, fieldValue } = payload
-        try{
+    getDocumentWhere: async function(payload) {
+        const { currentCollection, conditions } = payload;
+        try {
+            //create collection ref
             const collectionRef = collection(db, currentCollection)
-            const queryRef = query(collectionRef, where(fieldName, '==', fieldValue))
-            const querySnapshot = await getDocs(queryRef)
-            if(querySnapshot.size === 1){
-                const docSnapshot = querySnapshot.docs[0];
-                const response = docSnapshot.data();
-                return { success: true, docData: response };
-            }else if (querySnapshot.size === 0) {
-                return { error: 'Document does not exist' };
+            //dynamically create where conditions
+            const queryConditions = 
+                conditions.map((condition) => 
+                where(condition.fieldName, condition.operator, condition.fieldValue)
+                )
+            //define final query
+            const finalQuery = query(collectionRef, ...queryConditions)
+            //fetch docs
+            const querySnapshot = await getDocs(finalQuery)
+            //check if document is returned
+            if (querySnapshot.size === 1) {
+                const docSnapshot = querySnapshot.docs[0]
+                const response = docSnapshot.data()
+                console.log('respnse: ' + JSON.stringify(response))
+                return { success: true, docData: response }
             } else {
-                return { error: 'Multiple documents found with the same field value' };
+            return { error: 'Single document not found' }
             }
-        }catch(error){
+        } catch (error) {
             return { error: error.message }
         }
-    },
+      },
     removeFieldFromDocument: async function(payload){
         const {currentCollection, key, field } = payload
         try{
@@ -81,6 +89,18 @@ const UtilsFirestore = {
             console.log(error)
             return { error: error.message }
         }
+    },
+    checkDocumentExists: async function(payload){
+        const {currentCollection, key } = payload
+        const collectionRef = collection(db, currentCollection)
+        const docRef = doc(collectionRef, key)
+        const docSnapshot = await getDoc(docRef)
+        return docSnapshot.exists()
+    },
+    convertDateToFirestoreTimestamp: async function(payload){
+        const { date } = payload
+        const firestoreTimeStamp = Timestamp.fromDate(date)
+        return firestoreTimeStamp
     }
 }
 

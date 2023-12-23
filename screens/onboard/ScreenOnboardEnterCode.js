@@ -15,6 +15,7 @@ import { colors } from '../../assets/style/theme'
 import UtilsCodeManagement from '../../utils/utilsCodeManagement'
 import UtilsValidation from '../../utils/utilsValidation'
 import UtilsFirestore from '../../utils/utilsFirestore'
+import UtilsEncryption from '../../utils/utilsEncryption'
 //redux
 import { useSelector, useDispatch } from 'react-redux'
 import { setLoading } from '../../redux/actions/actionLoading'
@@ -33,7 +34,12 @@ const ScreenOnboardEnterCode = ({navigation}) => {
         dispatch(setLoading({loading: true}))
         //check code exists in live codes table
         try{
-            const response = await UtilsCodeManagement.checkCodeExists({code: code})
+            //create hashed version of code
+            const hashedString = await UtilsEncryption.returnHashedString({string: code})
+            //create firestore friendly timestamp
+            const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date:new Date()})
+            //check if code exists
+            const response = await UtilsCodeManagement.checkCodeExists({hashedCode: hashedString, firestoreTimeStamp: firestoreTimeStamp})
             //if yes then 
             if(response.error){
                 dispatch(setLoading({loading: false}))
@@ -42,7 +48,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
             }else if(response.userKey){
                     const { userKey } = response
                     //grab the user details and pass the data through root params to next screen
-                    const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey})
+                    const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userKey})
                     if(!userDetails.error){
                         dispatch(setLoading({loading: false}))
                         navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userKey, message: 'Code entered successfully'})

@@ -51,6 +51,9 @@ const UtilsFirebaseAuth = {
     },
     signOutAuthUser: async function(){
         signOut(auth)
+    },
+    sendPasswordResetEmail: async function(){
+        
     }
 }
 

@@ -3,7 +3,6 @@ import { Dimensions } from 'react-native'
 const UtilsHelpers = {
     showAndHideFeedback: function(payload){
         const { dispatch, message, icon, visible, duration = 4000 } = payload
-        console.log(message)
         dispatch({ type: 'feedback/show', payload: {message: message, icon: icon, visible: visible} });
         clearTimeout(timer);
         let timer = UtilsHelpers.startTimer(duration, ()=>{
@@ -42,7 +41,7 @@ const UtilsHelpers = {
     scrollToTop: function(payload){
         const { ref, animated } = payload
         ref.current.scrollTo({x:0, y:0, animated: animated}); 
-    },
+    }
     
 }
 

@@ -20,7 +20,7 @@ const ScreenAdminClientManagement = ({ navigation }) => {
     const [searchText, setSearchText] = useState('')
     //firestore
     const db = getFirestore(app)
-    const collectionRef = collection(db, 'clients')
+    const collectionRef = collection(db, 'users')
     //search filter
     const [filteredClients, setFilteredClients] = useState([])
     const onSearchChange = (searchString) => {

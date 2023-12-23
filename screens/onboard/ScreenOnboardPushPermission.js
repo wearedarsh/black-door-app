@@ -122,7 +122,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
         }
         //add authkey to user on firestore
         try{
-            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'clients', data: {...clientData}, key: userKey})
+            const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', data: {...clientData}, key: userKey})
             if(responseAuth.error){
                 dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})

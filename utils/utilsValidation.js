@@ -51,6 +51,23 @@ const UtilsValidation = {
           // }
           return true
     },
+    checkStringIsNumeric: function(payload){
+        const { string } = payload
+        const numericPattern = /^\d+$/
+        if(numericPattern.test(string)){
+            return true 
+        }else{
+            return false
+        }
+    },
+    checkStringLength: function(payload){
+        const { string, expectedLength } = payload
+        if(string.length != expectedLength){
+            return false
+        }else{
+            return true
+        }
+    },
     inputsPopulated: function(payload){
         const { data } = payload
         let populated = true

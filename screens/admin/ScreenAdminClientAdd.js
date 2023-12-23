@@ -141,17 +141,27 @@ const ScreenAdminClientAdd = ({navigation}) => {
           UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
           return
         }
-        //check if code exists in code management
+        //check if code correct length
+        if(!UtilsValidation.checkStringLength({string: codeValue, expectedLength: 4})){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a four digit code', icon:'ios-warning'}})
+          return
+        }
+        //check code is numeric
+        if(!UtilsValidation.checkStringIsNumeric({string: codeValue})){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a four digit code', icon:'ios-warning'}})
+          return
+        }
+        //hash the code ready for usage
+        const hashedString = await UtilsEncryption.returnHashedString(codeValue)
+
         try{
-          const codeExists = await UtilsCodeManagement.checkCodeExists({code: codeValue})
-          if(codeExists.exists){
+          //check to see if the code exists and is valid
+          const codeExists = await UtilsCodeManagement.checkCodeExists({hashedCode: hashedString, dateTimeNow: new Date()})
+          if(codeExists.success){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This code is already in use', icon:'ios-warning'}})
-            return
-          }
-          if(codeExists.error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:codeExists.error, icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This code is already in use' + codeExists.data, icon:'ios-warning'}})
             return
           }
         }catch(error){
@@ -161,17 +171,14 @@ const ScreenAdminClientAdd = ({navigation}) => {
         }
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
-        //encrypt code for inserting
-        const encryptedCode = UtilsEncryption.encrypt(codeValue)
         const formValuesForSubmit = ({
           ...formValues,
-          groups: selectedGroups,
-          code: encryptedCode
+          groups: selectedGroups
         })
         //try to add client to firestore
         try{
           setLoading(true)
-          const response = await UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
+          const response = await UtilsFirestore.addDocument({currentCollection: 'users', data: formValuesForSubmit})
           if(response.error){
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
@@ -185,10 +192,13 @@ const ScreenAdminClientAdd = ({navigation}) => {
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
           return
         }
+        //create date 48 hours from now
+        const currentDate = new Date()
+        const futureDate = new Date(currentDate.getTime() + 48 * 60 * 60 * 1000)
         //add code to config file
         try{
           setLoading(true)
-          const response = await UtilsCodeManagement.addCodeToConfig({ encryptedCode:encryptedCode, userKey: userKey})
+          const response = await UtilsCodeManagement.addCode({ hashedCode:hashedString, userId: userKey, redeemed: false, expiresAt: futureDate })
           if(response.error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 5000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})

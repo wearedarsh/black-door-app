@@ -3,47 +3,29 @@ import UtilsEncryption from './utilsEncryption'
 
 const UtilsCodeManagement = {
     checkCodeExists: async function(payload){
-        const { code, expectedLength = 4 } = payload
-        //check code is not empty
-        if(code == ''){
-            return {error: 'Please enter your code'}
-        }
-        //check code is expected length
-        if(code.length != expectedLength){
-            return {error: `Please enter ${expectedLength} characters`}
-        }
+        const { hashedCode, firestoreTimeStamp } = payload
+        console.log(firestoreTimeStamp)
         try{
-            //get codes config document from firestore
-            const codesDocument = await UtilsFirestore.getDocumentByKey({currentCollection: 'config', key: 'inviteCodes'})
-            //if no error fecthing the document
-            if(!codesDocument.error){
-                //get encrypted codes array from document
-                const encryptedCodesArray = Object.keys(codesDocument)
-                //loop through and see if code exists
-                for(let encryptedCode of encryptedCodesArray){
-                    if(UtilsEncryption.decrypt(encryptedCode) == code){
-                        return { exists: true, userKey: codesDocument[encryptedCode] }
-                    }
-                }
-                //if code does not exist return false
-                return { exists: false }
+            //grab a snapshot from firestore
+            const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'inviteCodes', conditions: [{fieldName: 'expiryDate', condition: '<', fieldValue: firestoreTimeStamp},{fieldName: 'hashedCode', operator: '==', fieldValue:hashedCode},{fieldName: 'redeemed', operator: '==', fieldValue: false}]})
+            if(response.error){
+                return { error: response.error}
             }else{
-                return {error: codesDocument.error}
+                return { success: true, data: response.docData }
             }
         }catch(error){
-            return {error: error}
+            return { error: message.error }
         }
     },
-    addCodeToConfig: async function(payload){
-        const { encryptedCode, userKey } = payload
+    addCode: async function(payload){
+        const { hashedCode, expiresAt, userId } = payload
         try{
             //add the code as key with userkey as value
-            const response  = await UtilsFirestore.updateDocumentByKey({key: 'inviteCodes', currentCollection: 'config', data: {[encryptedCode]: userKey}})
+            const response  = await UtilsFirestore.addDocument({currentCollection: 'inviteCodes', data: { hashedCode, redeemed: false, expiresAt, userId }})
             if(response.error){
-                console.log('I was the one to error')
-                return {error: response.error}
+                return { error: response.error }
             }else {
-                return response
+                return { success: true }
             }
         }catch(error){
             return {error: error.message}

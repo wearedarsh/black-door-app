@@ -1,3 +1,3 @@
 export const systemEmailAddresses = {
-    adminStandard: 'harley@wearedarsh.com',
+    adminStandard: 'BLKDR <vip@blkdr.com>',
 }

@@ -90,14 +90,13 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         }
         //request doc from firestore
         try{
-            const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'clients', fieldName: 'authId', fieldValue: authId})
+            const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'users', conditions: [{fieldName: 'authId', operator: '==', fieldValue: authId}]})
             if(response.error){
                 await dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }else{
                 userDoc = response.docData
-                console.log(userDoc)
             }
         }catch(error){
             await dispatch(setLoading({loading: false}))

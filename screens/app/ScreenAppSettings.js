@@ -9,6 +9,7 @@ import ComponentAppTitle from '../../components/componentAppTitle'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
+import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
 //redux
 import { removeUserAuth } from '../../redux/actions/actionUserAuth'
 import { setLoading } from '../../redux/actions/actionLoading'
@@ -28,6 +29,8 @@ const ScreenAppSettings = () => {
         //clear state
         dispatch(setLoading({loading: false}))
         dispatch(removeUserAuth())
+        //log out auth
+        UtilsFirebaseAuth.signOutAuthUser()
 
     }
 
