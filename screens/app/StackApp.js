@@ -46,7 +46,7 @@ const StackApp = () => {
             />
             <Tabs.Screen 
               name="ScreenAppPropertyListing" 
-              component={ScreenAppPropertyView} 
+              component={ScreenAppPropertyListing} 
               options={{
                 tabBarIcon: ({ focused }) => (
                   <ComponentAppTabItem label={'PROPERTIES'} icon={'earth'} focused={focused} />

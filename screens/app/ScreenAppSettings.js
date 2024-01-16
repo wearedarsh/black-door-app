@@ -31,7 +31,6 @@ const ScreenAppSettings = () => {
         dispatch(removeUserAuth())
         //log out auth
         UtilsFirebaseAuth.signOutAuthUser()
-
     }
 
     return(
@@ -39,11 +38,9 @@ const ScreenAppSettings = () => {
             <ComponentAppBrandingHeader />
             <View style={styles.container}>
             <ComponentAppTitle title={'SETTINGS'} />
-                
                 <View style={styles.form}>
                     <ComponentAppBtnPrimary  label="CHANGE PASSWORD" onPress={()=>{}} />
                     <ComponentAppBtnSecondary  label="LOG OUT" iconName={'exit-outline'} onPress={logOut} />
-                    
                 </View>
             </View>
         </>

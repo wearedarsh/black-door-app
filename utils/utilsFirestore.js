@@ -68,7 +68,6 @@ const UtilsFirestore = {
             if (querySnapshot.size === 1) {
                 const docSnapshot = querySnapshot.docs[0]
                 const response = docSnapshot.data()
-                console.log('respnse: ' + JSON.stringify(response))
                 return { success: true, docData: response }
             } else {
             return { error: 'Single document not found' }
@@ -76,32 +75,57 @@ const UtilsFirestore = {
         } catch (error) {
             return { error: error.message }
         }
-      },
-    removeFieldFromDocument: async function(payload){
-        const {currentCollection, key, field } = payload
-        try{
-            const docRef = doc(db, currentCollection, key)
-            const response = await updateDoc(docRef, {
-                [field]: deleteField()
-            })
-            return { success: true, message: 'field removed succesfully'}
-        }catch(error){
-            console.log(error)
-            return { error: error.message }
+        },
+        getDocumentsWhere: async function(payload){
+            const { currentCollection, conditions } = payload
+            try{
+                //set collection reference
+                const collectionRef = collection(db, currentCollection)
+                //map conditions
+                const queryConditions = conditions.map((condition) =>
+                    where(condition.fieldName, condition.operator, condition.fieldValue)
+                )
+                //final query
+                const finalQuery = query(collectionRef, ...queryConditions)
+                //get docs
+                const querySnapshot = await getDocs(finalQuery)
+                console.log(querySnapshot.size)
+                if(querySnapshot.size > 0){
+                    const queryDocs = querySnapshot.docs
+                    const response = queryDocs.data()
+                    return { success: true, docData: response, numDocs: querySnapshot.size}
+                }else{
+                    return { success:false }
+                }
+            }catch(error){
+                return { error: error.message }
+            }
+        },
+        removeFieldFromDocument: async function(payload){
+            const {currentCollection, key, field } = payload
+            try{
+                const docRef = doc(db, currentCollection, key)
+                const response = await updateDoc(docRef, {
+                    [field]: deleteField()
+                })
+                return { success: true, message: 'field removed succesfully'}
+            }catch(error){
+                console.log(error)
+                return { error: error.message }
+            }
+        },
+        checkDocumentExists: async function(payload){
+            const {currentCollection, key } = payload
+            const collectionRef = collection(db, currentCollection)
+            const docRef = doc(collectionRef, key)
+            const docSnapshot = await getDoc(docRef)
+            return docSnapshot.exists()
+        },
+        convertDateToFirestoreTimestamp: async function(payload){
+            const { date } = payload
+            const firestoreTimeStamp = Timestamp.fromDate(date)
+            return firestoreTimeStamp
         }
-    },
-    checkDocumentExists: async function(payload){
-        const {currentCollection, key } = payload
-        const collectionRef = collection(db, currentCollection)
-        const docRef = doc(collectionRef, key)
-        const docSnapshot = await getDoc(docRef)
-        return docSnapshot.exists()
-    },
-    convertDateToFirestoreTimestamp: async function(payload){
-        const { date } = payload
-        const firestoreTimeStamp = Timestamp.fromDate(date)
-        return firestoreTimeStamp
-    }
 }
 
 export default UtilsFirestore
