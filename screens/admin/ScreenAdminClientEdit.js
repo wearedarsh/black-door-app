@@ -69,8 +69,9 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
     }
     //fetch groups
     useEffect(() => {
-      
+      //fetch groups function
       const fetchGroups = async () => {
+        console.log('groups to check : ' + formValues.groups)
         //firestore config
         const collectionRef = collection(db, "groups")
         const orderByRef = orderBy("order", "asc")
@@ -87,7 +88,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                 active: data.active,
                 order: data.order,
                 title: data.title,
-                selected: false
+                selected: formValues.groups.includes(doc.id) ? true : false
               }
             })
             //update local state
@@ -97,47 +98,57 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           console.log(error)
         }
       }
-
-      const setFormValues = async (userDoc) => {
-        const { firstName, lastName, emailAddress, mobileNumber, status, groups, emailOptIn, pushOptIn, code } = userDoc
-        const setForm = await setFormValues(prevState => ({
-          ...prevState,
-          firstName,
-          lastName,
-          emailAddress,
-          mobileNumber,
-          status,
-          groups,
-          emailOptIn,
-          pushOptIn, 
-          code
-      }))
-    }
-
+      //fetch user doc function
       const fetchUserDoc = async (userKey) => {
-        
           try{
-            const userDoc = await UtilsFirestore.getDocumentByKey({currentCollection: 'clients', key: userKey })
+            const userDoc = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userKey })
             if(userDoc.error){
-              //output the error here
-              console.log(userDoc.error)
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDoc.error, icon:'ios-warning'}})
+              return
             }else{
+              setLoading(false)
+              //set form values
+              const setForm = userDoc => {
+                setFormValues({
+                  firstName: userDoc.firstName,
+                  lastName: userDoc.lastName,
+                  emailAddress: userDoc.emailAddress,
+                  mobileNumber: userDoc.mobileNumber,
+                  status: userDoc.status,
+                  groups: userDoc.groups,
+                  emailOptIn: userDoc.emailOptIn,
+                  pushOptIn: userDoc.pushOptIn,
+                  code: userDoc.code,
+                })
+              }
+
+              setForm(userDoc)
               
-            }     
-            const setDecryptedCode = await setCodeValue(formValues.code)
+            
+            console.log('formValues on first render: ' + JSON.stringify(formValues))
+          }     
           }catch(error){
-            console.log(error)
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
           }
       }
+
+
+      //fetch required data
       const fetchData = async () => {
         setLoading(true)
         //const groups = await fetchGroups()
         const userData = await fetchUserDoc(userKey)
+        const groups = await fetchGroups()
         setLoading(false)
       }
       fetchData()
-      
     },[])
+
+
+
     //set groups components
     useEffect(() => {
       //create array of components for rendering
@@ -170,7 +181,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           lastName: formValues.lastName,
           emailAddress: formValues.emailAddress,
           mobileNumber: formValues.mobileNumber,
-          code: codeValue
+          //code: codeValue
         }})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
@@ -183,25 +194,27 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           return
         }
         //check if code exists in code management
-        try{
-          const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
-          if(response){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
-            return
-          }
-        }catch(error){
-          setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
-        }
+        // try{
+        //   const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
+        //   if(response){
+        //     setLoading(false)
+        //     UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
+        //     return
+        //   }
+        // }catch(error){
+        //   setLoading(false)
+        //   UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
+        // }
         
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
+        console.log(JSON.stringify(selectedGroups))
         const formValuesForSubmit = ({
           ...formValues,
           groups: selectedGroups,
           code: UtilsEncryption.encrypt(codeValue)
         })
+        return
         //try to add client to firestore
         try{
           setLoading(true)
