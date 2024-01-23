@@ -51,7 +51,7 @@ const UtilsFirestore = {
         }
     },
     getDocumentWhere: async function(payload) {
-        const { currentCollection, conditions } = payload;
+        const { currentCollection, conditions } = payload
         try {
             //create collection ref
             const collectionRef = collection(db, currentCollection)
@@ -68,9 +68,10 @@ const UtilsFirestore = {
             if (querySnapshot.size === 1) {
                 const docSnapshot = querySnapshot.docs[0]
                 const response = docSnapshot.data()
+                
                 return { success: true, docData: response }
             } else {
-            return { error: 'Single document not found' }
+                return { error: 'Single document not found' }
             }
         } catch (error) {
             return { error: error.message }

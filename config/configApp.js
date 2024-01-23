@@ -1,5 +1,5 @@
 const ConfigApp = {
-    GroupLimit: 10,
+    GroupLimit: 20,
     appName: 'BLKDR app'
 }
 

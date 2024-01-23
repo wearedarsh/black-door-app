@@ -15,7 +15,8 @@ export default UtilsEncryption = {
         //const decryptedString = bytes.toString(CryptoJS.enc.Utf8)
         //return decryptedString
     //},
-    returnHashedString: async function(string){
+    returnHashedString: async function(payload){
+        const { string } = payload
         const saltString = string + salt
         const hash = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA512,saltString)
         const hashedString = hash.toString()

@@ -1,20 +1,34 @@
 import UtilsFirestore from './utilsFirestore'
 import UtilsEncryption from './utilsEncryption'
 
+import { app } from '../config/configFirebase'
+import { getFirestore, collection, where, query, getDocs } from "firebase/firestore"
+
+const db = getFirestore(app)
+
 const UtilsCodeManagement = {
     checkCodeExists: async function(payload){
         const { hashedCode, firestoreTimeStamp } = payload
-        console.log(firestoreTimeStamp)
         try{
-            //grab a snapshot from firestore
-            const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'inviteCodes', conditions: [{fieldName: 'expiryDate', condition: '<', fieldValue: firestoreTimeStamp},{fieldName: 'hashedCode', operator: '==', fieldValue:hashedCode},{fieldName: 'redeemed', operator: '==', fieldValue: false}]})
-            if(response.error){
-                return { error: response.error}
+            //build the query
+            const codeQuery = query(
+                collection(db, 'inviteCodes'),
+                where("hashedCode", "==", hashedCode),
+                where("redeemed", "==", false),
+                where("expiresAt", ">", firestoreTimeStamp) 
+            )
+            //get snapshot 
+            const querySnapshot = await getDocs(codeQuery)
+            //refrerence docs
+            const queryDocs = querySnapshot.docs
+            //
+            if(queryDocs.length === 1){
+                return { success: true, data: queryDocs[0].data()}
             }else{
-                return { success: true, data: response.docData }
+                return { error: 'This code does not exist'}
             }
         }catch(error){
-            return { error: message.error }
+            return { error: error.message }
         }
     },
     addCode: async function(payload){

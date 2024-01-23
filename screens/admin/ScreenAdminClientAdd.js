@@ -46,8 +46,8 @@ const ScreenAdminClientAdd = ({navigation}) => {
       mobileNumber: '',
       status: 0,
       groups:[],
-      emailOptIn: false,
-      pushOptIn: false,
+      emailOptIn: true,
+      pushOptIn: true,
       isAdmin: false
     })
   //initialise code
@@ -121,7 +121,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
         }))
     }
     //submit form
-    const submitForm = async () => {
+    const submitForm = async (code) => {
         setLoading(true)
         //check inputs are populated
         if(!UtilsValidation.inputsPopulated({data: {
@@ -142,26 +142,28 @@ const ScreenAdminClientAdd = ({navigation}) => {
           return
         }
         //check if code correct length
-        if(!UtilsValidation.checkStringLength({string: codeValue, expectedLength: 4})){
+        if(!UtilsValidation.checkStringLength({string: code, expectedLength: 4})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a four digit code', icon:'ios-warning'}})
           return
         }
         //check code is numeric
-        if(!UtilsValidation.checkStringIsNumeric({string: codeValue})){
+        if(!UtilsValidation.checkStringIsNumeric({string: code})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter a four digit code', icon:'ios-warning'}})
           return
         }
         //hash the code ready for usage
-        const hashedString = await UtilsEncryption.returnHashedString(codeValue)
-
+        const hashedString = await UtilsEncryption.returnHashedString({string: code})
+        //try to see if the code exists
         try{
+          const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date:new Date()})
           //check to see if the code exists and is valid
-          const codeExists = await UtilsCodeManagement.checkCodeExists({hashedCode: hashedString, dateTimeNow: new Date()})
+          const codeExists = await UtilsCodeManagement.checkCodeExists({hashedCode: hashedString, firestoreTimeStamp: firestoreTimeStamp})
+          //if it exists let the user know
           if(codeExists.success){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This code is already in use' + codeExists.data, icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This code is already in use', icon:'ios-warning'}})
             return
           }
         }catch(error){
@@ -305,7 +307,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
                     {groupsComponentArray && groupsComponentArray}
                     <Text style={styles.subTitle}>INVITE CODE</Text>
                     <ComponentAdminCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
-                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm()}} />
+                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm(codeValue)}} />
                     <ComponentAppSpacerView height={120} />
                   </ScrollView>
             </View>

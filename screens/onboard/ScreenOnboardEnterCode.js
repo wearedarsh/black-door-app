@@ -45,27 +45,26 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                 dispatch(setLoading({loading: false}))
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
-            }else if(response.userKey){
-                    const { userKey } = response
-                    //grab the user details and pass the data through root params to next screen
-                    const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userKey})
-                    if(!userDetails.error){
-                        dispatch(setLoading({loading: false}))
-                        navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userKey, message: 'Code entered successfully'})
-                        return
-                    }else{
-                        dispatch(setLoading({loading: false}))
-                        UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDetails.error, icon:'ios-checkmark'}})
-                        return
-                    }
             }else{
-                dispatch(setLoading({loading: false}))
-                    UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Invalid Code', icon:'ios-warning'}})
+                //get user id
+                const { data } = response
+                const { userId } = data
+                //grab the user details and pass the data through root params to next screen
+                const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userId})
+                if(!userDetails.error){
+                    dispatch(setLoading({loading: false}))
+                    navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userId, message: 'Code entered successfully'})
                     return
+                }else{
+                    dispatch(setLoading({loading: false}))
+                    UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDetails.error, icon:'ios-checkmark'}})
+                    return
+                }
+                return
             }
         }catch(error){
             dispatch(setLoading({loading: false}))
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error, icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
     }
