@@ -35,8 +35,8 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
     const formRef = useRef()
     const firstFormFieldRef = useRef()
     //local state
-    const [groups, setGroups] = useState(false)
-    const [groupsComponentArray, setGroupsComponentArray] = useState(false)
+    const [groups, setGroups] = useState({})
+    const [groupsComponentArray, setGroupsComponentArray] = useState([])
     const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
     //initialise form fields
@@ -68,102 +68,164 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
       }))
     }
     //fetch groups
-    useEffect(() => {
-      //fetch groups function
-      const fetchGroups = async () => {
-        console.log('groups to check : ' + formValues.groups)
-        //firestore config
-        const collectionRef = collection(db, "groups")
-        const orderByRef = orderBy("order", "asc")
-        const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-        try{
-          const groupsSnapshot = await getDocs(queryRef)
-          if(groupsSnapshot){
-            let groupsTempObject = {}
-            let groupsTempComponentArray = []
-            //grab documents and add object to local state
-            groupsSnapshot.forEach((doc) =>{
-              const data = doc.data()
-              groupsTempObject[doc.id] = {
-                active: data.active,
-                order: data.order,
-                title: data.title,
-                selected: formValues.groups.includes(doc.id) ? true : false
-              }
-            })
-            //update local state
-            setGroups(groupsTempObject)
-          }
-        }catch(error){
-          console.log(error)
-        }
-      }
-      //fetch user doc function
-      const fetchUserDoc = async (userKey) => {
+    useEffect(() =>{
+      console.log('I should be fetching my groups now')
+      fetchGroups = async () => {
           try{
-            const userDoc = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userKey })
-            if(userDoc.error){
-              setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDoc.error, icon:'ios-warning'}})
-              return
+            const collectionRef = collection(db, "groups")
+            const orderByRef = orderBy("order", "asc")
+            const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
+            const querySnapshot = await getDocs(queryRef)
+            let tempGroupObj = {}
+          
+            if(querySnapshot){
+              querySnapshot.forEach((doc) =>{
+                const groupData = doc.data()
+                tempGroupObj[doc.id] = {
+                  selected: formValues.groups.includes(doc.id) ? true : false,
+                  order: groupData.order,
+                  title: groupData.title,
+                  active: groupData.active
+                }
+              })
+
+              const groupKeys = Object.keys(tempGroupObj)
+              const groupsComponentTempArray = groupKeys.map((key) => {
+                return (
+                  <View key={key + '1'}>
+                  <ComponentAdminSelectButton key={key} label={tempGroupObj[key].title} selected={tempGroupObj[key].selected} onPress={() => {updateGroupSelected(key)}} />
+                  <ComponentAppSpacerView key={key + '2'} height={16} />
+                  </View>
+                )
+              })
+              setGroups(prevState => tempGroupObj)
+              setGroupsComponentArray(prevState => groupsComponentTempArray)
+
             }else{
               setLoading(false)
-              //set form values
-              const setForm = userDoc => {
-                setFormValues({
-                  firstName: userDoc.firstName,
-                  lastName: userDoc.lastName,
-                  emailAddress: userDoc.emailAddress,
-                  mobileNumber: userDoc.mobileNumber,
-                  status: userDoc.status,
-                  groups: userDoc.groups,
-                  emailOptIn: userDoc.emailOptIn,
-                  pushOptIn: userDoc.pushOptIn,
-                  code: userDoc.code,
-                })
-              }
-
-              setForm(userDoc)
-              
-            
-            console.log('formValues on first render: ' + JSON.stringify(formValues))
-          }     
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Error fetcing groups', icon:'ios-warning'}})
+              return
+            }
           }catch(error){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
           }
+        }
+        fetchGroups()
+      }, [formValues.groups])
+    
+
+    useEffect(() => {
+      //Fetch user document
+      const fetchUserDoc = async (key) => {
+        setLoading(true)
+          try{
+            const response = await UtilsFirestore.getDocumentByKey({currentCollection:'users', key: key})
+            if(!response.error){
+              //return data
+              setFormValues(prevState => response)
+            }else{
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+              return
+            }
+          }catch(error){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+          }
+        setLoading(false)
+          
       }
 
+      
+      //Fetch groups
+      // const fetchGroups = async () => {
+      //   console.log('form groups: ' + formValues.groups)
+      //   try{
+      //     const collectionRef = collection(db, "groups")
+      //     const orderByRef = orderBy("order", "asc")
+      //     const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
+      //     const querySnapshot = await getDocs(queryRef)
+      //     let tempGroupObj = {}
+      //     if(querySnapshot){
+      //       querySnapshot.forEach((doc) =>{
+      //         const groupData = doc.data()
+      //         tempGroupObj[doc.id] = {
+      //           selected: formValues.groups.includes(doc.id) ? true : false,
+      //           order: groupData.order,
+      //           title: groupData.title,
+      //           active: groupData.active
+      //         }
+      //       })
+            
+      //       return tempGroupObj
+      //     }else{
+      //       setLoading(false)
+      //       UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Error fetcing groups', icon:'ios-warning'}})
+      //       return
+      //     }
+      //     }catch(error){
+      //       setLoading(false)
+      //       UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+      //       return
+      //     }
+      
+      //}
 
+     
+  
       //fetch required data
       const fetchData = async () => {
         setLoading(true)
-        //const groups = await fetchGroups()
-        const userData = await fetchUserDoc(userKey)
-        const groups = await fetchGroups()
+        const fetchedUserData = await fetchUserDoc(userKey)
+        setFormValues(prevState => fetchedUserData)
+        const fetchedGroups = await fetchGroups()
+        setGroups(prevState => fetchedGroups)
         setLoading(false)
       }
-      fetchData()
+      fetchUserDoc(userKey)
     },[])
 
-
-
-    //set groups components
-    useEffect(() => {
-      //create array of components for rendering
-      const groupKeys = Object.keys(groups)
-      const groupsComponentTempArray = groupKeys.map((key) => {
-      return (
-        <View key={key + '2'}>
-          <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
-          <ComponentAppSpacerView key={key + '1'} height={16} />
-        </View>
-      )
-      })
-      //update local state
-      setGroupsComponentArray(groupsComponentTempArray)
+    useEffect(()=> {
+      const setGroupComponents = async () => {
+        const groupKeys = Object.keys(groups)
+        const groupsComponentTempArray = await Promise.all(groupKeys.map( async (key) => {
+          return (
+            <View key={key + '1'}>
+              <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
+              <ComponentAppSpacerView key={key + '2'} height={16} />
+            </View>
+          )
+        }))
+        setGroupsComponentArray(prevState => groupsComponentTempArray)
+      }
+      setGroupComponents()
     }, [groups])
+
+
+    // //set groups components
+    // useEffect(() => {  
+    //   //check groups has been set
+    //   if(groups){  
+    //     console.log('groups should have been set : ' + groups)
+    //     //create array of components for rendering
+    //     const groupKeys = Object.keys(groups)
+    //     const groupsComponentTempArray = groupKeys.map((key) => {
+    //     return (
+    //       <View key={key + '2'}>
+    //         <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
+    //         <ComponentAppSpacerView key={key + '1'} height={16} />
+    //       </View>
+    //     )
+    //     })
+    //     //update local state
+    //   setGroupsComponentArray(groupsComponentTempArray)
+    //   } 
+      
+    // }, [groups])
+
     //form fields
     const updateFormFields = (string, key) => {
         setFormValues(prevState => ({
@@ -173,7 +235,6 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
     }
     //submit form
     const submitForm = async () => {
-        
         setLoading(true)
         //check inputs are populated
         if(!UtilsValidation.inputsPopulated({data: {
