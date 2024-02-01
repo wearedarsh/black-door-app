@@ -16,12 +16,11 @@ const ScreenAdminMarketingMenu = ({navigation}) => {
                 <View style={styles.form}>
                   <ComponentAppBtnPrimary label={'MANAGE GROUPS'} onPress={() => {navigation.navigate('ScreenAdminMarketingGroupManagement')}} />
                   <ComponentAppBtnPrimary label={'SEND NOTIFICATION'} onPress={() => {navigation.navigate('ScreenAdminMarketingNotificationManagement')}} />
-                 
                 </View>
             </View>
       </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

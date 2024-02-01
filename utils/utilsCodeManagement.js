@@ -44,7 +44,34 @@ const UtilsCodeManagement = {
         }catch(error){
             return {error: error.message}
         }
+    },
+    checkLiveCodeForUser: async function(payload){
+        const { currentCollection, userId, firestoreTimeStamp } = payload
+        console.log(JSON.stringify(payload))
+        try{
+            //set collection ref
+            const collectionRef = collection(db, currentCollection)
+            //build the query
+            const idWhere = where("userId", "==", userId)
+            const redeemedWhere = where("redeemed", "==", false)
+            const expiresWhere = where("expiresAt", ">", firestoreTimeStamp) 
+            const compoundQuery = query(collectionRef, idWhere, redeemedWhere, expiresWhere)
+            //get snapshot 
+            const querySnapshot = await getDocs(compoundQuery)
+            //refrerence docs
+            const queryDocs = querySnapshot.docs
+            //
+            if(queryDocs.length === 1){
+                return { success: true, data: queryDocs[0].data()}
+            }else{
+                return { error: 'This code does not exist'}
+            }
+        }catch(error){
+            return { error: error.message}
+
+        }
     }
+
 }
 
 export default UtilsCodeManagement

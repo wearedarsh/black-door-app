@@ -126,6 +126,12 @@ const UtilsFirestore = {
             const { date } = payload
             const firestoreTimeStamp = Timestamp.fromDate(date)
             return firestoreTimeStamp
+        },
+        convertFirestoreTimestampToDate: async function(payload){
+            const { date } = payload
+            console.log('my date is: ' + date)
+            const dateString = date.toDateString()
+            return dateString
         }
 }
 

@@ -30,7 +30,7 @@ import { setGroups } from '../../redux/actions/actionGroups'
 
 const ScreenAdminClientEdit = ({navigation, route}) => {
     //route params
-    const { userKey } = route.params
+    const { userKey, title } = route.params
     //local variables
     const formRef = useRef()
     const firstFormFieldRef = useRef()
@@ -50,7 +50,8 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
       emailOptIn: true,
       pushOptIn: true,
       decryptedCode: '',
-      code: ''
+      active:true,
+      deleted: false,
     })
     //initialise code
     const [codeValue, setCodeValue] = useState('')
@@ -69,7 +70,6 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
     }
     //fetch groups
     useEffect(() =>{
-      console.log('I should be fetching my groups now')
       fetchGroups = async () => {
           try{
             const collectionRef = collection(db, "groups")
@@ -136,54 +136,6 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
             return
           }
         setLoading(false)
-          
-      }
-
-      
-      //Fetch groups
-      // const fetchGroups = async () => {
-      //   console.log('form groups: ' + formValues.groups)
-      //   try{
-      //     const collectionRef = collection(db, "groups")
-      //     const orderByRef = orderBy("order", "asc")
-      //     const queryRef = query(collectionRef, orderByRef, limit(ConfigApp.GroupLimit))
-      //     const querySnapshot = await getDocs(queryRef)
-      //     let tempGroupObj = {}
-      //     if(querySnapshot){
-      //       querySnapshot.forEach((doc) =>{
-      //         const groupData = doc.data()
-      //         tempGroupObj[doc.id] = {
-      //           selected: formValues.groups.includes(doc.id) ? true : false,
-      //           order: groupData.order,
-      //           title: groupData.title,
-      //           active: groupData.active
-      //         }
-      //       })
-            
-      //       return tempGroupObj
-      //     }else{
-      //       setLoading(false)
-      //       UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Error fetcing groups', icon:'ios-warning'}})
-      //       return
-      //     }
-      //     }catch(error){
-      //       setLoading(false)
-      //       UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
-      //       return
-      //     }
-      
-      //}
-
-     
-  
-      //fetch required data
-      const fetchData = async () => {
-        setLoading(true)
-        const fetchedUserData = await fetchUserDoc(userKey)
-        setFormValues(prevState => fetchedUserData)
-        const fetchedGroups = await fetchGroups()
-        setGroups(prevState => fetchedGroups)
-        setLoading(false)
       }
       fetchUserDoc(userKey)
     },[])
@@ -204,28 +156,6 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
       setGroupComponents()
     }, [groups])
 
-
-    // //set groups components
-    // useEffect(() => {  
-    //   //check groups has been set
-    //   if(groups){  
-    //     console.log('groups should have been set : ' + groups)
-    //     //create array of components for rendering
-    //     const groupKeys = Object.keys(groups)
-    //     const groupsComponentTempArray = groupKeys.map((key) => {
-    //     return (
-    //       <View key={key + '2'}>
-    //         <ComponentAdminSelectButton key={key} label={groups[key].title} selected={groups[key].selected} onPress={() => {updateGroupSelected(key)}} />
-    //         <ComponentAppSpacerView key={key + '1'} height={16} />
-    //       </View>
-    //     )
-    //     })
-    //     //update local state
-    //   setGroupsComponentArray(groupsComponentTempArray)
-    //   } 
-      
-    // }, [groups])
-
     //form fields
     const updateFormFields = (string, key) => {
         setFormValues(prevState => ({
@@ -242,7 +172,6 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           lastName: formValues.lastName,
           emailAddress: formValues.emailAddress,
           mobileNumber: formValues.mobileNumber,
-          //code: codeValue
         }})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
@@ -254,32 +183,18 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please enter a valid email address', icon:'ios-warning'}})
           return
         }
-        //check if code exists in code management
-        // try{
-        //   const response = await UtilsCodeManagement.checkCodeExists({code: codeValue})
-        //   if(response){
-        //     setLoading(false)
-        //     UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'This code is already in use, please choose another', icon:'ios-warning'}})
-        //     return
-        //   }
-        // }catch(error){
-        //   setLoading(false)
-        //   UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title: error.message, icon:'ios-warning'}})
-        // }
-        
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
-        console.log(JSON.stringify(selectedGroups))
+        //Form values for submit
         const formValuesForSubmit = ({
           ...formValues,
           groups: selectedGroups,
-          code: UtilsEncryption.encrypt(codeValue)
         })
-        return
-        //try to add client to firestore
+        //Try to add client to Firestore
         try{
           setLoading(true)
-          const response = await UtilsFirestore.addDocument({currentCollection: 'clients', data: formValuesForSubmit})
+          const response = await UtilsFirestore.setDocument({currentCollection: 'users', data: formValuesForSubmit, key: userKey})
+          console.log(response)
           if(response.error){
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
@@ -290,103 +205,56 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
           return
         }
-        //add code to config file
-        try{
-          setLoading(true)
-          const response = UtilsCodeManagement.addCodeToConfig({ code:codeValue })
-          if(response.error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
-            return
-          }
-        }catch(error){
-          setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
-          return
-        }
-
-        const sendInviteEmailToCustomer = async () => {
-          setLoading(true)
-          try{
-            const response = await UtilsEmail.sendSingleTemplateEmail({
-              emailSubjectTemplate: 'invite', 
-              emailContentTemplate: 'invite',
-              fromEmailNameTemplate: 'adminStandard',
-              fromEmail: 'adminStandard',
-              recipient: formValues.emailAddress,
-              mergeFieldsArray: [
-                {field: '%firstName%', 
-                value: formValues.firstName}, 
-                {field: '%inviteCode%', 
-                value: codeValue}]
-            })
-            if(!response.error){
-              setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client added and invite email sent', icon:'ios-checkmark'}})
-              return
-            }
-          }catch(error){
-            setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
-            return
-
-          }
-        }
-        
-        const sendEmailToClient = async () => {
-          Alert.alert('Client Added', 'Would you like to send an email notification?', [
-            {
-              text: 'No',
-              style: 'cancel',
-              onPress: () => {
-                setLoading(false)
-                UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client added', icon:'ios-checkmark'}})
-                return
-              }
-            },
-            {
-              text: 'Yes', 
-              onPress: () => {
-                sendInviteEmailToCustomer()
-                setLoading(false)
-              }
-            },
-          ])
-         
-        }
-
-        const resetGroupsSelected = () => {
-          const keys = Object.keys(groups).filter(key => groups[key].selected)
-          for(let key of keys){
-            setGroups(prevState => ({
-              ...prevState,
-              [key] : {
-                ...prevState[key],
-                  selected : false
-                }
-            
-            }))
-          }
-
-        }
-        //ask user if they would like to notify user
-        setLoading(true)
-        await sendEmailToClient()
-        //clear the form fields
-        await UtilsHelpers.clearFormValuesObject({setFunction: setFormValues, object: formValues})
-        //reset the code field value
-        setCodeValue('')
-        //reset all group components selected to false
-        await resetGroupsSelected()
         //scroll the form to top on completion
         UtilsHelpers.scrollToTop({animated: true, ref: formRef})
         //Set focus to first form field
-        UtilsHelpers.nextFormFocus({ref: firstFormFieldRef})
         setLoading(false)
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client updated', icon:'ios-checkmark'}})
+        return
     }
+
+    //Update the delete status of the client
+    const updateDeleteStatusOfClient = async () => {
+      console.log('I should be deleting')
+      try{
+        setLoading(true)
+        const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', key: userKey, data:{isDeleted: true}})
+        if(!response.error){
+          setLoading(false)
+          navigation.navigate('ScreenAdminClientManagement', {message: 'Client has been deleted'})
+        }else{
+          console.log(response.error)
+          setLoading(false)
+          return
+        }
+      }catch(error){
+        console.log(error.message)
+        setLoading(false)
+        return
+      }
+    }
+    //delete client alert functionality
+    const deleteClient = async () => {
+      Alert.alert('Delete client', 'Are you sure you want to delete this user?', [
+        {
+          text: 'No',
+          style: 'cancel'
+        },
+        {
+          text: 'Yes', 
+          onPress: () => {
+            updateDeleteStatusOfClient()
+            setLoading(false)
+          }
+        },
+      ])
+    }
+
+    
+
     return (
       <>
-        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientManagement')}} />
+        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {title, userKey})}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
                 <ComponentAdminTitle title={'EDIT CLIENT'} />
@@ -404,11 +272,13 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                     <ComponentAppSpacerView height={8} />
                     <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
-                    <Text style={styles.subTitle}>INVITE CODE</Text>
-                    <ComponentAdminCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
-                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm()}} />
+                    <Text style={styles.subTitle}>ACCOUNT STATUS</Text>
+                    <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.active} setterFunction={() => {setFormValues({...formValues, active: !formValues.active})}} />
+                    <ComponentAppSpacerView height={24} />
+                    <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} bgrColor={colors.slate} />
+                    <ComponentAppSpacerView height={16} />
+                    <ComponentAppBtnPrimary label={'DELETE CLIENT'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'} />
                     <ComponentAppSpacerView height={120} />
-
                   </ScrollView>
             </View>
       </>

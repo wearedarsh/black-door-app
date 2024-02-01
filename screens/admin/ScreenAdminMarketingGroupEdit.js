@@ -51,6 +51,7 @@ const ScreenAdminMarketingGroupEdit = ({route, navigation}) => {
     //form submission
     const submitForm = async () => {
         setLoading(true)
+        console.log(formFields)
         const response = await UtilsFirestore.setDocument({currentCollection: 'groups', data: formFields, key: key})
         if(response.error){
           setLoading(false)

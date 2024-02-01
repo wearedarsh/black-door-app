@@ -6,10 +6,10 @@ import { colors } from '../assets/style/theme'
 import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAppBtnPrimary = (props) => {
-    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth'} = props
+    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth', bgrColor = colors.gold} = props
     return( 
-        <View style={{...styles.bgrWrapper, marginTop:marginTop}}>
-            <TouchableOpacity style={{...styles.btn}} onPress={onPress}>
+        <View style={{...styles.bgrWrapper, marginTop:marginTop, backgroundColor: bgrColor}}>
+            <TouchableOpacity style={{...styles.btn, backgroundColor:bgrColor}} onPress={onPress}>
                 { icon && <Ionicons style={styles.icon} size={24} name={iconName} color={colors.white} />}
                 <Text style={styles.btnText}>{label}</Text>
             </TouchableOpacity>
@@ -19,7 +19,7 @@ const ComponentAppBtnPrimary = (props) => {
 
 const styles = StyleSheet.create({
     bgrWrapper: {
-        backgroundColor:colors.gold
+        
     },
     btn: {
         height:48,

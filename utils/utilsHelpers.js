@@ -41,8 +41,12 @@ const UtilsHelpers = {
     scrollToTop: function(payload){
         const { ref, animated } = payload
         ref.current.scrollTo({x:0, y:0, animated: animated}); 
+    },
+    localeDateString: function(payload){
+        const { locale = 'en-UK', dateObject, options = {}} = payload
+        const localeDateString = dateObject.toLocaleString(locale, options)
+        return localeDateString
     }
-    
 }
 
 export default UtilsHelpers

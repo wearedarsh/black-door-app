@@ -11,8 +11,12 @@ import ComponentAdminListItem from '../../components/admin/componentAdminListIte
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
+//utils
+import UtilsValidation from '../../utils/utilsValidation'
 
-const ScreenAdminClientManagement = ({ navigation }) => {
+const ScreenAdminClientManagement = ({ navigation, route }) => {
+    //local variables
+    const { message = '' } = route?.params || {}
     //local state
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -28,6 +32,12 @@ const ScreenAdminClientManagement = ({ navigation }) => {
       const filteredArray = clients.filter((item) => item.docData.firstName.toLowerCase().includes(searchString.toLowerCase()) || item.docData.lastName.toLowerCase().includes(searchString.toLowerCase()))
       setFilteredClients(filteredArray)
     }
+
+    useEffect(() => {
+      if(message){
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:message, icon:'ios-warning'}})
+      }
+    },[message])
      //firestore listener
      useEffect(() => {
       const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
@@ -42,11 +52,10 @@ const ScreenAdminClientManagement = ({ navigation }) => {
             const statusB = b.docData.status === 1 ? -1 : 1;
             return statusA - statusB;
           })
-          
           setClients(clientsArray)
           setLoading(false)
       }, (error) => {
-        UtilsValidation.showHideFeedback({icon:'ios-warning', title: error, duration:3000, setterFunc: setFeedback})
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
       })
       //clean up function
       return () => {
@@ -57,6 +66,8 @@ const ScreenAdminClientManagement = ({ navigation }) => {
     useEffect(() => {
       setFilteredClients(clients)
     }, [clients])
+
+
     return (
       <>
         <ComponentAdminHeader />
@@ -69,7 +80,7 @@ const ScreenAdminClientManagement = ({ navigation }) => {
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem status={item.docData.status === 1 ? 'email-sent' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {userKey:item.id})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem status={item.docData.status === 1 ? 'email-sent' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, title: item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}

@@ -48,7 +48,9 @@ const ScreenAdminClientAdd = ({navigation}) => {
       groups:[],
       emailOptIn: true,
       pushOptIn: true,
-      isAdmin: false
+      isAdmin: false,
+      active: false,
+      deleted: false
     })
   //initialise code
   const [codeValue, setCodeValue] = useState('')
