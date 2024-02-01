@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, Alert } from 'react-native'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
+import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 //utils
@@ -17,12 +18,14 @@ import { Ionicons } from '@expo/vector-icons'
 
 const ScreenAdminClientMenu = ({route, navigation}) => {
         //local variables
-        const { title, userKey } = route.params
+        const { clientData, userKey } = route.params
+        const { firstName, lastName } = clientData
         //local state
         const [loading, setLoading] = useState(false)
         const [feedback, setFeedback] = useState(false)
         const [hasSignedUp, setHasSignedUp] = useState(false)
         const [userLiveCode, setUserLiveCode] = useState(false)
+        const [liveCodeKey, setLiveCodeKey] = useState('')
         const [codeExpiryDate, setCodeExpiryDate]  = useState('')
         
         useEffect(()=>{
@@ -35,9 +38,8 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                         //check to see if the users account
                         const { isActive } = response
                         if(isActive){
-                          hasSignedUp = true
+                          setHasSignedUp(true)
                         }else{
-                          console.log('should be fetching the code now')
                           //check if user has a live code
                           const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date: new Date()})
                           const response = await UtilsCodeManagement.checkLiveCodeForUser({currentCollection: 'inviteCodes', userId: userKey, firestoreTimeStamp})
@@ -47,6 +49,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                             const friendlyDateString = UtilsHelpers.localeDateString({dateObject, locale:'en-UK', options: {day: "numeric", month:"short", hour: "numeric", minute: "numeric"}})
                             setUserLiveCode(true)
                             setCodeExpiryDate(friendlyDateString)
+                            setLiveCodeKey(response.codeKey)
                           }
                         }
                         setLoading(false)
@@ -65,6 +68,43 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
             }
         },[])
 
+        //Update the delete status of the client
+    const updateDeleteStatusOfClient = async () => {
+      
+      try{
+        setLoading(true)
+        const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', key: userKey, data:{isDeleted: true}})
+        if(!response.error){
+          setLoading(false)
+          navigation.navigate('ScreenAdminClientManagement', {message: 'Client has been deleted'})
+        }else{
+          console.log(response.error)
+          setLoading(false)
+          return
+        }
+      }catch(error){
+        console.log(error.message)
+        setLoading(false)
+        return
+      }
+    }
+    //delete client alert functionality
+    const deleteClient = async () => {
+      Alert.alert('Delete client', 'Are you sure you want to delete this user?', [
+        {
+          text: 'No',
+          style: 'cancel'
+        },
+        {
+          text: 'Yes', 
+          onPress: () => {
+            updateDeleteStatusOfClient()
+            setLoading(false)
+          }
+        },
+      ])
+    }
+
         return (
             <>
               <ComponentAdminHeader backButton={true} onPress={()=>{navigation.navigate('ScreenAdminClientManagement')}} />
@@ -73,11 +113,13 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                       <ComponentAdminTitle title={'MANAGE CLIENT'}  />
                       {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                       <View style={styles.form}>
-                      <Text style={styles.subTitle}>{title}</Text>
-                      { userLiveCode && codeExpiryDate ?  <Text>This clients invite code expires on {codeExpiryDate} </Text> :  <Text>This clients invite code has expired </Text>}
-                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminMarketingGroupManagement')}} /> : <Text>This account is active</Text>  }
+                      <Text style={styles.subTitle}>{firstName.toUpperCase() + ' ' + lastName.toUpperCase()}</Text>
+                      {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <Text>This clients invite code expires on {codeExpiryDate} </Text> :  <Text>This clients invite code has expired </Text> : null}
+                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {clientData, userKey, codeKey: liveCodeKey})}} /> : <Text>This account is active</Text>  }
                         
-                        <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {userKey, title})}} />
+                        <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {userKey, clientData})}} />
+
+                        <ComponentAppBtnSecondary label={'DELETE CLIENT'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'}  />
                       </View>
                   </View>
             </>

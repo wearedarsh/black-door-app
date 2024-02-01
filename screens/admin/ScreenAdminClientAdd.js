@@ -241,6 +241,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
           }
         }
         const sendEmailToClient = async () => {
+          
           Alert.alert('Client Added', 'Would you like to send an email notification?', [
             {
               text: 'No',

@@ -6,14 +6,9 @@ import { colors } from '../../assets/style/theme'
 import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAdminListItem = (props) => {
-    const { title = 'SET TITLE PROP', onPress=()=>{}, status} = props
-    let icon = ''
+    const { title = 'SET TITLE PROP', onPress=()=>{}, status, icon} = props
     let style = {}
-    switch(status){
-      case 'email-sent':
-      icon = 'mail'
-      break 
-    }
+    
   return (
     <TouchableOpacity style={styles.listItem} onPress={onPress}>
        <View style={styles.row}>{icon && <Ionicons name={icon} size={16} color={colors.slate} style={{marginRight:8}} />}<Text style={styles.title}>{title}</Text></View>

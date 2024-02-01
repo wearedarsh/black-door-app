@@ -30,7 +30,7 @@ import { setGroups } from '../../redux/actions/actionGroups'
 
 const ScreenAdminClientEdit = ({navigation, route}) => {
     //route params
-    const { userKey, title } = route.params
+    const { userKey, clientData } = route.params
     //local variables
     const formRef = useRef()
     const firstFormFieldRef = useRef()
@@ -213,48 +213,9 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
         return
     }
 
-    //Update the delete status of the client
-    const updateDeleteStatusOfClient = async () => {
-      console.log('I should be deleting')
-      try{
-        setLoading(true)
-        const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', key: userKey, data:{isDeleted: true}})
-        if(!response.error){
-          setLoading(false)
-          navigation.navigate('ScreenAdminClientManagement', {message: 'Client has been deleted'})
-        }else{
-          console.log(response.error)
-          setLoading(false)
-          return
-        }
-      }catch(error){
-        console.log(error.message)
-        setLoading(false)
-        return
-      }
-    }
-    //delete client alert functionality
-    const deleteClient = async () => {
-      Alert.alert('Delete client', 'Are you sure you want to delete this user?', [
-        {
-          text: 'No',
-          style: 'cancel'
-        },
-        {
-          text: 'Yes', 
-          onPress: () => {
-            updateDeleteStatusOfClient()
-            setLoading(false)
-          }
-        },
-      ])
-    }
-
-    
-
     return (
       <>
-        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {title, userKey})}} />
+        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {clientData, userKey})}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
                 <ComponentAdminTitle title={'EDIT CLIENT'} />
@@ -275,9 +236,8 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                     <Text style={styles.subTitle}>ACCOUNT STATUS</Text>
                     <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.active} setterFunction={() => {setFormValues({...formValues, active: !formValues.active})}} />
                     <ComponentAppSpacerView height={24} />
-                    <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} bgrColor={colors.slate} />
-                    <ComponentAppSpacerView height={16} />
-                    <ComponentAppBtnPrimary label={'DELETE CLIENT'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'} />
+                    <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} />
+                
                     <ComponentAppSpacerView height={120} />
                   </ScrollView>
             </View>

@@ -1,5 +1,5 @@
 import { app } from '../config/configFirebase'
-import { getFirestore, collection, addDoc, setDoc, doc, getDoc, getDocs, onSnapshot, updateDoc, deleteField, where, query, get, Timestamp } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, getDoc, getDocs, onSnapshot, updateDoc, deleteField, where, query, get, Timestamp } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -22,6 +22,17 @@ const UtilsFirestore = {
             return { success: true, message: 'document set successfully' }
         }catch(error){
             return { error: error.message }
+        }
+    },
+    deleteDocumentByKey: async function(payload){
+        const { currentCollection, key } = payload
+        try{
+            const collectionRef = collection(db, currentCollection)
+            const docRef = doc(collectionRef, key)
+            const response = await deleteDoc(docRef)
+            return { success: true, message: 'document deleted successfully'}
+        }catch(error){
+            return { error: error.message}
         }
     },
     updateDocumentByKey: async function(payload){
@@ -78,25 +89,20 @@ const UtilsFirestore = {
         }
         },
         getDocumentsWhere: async function(payload){
-            const { currentCollection, conditions } = payload
+            const { queryRef } = payload
+
             try{
-                //set collection reference
-                const collectionRef = collection(db, currentCollection)
-                //map conditions
-                const queryConditions = conditions.map((condition) =>
-                    where(condition.fieldName, condition.operator, condition.fieldValue)
-                )
-                //final query
-                const finalQuery = query(collectionRef, ...queryConditions)
                 //get docs
-                const querySnapshot = await getDocs(finalQuery)
-                console.log(querySnapshot.size)
-                if(querySnapshot.size > 0){
-                    const queryDocs = querySnapshot.docs
-                    const response = queryDocs.data()
-                    return { success: true, docData: response, numDocs: querySnapshot.size}
+                const querySnapshot = await getDocs(queryRef)
+                if(!querySnapshot.empty){
+                    const documents = querySnapshot.docs.map((doc) => ({
+                        docData:doc.data(),
+                        id: doc.id
+                    }))
+                   
+                    return { success: true, documents, numDocs: querySnapshot.size}
                 }else{
-                    return { success:false }
+                    return { error: 'Cannot fetch any documents' }
                 }
             }catch(error){
                 return { error: error.message }
@@ -129,7 +135,7 @@ const UtilsFirestore = {
         },
         convertFirestoreTimestampToDate: async function(payload){
             const { date } = payload
-            console.log('my date is: ' + date)
+            
             const dateString = date.toDateString()
             return dateString
         }

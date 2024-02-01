@@ -4,6 +4,7 @@ import ScreenAdminClientManagement from '../admin/ScreenAdminClientManagement'
 import ScreenAdminClientAdd from '../admin/ScreenAdminClientAdd'
 import ScreenAdminClientEdit from '../admin/ScreenAdminClientEdit'
 import ScreenAdminClientMenu from '../admin/ScreenAdminClientMenu'
+import ScreenAdminClientCreateCode from '../admin/ScreenAdminClientCreateCode'
 //navigation
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 //stack
@@ -17,6 +18,7 @@ const StackAdminClient = () => {
                 <Stack.Screen name="ScreenAdminClientMenu" component={ScreenAdminClientMenu} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenAdminClientEdit" component={ScreenAdminClientEdit} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenAdminClientAdd" component={ScreenAdminClientAdd} options={{headerShown: false}} />
+                <Stack.Screen name="ScreenAdminClientCreateCode" component={ScreenAdminClientCreateCode} options={{headerShown: false}} />
                 
             </Stack.Navigator>
     )

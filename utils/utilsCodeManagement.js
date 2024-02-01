@@ -47,7 +47,7 @@ const UtilsCodeManagement = {
     },
     checkLiveCodeForUser: async function(payload){
         const { currentCollection, userId, firestoreTimeStamp } = payload
-        console.log(JSON.stringify(payload))
+        
         try{
             //set collection ref
             const collectionRef = collection(db, currentCollection)
@@ -62,7 +62,7 @@ const UtilsCodeManagement = {
             const queryDocs = querySnapshot.docs
             //
             if(queryDocs.length === 1){
-                return { success: true, data: queryDocs[0].data()}
+                return { success: true, data: queryDocs[0].data(), codeKey: queryDocs[0].id}
             }else{
                 return { error: 'This code does not exist'}
             }

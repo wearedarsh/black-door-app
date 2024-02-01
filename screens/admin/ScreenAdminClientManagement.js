@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, FlatList} from 'react-native'
 //firestore
 import { app } from '../../config/configFirebase'
-import { getFirestore, collection, onSnapshot } from "firebase/firestore"
+import { getFirestore, collection, onSnapshot, where, query, getDocs, orderBy } from "firebase/firestore"
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
@@ -13,6 +13,7 @@ import ComponentAdminLoadingIndicator from '../../components/admin/componentAdmi
 import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
 //utils
 import UtilsValidation from '../../utils/utilsValidation'
+import UtilsFirestore from '../../utils/utilsFirestore'
 
 const ScreenAdminClientManagement = ({ navigation, route }) => {
     //local variables
@@ -24,7 +25,6 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
     const [searchText, setSearchText] = useState('')
     //firestore
     const db = getFirestore(app)
-    const collectionRef = collection(db, 'users')
     //search filter
     const [filteredClients, setFilteredClients] = useState([])
     const onSearchChange = (searchString) => {
@@ -40,28 +40,36 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
     },[message])
      //firestore listener
      useEffect(() => {
-      const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
-          setLoading(true)
-          const clientsArray = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            docData: doc.data()
-          }))
+      //fetch clients
+      const fetchClients = async () => {
+      try{
+        //setLoading(true)
+        const collectionRef = collection(db, 'users')
+        const whereRef = where("isDeleted","==", false)
+        const queryRef  = query(collectionRef, whereRef)
+        const orderRef = orderBy("isActive", "asc")
 
-          clientsArray.sort((a,b) => {
-            const statusA = a.docData.status === 1 ? -1 : 1;
-            const statusB = b.docData.status === 1 ? -1 : 1;
-            return statusA - statusB;
-          })
-          setClients(clientsArray)
+        const response = await UtilsFirestore.getDocumentsWhere({queryRef})
+        if(response.success){
+          const { documents } = response 
+          setClients(documents)
           setLoading(false)
-      }, (error) => {
+        }else{
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
+          return
+        }
+
+      }catch(error){
+        setLoading(false)
         UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
-      })
-      //clean up function
-      return () => {
-        unsubscribe()
+        return
       }
-    },[])
+    }
+
+      fetchClients()
+    },[message])
+
     //update filtered clients with clients if updated
     useEffect(() => {
       setFilteredClients(clients)
@@ -80,7 +88,7 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem status={item.docData.status === 1 ? 'email-sent' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, title: item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive === false ? 'keypad' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, clientData: item.docData})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
