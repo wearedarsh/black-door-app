@@ -32,42 +32,34 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
       const filteredArray = clients.filter((item) => item.docData.firstName.toLowerCase().includes(searchString.toLowerCase()) || item.docData.lastName.toLowerCase().includes(searchString.toLowerCase()))
       setFilteredClients(filteredArray)
     }
-
+    //effect for if message is passed in route params
     useEffect(() => {
       if(message){
         UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:message, icon:'ios-warning'}})
       }
     },[message])
-     //firestore listener
+     //Real time updates for client list
      useEffect(() => {
-      //fetch clients
-      const fetchClients = async () => {
-      try{
-        //setLoading(true)
-        const collectionRef = collection(db, 'users')
-        const whereRef = where("isDeleted","==", false)
-        const queryRef  = query(collectionRef, whereRef)
-        const orderRef = orderBy("isActive", "asc")
-
-        const response = await UtilsFirestore.getDocumentsWhere({queryRef})
-        if(response.success){
-          const { documents } = response 
-          setClients(documents)
-          setLoading(false)
-        }else{
-          setLoading(false)
-          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
-          return
-        }
-
-      }catch(error){
-        setLoading(false)
-        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
-        return
+      //build query
+      const collectionRef = collection(db, 'users')
+      const whereRef = where("isDeleted","==", false)
+      const orderRef = orderBy("isActive", "asc")
+      const alphaOrderRef = orderBy("lastName", "asc")
+      const queryRef  = query(collectionRef, whereRef, orderRef, alphaOrderRef)
+      //realtime query
+        const unsubscribe = onSnapshot(queryRef, (snapshot) => {
+          //map data to array for flatlist
+          const clientsArray = snapshot.docs.map((doc) => ({
+            docData:doc.data(),
+            id: doc.id
+          }))
+          //update local state with new array
+          setClients(clientsArray)
+        })
+    
+      return () => {
+        unsubscribe()
       }
-    }
-
-      fetchClients()
     },[message])
 
     //update filtered clients with clients if updated
@@ -88,7 +80,7 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive === false ? 'keypad' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, clientData: item.docData})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive === false ? 'keypad' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, clientData: item.docData, key: Math.random()})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}

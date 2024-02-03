@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet, Alert } from 'react-native'
+//navigation
+import { useFocusEffect } from '@react-navigation/native'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
@@ -7,6 +9,7 @@ import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
+import ComponentAdminParagraph from '../../components/admin/componentAdminParagraph'
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsCodeManagement from '../../utils/utilsCodeManagement'
@@ -26,9 +29,11 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
         const [hasSignedUp, setHasSignedUp] = useState(false)
         const [userLiveCode, setUserLiveCode] = useState(false)
         const [liveCodeKey, setLiveCodeKey] = useState('')
+        const [clientDetails, setClientDetails] = useState({firstName, lastName})
         const [codeExpiryDate, setCodeExpiryDate]  = useState('')
         
-        useEffect(()=>{
+        useFocusEffect(
+          React.useCallback(()=>{
             setLoading(true)
             //check if user has signed up
             try{
@@ -50,6 +55,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                             setUserLiveCode(true)
                             setCodeExpiryDate(friendlyDateString)
                             setLiveCodeKey(response.codeKey)
+                            setClientDetails(prevState => ({firstName: response.firstName, lastName: response.lastName}))
                           }
                         }
                         setLoading(false)
@@ -66,11 +72,10 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                 UtilsValidation.showHideFeedback({icon:'ios-warning', title: error.message, duration:3000, setterFunc: setFeedback})
                 return
             }
-        },[])
+        },[]))
 
         //Update the delete status of the client
     const updateDeleteStatusOfClient = async () => {
-      
       try{
         setLoading(true)
         const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', key: userKey, data:{isDeleted: true}})
@@ -78,12 +83,13 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
           setLoading(false)
           navigation.navigate('ScreenAdminClientManagement', {message: 'Client has been deleted'})
         }else{
-          console.log(response.error)
+          UtilsValidation.showHideFeedback({icon:'ios-warning', title: response.error, duration:3000, setterFunc: setFeedback})
+          return
           setLoading(false)
           return
         }
       }catch(error){
-        console.log(error.message)
+        UtilsValidation.showHideFeedback({icon:'ios-warning', title: error.message, duration:3000, setterFunc: setFeedback})
         setLoading(false)
         return
       }
@@ -114,7 +120,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                       {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                       <View style={styles.form}>
                       <Text style={styles.subTitle}>{firstName.toUpperCase() + ' ' + lastName.toUpperCase()}</Text>
-                      {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <Text>This clients invite code expires on {codeExpiryDate} </Text> :  <Text>This clients invite code has expired </Text> : null}
+                      {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <View style={styles.row}><Ionicons name={'keypad'} color={colors.slate} size={16} /><ComponentAdminParagraph copy={'This clients invite code expires on ' + codeExpiryDate} /></View> :   <View style={styles.row}><Ionicons name={'keypad'} color={colors.slate} size={16} /><ComponentAdminParagraph copy={'This clients invite code has expired'} /></View> : null}
                         {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {clientData, userKey, codeKey: liveCodeKey})}} /> : <Text>This account is active</Text>  }
                         
                         <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {userKey, clientData})}} />
@@ -146,6 +152,10 @@ const styles = StyleSheet.create({
       letterSpacing: 2,
       marginBottom: 16,
       marginTop:8
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'flex-start'
     }
   
     

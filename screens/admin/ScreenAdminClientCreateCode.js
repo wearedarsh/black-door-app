@@ -42,7 +42,7 @@ const ScreenAdminClientCreateCode = ({route, navigation}) => {
           })
           if(!response.error){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Code added and invite email sent to client', icon:'ios-checkmark'}})
+            UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:codeKey ? 'Code updated for client and email notification sent' : 'Code added for client and email notification sent', icon:'ios-checkmark'}})
             return
           }
         }catch(error){
@@ -59,7 +59,7 @@ const ScreenAdminClientCreateCode = ({route, navigation}) => {
             style: 'cancel',
             onPress: () => {
               setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Code successfully added', icon:'ios-checkmark'}})
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:codeKey ? 'Code updated for client' : 'Code added for client', icon:'ios-checkmark'}})
               return
             }
           },

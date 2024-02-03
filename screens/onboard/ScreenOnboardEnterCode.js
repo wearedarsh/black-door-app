@@ -16,9 +16,11 @@ import UtilsCodeManagement from '../../utils/utilsCodeManagement'
 import UtilsValidation from '../../utils/utilsValidation'
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsEncryption from '../../utils/utilsEncryption'
-//redux
-import { useSelector, useDispatch } from 'react-redux'
-import { setLoading } from '../../redux/actions/actionLoading'
+//expo
+import * as Network from 'expo-network'
+//firestore
+import { app } from '../../config/configFirebase'
+import { getFirestore, collection, query, where } from "firebase/firestore"
 
 
 
@@ -26,12 +28,42 @@ const ScreenOnboardEnterCode = ({navigation}) => {
     //local state
     const [codeValue, setCodeValue] = useState('')
     const [feedback, setFeedback] = useState(false)
-    //redux
-    const dispatch = useDispatch()
-    const loading = useSelector(state => state.loadingState.loading)
+    const [loading, setLoading] = useState(false)
+    //firestore
+    const db = getFirestore(app)
 
     const verifyCode = async (code) => {
-        dispatch(setLoading({loading: true}))
+        let deviceIP = ''
+        setLoading(true)
+        //fetch IP address of user
+        try{
+            deviceIP = await Network.getIpAddressAsync()
+        }catch(error){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        //check if user in blocked list
+        try{
+            //build query to check
+            const collectionRef = collection(db, 'blockedList')
+            const whereRef = where("IP", "==", deviceIP)
+            const queryRef = query(collectionRef, whereRef)
+            //check if IP in block list
+            const response = await UtilsFirestore.getDocumentsWhere({queryRef})
+            if(response.success){
+                setLoading(false)
+                UtilsValidation.showHideFeedback({duration: 10000, setterFunc:setFeedback, data: {title:'Sorry you have been blocked, if this is a mistake please contact the administrator', icon:'ios-warning'}})
+                return
+            }
+        }catch(error){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+        
+
+
         //check code exists in live codes table
         try{
             //create hashed version of code
@@ -40,23 +72,42 @@ const ScreenOnboardEnterCode = ({navigation}) => {
             const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date:new Date()})
             //check if code exists
             const response = await UtilsCodeManagement.checkCodeExists({hashedCode: hashedString, firestoreTimeStamp: firestoreTimeStamp})
-            //if yes then 
+            //if code doesn't exist 
             if(response.error){
-                dispatch(setLoading({loading: false}))
+                //insert IP into code attempts collection
+                const responseIP = UtilsFirestore.addDocument({currentCollection: 'codeAttempts', data: {IP: deviceIP, timestamp: firestoreTimeStamp, success: false}})
+                //check how many fails in codeattempts collection
+                const collectionRef = collection(db, 'codeAttempts')
+                const whereIPRef = where("IP", "==", deviceIP)
+                const whereSuccessRef = where("success", "==", false)
+                const queryRef = query(collectionRef, whereIPRef, whereSuccessRef)
+
+                const responseQuery = await UtilsFirestore.getDocumentsWhere({queryRef})
+                
+                if(responseQuery.numDocs >= 5){
+                    const blockQuery = await UtilsFirestore.addDocument({currentCollection: 'blockedList', data: {IP: deviceIP, timestamp:firestoreTimeStamp}})
+                    setLoading(false)
+                    UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Sorry you have been blocked, if this is a mistake please contact the administrator', icon:'ios-warning'}})
+                    return
+                }
+                
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }else{
+                //insert IP into code attempts collection
+                const responseIP = UtilsFirestore.addDocument({currentCollection: 'codeAttempts', data: {IP: deviceIP, timestamp: firestoreTimeStamp, success: true}})
                 //get user id
                 const { data } = response
                 const { userId } = data
                 //grab the user details and pass the data through root params to next screen
                 const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userId})
                 if(!userDetails.error){
-                    dispatch(setLoading({loading: false}))
+                    setLoading(false)
                     navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userId, message: 'Code entered successfully'})
                     return
                 }else{
-                    dispatch(setLoading({loading: false}))
+                    setLoading(false)
                     UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:userDetails.error, icon:'ios-checkmark'}})
                     return
                 }

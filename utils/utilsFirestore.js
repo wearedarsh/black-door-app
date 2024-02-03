@@ -102,7 +102,7 @@ const UtilsFirestore = {
                    
                     return { success: true, documents, numDocs: querySnapshot.size}
                 }else{
-                    return { error: 'Cannot fetch any documents' }
+                    return { success: false, error: 'Cannot fetch any documents' }
                 }
             }catch(error){
                 return { error: error.message }
