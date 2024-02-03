@@ -43,10 +43,11 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
             id: doc.id,
             docData: doc.data()
           }))
+
           setProperties(propertiesArray)
           setLoading(false)
       }, (error) => {
-        UtilsValidation.showHideFeedback({icon:'ios-warning', title: 'error', duration:3000, setterFunc: setFeedback})
+        UtilsValidation.showHideFeedback({icon:'ios-warning', title: error.message, duration:3000, setterFunc: setFeedback})
       })
 
       //clean up function
@@ -69,7 +70,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
                 {filteredProperties &&    
                   <FlatList style={{width:'100%'}}
                     data={filteredProperties}
-                    renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive ? 'checkmark-circle' : null} title={item.docData.title.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
+                    renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive ? 'checkmark-circle' : null} title={item.docData.title.toUpperCase() + ' - ' + item.docData.location.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
                     keyExtractor={(item) => item.id}
                     showVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}

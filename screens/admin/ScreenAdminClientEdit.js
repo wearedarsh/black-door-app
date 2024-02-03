@@ -233,7 +233,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                     <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
                     <Text style={styles.subTitle}>ACCOUNT STATUS</Text>
-                    <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.active} setterFunction={() => {setFormValues({...formValues, active: !formValues.active})}} />
+                    <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.isActive} setterFunction={() => {setFormValues({...formValues, isActive: !formValues.isActive})}} />
                     <ComponentAppSpacerView height={24} />
                     <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} />
                 

@@ -16,6 +16,7 @@ const UtilsFirestore = {
     },
     setDocument: async function(payload){
         const { currentCollection, data, key } = payload
+        console.log(currentCollection, JSON.stringify(data), key)
         try{
             const docRef = doc(db, currentCollection, key)
             const response = await setDoc(docRef, data)
