@@ -21,7 +21,9 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
       price: '',
       shortDescription: '',
       heroImage:'',
-      squareFeet:''
+      squareFeet:'',
+      isActive: false,
+      isDeleted: false
     })
 
     const { key } = route.params

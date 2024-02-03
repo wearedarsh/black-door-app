@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList} from 'react-native'
 //firestore
 import { app } from '../../config/configFirebase'
-import { getFirestore, collection, onSnapshot } from "firebase/firestore"
+import { getFirestore, collection, onSnapshot, where, orderBy, query } from "firebase/firestore"
 //utils
 import UtilsValidation from '../../utils/utilsValidation'
 //components
@@ -23,6 +23,10 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     //firestore
     const db = getFirestore(app)
     const collectionRef = collection(db, 'properties')
+    const whereRef = where("isDeleted", "==", false)
+    const orderActiveRef = orderBy("isActive", "desc")
+    const orderTitleRef = orderBy("title", "desc")
+    const queryRef = query(collectionRef, whereRef, orderActiveRef, orderTitleRef)
     //search filter
     const [filteredProperties, setFilteredProperties] = useState([])
     //search function
@@ -33,7 +37,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     }
     //firestore listener
     useEffect(() => {
-      const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+      const unsubscribe = onSnapshot(queryRef, (snapshot) => {
           setLoading(true)
           const propertiesArray = snapshot.docs.map((doc) => ({
             id: doc.id,
@@ -65,7 +69,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
                 {filteredProperties &&    
                   <FlatList style={{width:'100%'}}
                     data={filteredProperties}
-                    renderItem={({ item }) => <ComponentAdminListItem title={item.docData.title.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
+                    renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive ? 'checkmark-circle' : null} title={item.docData.title.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
                     keyExtractor={(item) => item.id}
                     showVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
