@@ -10,6 +10,7 @@ import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
 import ComponentAdminParagraph from '../../components/admin/componentAdminParagraph'
+import ComponentAdminInformation from '../../components/admin/componentAdminInformation'
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsCodeManagement from '../../utils/utilsCodeManagement'
@@ -120,12 +121,13 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                       {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                       <View style={styles.form}>
                       <Text style={styles.subTitle}>{firstName.toUpperCase() + ' ' + lastName.toUpperCase()}</Text>
-                      {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <View style={styles.row}><Ionicons name={'keypad'} color={colors.slate} size={16} /><ComponentAdminParagraph copy={'This clients invite code expires on ' + codeExpiryDate} /></View> :   <View style={styles.row}><Ionicons name={'keypad'} color={colors.slate} size={16} /><ComponentAdminParagraph copy={'This clients invite code has expired'} /></View> : null}
-                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {clientData, userKey, codeKey: liveCodeKey})}} /> : <Text>This account is active</Text>  }
+                      {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <ComponentAdminInformation information={'This clients invite code expires on ' + codeExpiryDate} /> : <ComponentAdminInformation information={'This clients invite code has expired'} /> : null}
+                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {clientData, userKey, codeKey: liveCodeKey})}} /> : <ComponentAdminInformation information={'This account is active'} />  }
                         
                         <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {userKey, clientData})}} />
 
                         <ComponentAppBtnSecondary label={'DELETE CLIENT'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'}  />
+                        
                       </View>
                   </View>
             </>

@@ -20,8 +20,6 @@ import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 //stack
 const Stack = createNativeStackNavigator()
 
-
-
 const ScreenAuthFlow = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)

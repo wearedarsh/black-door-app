@@ -6,34 +6,50 @@ import { colors } from '../../assets/style/theme'
 import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAdminListItem = (props) => {
-    const { title = 'SET TITLE PROP', onPress=()=>{}, status, icon} = props
+    const { title = 'SET TITLE PROP', subTitle = '', onPress=()=>{}, status, icon} = props
     let style = {}
     
   return (
     <TouchableOpacity style={styles.listItem} onPress={onPress}>
-       <View style={styles.row}>{icon && <Ionicons name={icon} size={16} color={colors.slate} style={{marginRight:8}} />}<Text style={styles.title}>{title}</Text></View>
-        <Ionicons name="chevron-forward" size={32} color={colors.gold} />
+        {icon && <View style={{flex: 1, alignItems:'center'}}>
+          <Ionicons name={icon} size={16} color={colors.slate} style={{marginRight:8}} />
+        </View>
+        }
+        <View style={{flex:6, justifyContent:'center', flexDirection:'column'}}>
+          <Text style={styles.title}>{title}</Text>
+          {subTitle && <Text style={styles.subTitle}>{subTitle}</Text> }
+        </View>
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <Ionicons name="chevron-forward" size={32} color={colors.gold} />
+        </View>  
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
     listItem: {
-        width:'100%',
-        paddingHorizontal: 32,
-        paddingVertical: 8,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flex:1,
+        flexDirection:'row',
         borderBottomWidth: 1,
-        borderBottomColor: colors.slate
+        borderBottomColor: colors.slate,
+        padding:8,
+        paddingHorizontal: 16
       },
       title: {
         color:colors.slate,
         fontSize: 16,
         fontFamily: 'primary-medium',
-        letterSpacing: 2,
-        paddingLeft: Platform.OS === 'ios' ? 2 : 0
+        letterSpacing: 1,
+        paddingLeft: Platform.OS === 'ios' ? 1 : 0,
+        marginTop: -3
+      },
+      subTitle: {
+        color:colors.gold,
+        fontSize: 12,
+        fontFamily: 'primary-medium',
+        letterSpacing: 1,
+        paddingLeft: Platform.OS === 'ios' ? 1 : 0,
+        marginTop: -3
       },
       row:{
         flexDirection: 'row',

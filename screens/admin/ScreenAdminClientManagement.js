@@ -74,13 +74,14 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
                 <ComponentAdminTitle title={'CLIENT MANAGEMENT'} />
-                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminClientAdd')}} />
+                
+                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminClientAdd')}} title={'ADD CLIENT'} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive === false ? 'keypad' : null} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, clientData: item.docData, key: Math.random()})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem icon={false} subTitle={!item.docData.isActive ? 'ACCOUNT NOT ACTIVE' : 'ACCOUNT IS ACTIVE'} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {userKey:item.id, clientData: item.docData, key: Math.random()})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}

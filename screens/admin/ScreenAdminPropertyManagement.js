@@ -12,6 +12,7 @@ import ComponentAdminSearch from '../../components/admin/componentAdminSearch'
 import ComponentAdminFeedback from '../../components/admin/componentAdminFeedback'
 import ComponentAdminListItem from '../../components/admin/componentAdminListItem'
 import ComponentAdminLoadingIndicator from '../../components/admin/componentAdminLoadingIndicator'
+import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
 
 
 const ScreenAdminPropertyManagement = ({ navigation }) => {
@@ -64,13 +65,15 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
         <ComponentAdminHeader />
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
+                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminPropertyAdd')}} title={'ADD PROPERTY'} />
                 <ComponentAdminTitle title={'PROPERTY MANAGEMENT'} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
+                
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredProperties &&    
                   <FlatList style={{width:'100%'}}
                     data={filteredProperties}
-                    renderItem={({ item }) => <ComponentAdminListItem icon={item.docData.isActive ? 'checkmark-circle' : null} title={item.docData.title.toUpperCase() + ' - ' + item.docData.location.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
+                    renderItem={({ item }) => <ComponentAdminListItem title={item.docData.title.toUpperCase() + ' - ' + item.docData.location.toUpperCase()} subTitle={!item.docData.isActive ? 'PROPERTY INACTIVE' : 'PROPERTY LIVE'} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
                     keyExtractor={(item) => item.id}
                     showVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
