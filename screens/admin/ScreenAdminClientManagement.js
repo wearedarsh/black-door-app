@@ -81,7 +81,7 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
                 {filteredClients &&
                 <FlatList style={{width:'100%'}}
                   data={filteredClients}
-                  renderItem={({ item }) => <ComponentAdminListItem icon={false} subTitle={!item.docData.isActive ? 'ACCOUNT INACTIVE' : 'ACCOUNT ACTIVE'} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {key:item.id, data: item.docData})}} />}
+                  renderItem={({ item }) => <ComponentAdminListItem icon={false} subTitle={!item.docData.isActive ? 'INACTIVE' : 'LIVE'} title={item.docData.firstName.toUpperCase() + ' ' + item.docData.lastName.toUpperCase()} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {key:item.id, data: item.docData})}} />}
                   keyExtractor={(item) => item.id}
                   showVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}

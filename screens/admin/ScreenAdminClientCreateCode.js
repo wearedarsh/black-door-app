@@ -17,8 +17,8 @@ import UtilsEmail from '../../utils/utilsEmail'
 
 const ScreenAdminClientCreateCode = ({route, navigation}) => {
     //route params
-    const { clientData, userKey, codeKey, user } = route.params
-    const { firstName, emailAddress } = clientData
+    const { data, key, codeKey, user } = route.params
+    const { firstName, emailAddress } = data
     //local state
     const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
@@ -145,7 +145,7 @@ const ScreenAdminClientCreateCode = ({route, navigation}) => {
 
     return (
         <>
-              <ComponentAdminHeader backButton={true} onPress={()=>{navigation.navigate('ScreenAdminClientMenu', {clientData, userKey})}} />
+              <ComponentAdminHeader backButton={true} onPress={()=>{navigation.navigate('ScreenAdminClientMenu', {data, key})}} />
                 {loading && <ComponentAdminLoadingIndicator /> }
                   <View style={styles.container}>
                       <ComponentAdminTitle title={'CREATE CODE'}  />

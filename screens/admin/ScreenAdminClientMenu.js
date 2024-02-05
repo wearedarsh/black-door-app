@@ -122,7 +122,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
                       <View style={styles.form}>
                       <Text style={styles.subTitle}>{firstName.toUpperCase() + ' ' + lastName.toUpperCase()}</Text>
                       {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <ComponentAdminInformation information={'This clients invite code expires on ' + codeExpiryDate} /> : <ComponentAdminInformation information={'This clients invite code has expired'} /> : null}
-                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {data, key, codeKey: liveCodeKey})}} /> : <ComponentAdminInformation information={'This account is active'} />  }
+                        {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {data, key, codeKey: liveCodeKey})}} /> : <ComponentAdminInformation information={'This account is live'} />  }
                         
                         <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {key, data})}} />
 

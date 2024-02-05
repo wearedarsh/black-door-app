@@ -35,12 +35,12 @@ const ScreenAdminPropertyMenu = ({route, navigation}) => {
             setLoading(true)
             //check if user has signed up
             try{
-                const fetchUserDoc = async () => {
+                const fetchPropertyDoc = async () => {
                     const response = await UtilsFirestore.getDocumentByKey({currentCollection: 'properties', key})
                     if(!response.error){
                         //check to see if the users account
                         const { isActive, title, location } = response
-                        setPropertyDetails(prev => ({...prev, title, isActive, location}))
+                        setPropertyDetails(prevState => ({...prevState, title, isActive, location}))
                         setLoading(false)
                         return
                     }else{

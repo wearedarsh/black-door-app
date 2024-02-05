@@ -193,7 +193,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
         //Try to add client to Firestore
         try{
           setLoading(true)
-          const response = await UtilsFirestore.setDocument({currentCollection: 'users', data: formValuesForSubmit, key: userKey})
+          const response = await UtilsFirestore.setDocument({currentCollection: 'users', data: formValuesForSubmit, key})
           if(response.error){
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
@@ -214,7 +214,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
 
     return (
       <>
-        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {data: {firstName: formValues.firstName, lastName: formValues.lastName}, key, key: Math.random()})}} />
+        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {data: {firstName: formValues.firstName, lastName: formValues.lastName}, key})}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
                 <ComponentAdminTitle title={'EDIT CLIENT'} />
