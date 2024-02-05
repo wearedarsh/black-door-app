@@ -36,6 +36,8 @@ const ScreenAuthFlow = () => {
                 //user is admin
                 if(userAuthState.authIsAdmin === 'true'){
                     setIsAdmin(true)
+                }else{
+                    setIsAdmin(false)
                 }
                 return
             }

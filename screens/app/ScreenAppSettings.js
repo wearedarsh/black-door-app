@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 //styles
 import { colors } from '../../assets/style/theme'
@@ -12,25 +12,24 @@ import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
 //redux
 import { removeUserAuth } from '../../redux/actions/actionUserAuth'
-import { setLoading } from '../../redux/actions/actionLoading'
 import { useDispatch, useSelector } from 'react-redux'
 
 const ScreenAppSettings = () => {
     //redux
     const dispatch = useDispatch()
-    const loading = useSelector(state => state.loadingState.loading)
+    const [loading, setLoading] = useState(true)
     //log out function
     const logOut = async () => {
-        dispatch(setLoading({loading: true}))
+        setLoading(true)
         //remove from securestorage
         await UtilsSecureStorage.removeFromSecureStorage({ key: 'authToken'})
         await UtilsSecureStorage.removeFromSecureStorage({ key: 'authDoc'})
         await UtilsSecureStorage.removeFromSecureStorage({ key: 'authIsAdmin'})
         //clear state
-        dispatch(setLoading({loading: false}))
-        dispatch(removeUserAuth())
         //log out auth
-        UtilsFirebaseAuth.signOutAuthUser()
+        await UtilsFirebaseAuth.signOutAuthUser()
+        await dispatch(removeUserAuth())
+        setLoading(false)
     }
 
     return(

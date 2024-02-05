@@ -104,10 +104,9 @@ const ScreenAdminPropertyMenu = ({route, navigation}) => {
                       {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                       <View style={styles.form}>
                       <Text style={styles.subTitle}>{propertyDetails.title.toUpperCase() + ' - ' + propertyDetails.location.toUpperCase()}</Text>
+                      {propertyDetails.isActive ? <ComponentAdminInformation information={'This property is live'} /> : <ComponentAdminInformation information={'This property is inactive'} />}
                         <ComponentAppBtnPrimary label={'EDIT PROPERTY'} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key})}} />
-
                         <ComponentAppBtnSecondary label={'DELETE PROPERTY'} onPress={()=>{deleteProperty()}}  icon={true} iconName={'trash-outline'}  />
-                        
                       </View>
                   </View>
             </>

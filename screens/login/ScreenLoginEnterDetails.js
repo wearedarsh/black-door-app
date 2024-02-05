@@ -30,7 +30,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
     const { message = '' } = route.params ?? {}
     //localstate
     const [feedback, setFeedback] = useState(false)
-    const loading = useSelector(state => state.loadingState.loading)
+    const [loading, setLoading] = useState(false)
     //check to see if message passed
     useEffect(() => {
         if(message){
@@ -54,7 +54,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
     const userAuthState = useSelector(state => state.userAuthState)
 
     const formSubmit = async () => {
-        await dispatch(setLoading({loading: true}))
+        setLoading(true)
         let authId
         let authToken
         let userDoc
@@ -63,12 +63,12 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         try{
             const formPopulated  = await UtilsValidation.inputsPopulated({data: formValues})
             if(!formPopulated){
-                await dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Please enter your email and password', icon:'ios-warning'}})
                 return
             }
         }catch(error){
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
@@ -76,7 +76,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         try{
             const response = await UtilsFirebaseAuth.signInUser({email: formValues.emailAddress, password: formValues.password})
             if(response.error){
-                await dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }else{
@@ -84,7 +84,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
                 authToken = response.idToken
             }
         }catch(error){
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
@@ -92,14 +92,14 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         try{
             const response = await UtilsFirestore.getDocumentWhere({currentCollection: 'users', conditions: [{fieldName: 'authId', operator: '==', fieldValue: authId}]})
             if(response.error){
-                await dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }else{
                 userDoc = response.docData
             }
         }catch(error){
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
@@ -116,16 +116,16 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
             await UtilsSecureStorage.addToSecureStorage({ key: 'authIsAdmin', value: isAdmin ? 'true' : 'false' })
             
         }catch(error){
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
         //add userDoc, authToken and admin to redux state
         try{
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             await dispatch(setUserAuth({authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
         }catch(error){
-            await dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
