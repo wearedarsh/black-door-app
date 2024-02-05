@@ -90,13 +90,13 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
               setGroupsComponentArray(prevState => groupsComponentTempArray)
 
             }else{
-              console.log('couldnt get groups')
+              
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Error fetcing groups', icon:'ios-warning'}})
               return
             }
           }catch(error){
-            console.log(error.message)
+            
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
@@ -152,6 +152,17 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
 
     //form submit
     const formSubmit = async () => {
+        //check inputs are populated
+        if(!UtilsValidation.inputsPopulated({data: {
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          emailAddress: formValues.emailAddress,
+          mobileNumber: formValues.mobileNumber,
+        }})){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
+          return
+        }
         setLoading(true)
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
@@ -173,7 +184,7 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
           }
         }catch(error){
             setLoading(false)
-            UtilsValidation.showHideFeedback({duration: 3000, data: {title:error.message, icon: 'checkmark'}, setterFunc: setFeedback})
+            UtilsValidation.showHideFeedback({duration: 3000, data: {title:error.message, icon: 'ios-warning'}, setterFunc: setFeedback})
             UtilsHelpers.scrollToTop({ref: formRef, animated: true})
         }
         
@@ -188,7 +199,7 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
 
     return (
       <>
-        <ComponentAdminHeader backButton={true} onPress={()=> {navigation.navigate('ScreenAdminPropertyManagement')}} />
+        <ComponentAdminHeader backButton={true} onPress={()=> {navigation.navigate('ScreenAdminPropertyMenu', {key, data: {title:formValues.title, location: formValues.location, isActive:formValues.isActive}} )}} />
           
           {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>

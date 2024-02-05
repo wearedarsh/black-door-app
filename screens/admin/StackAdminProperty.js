@@ -3,6 +3,7 @@ import React from 'react'
 import ScreenAdminPropertyManagement from '../admin/ScreenAdminPropertyManagement'
 import ScreenAdminPropertyAdd from '../admin/ScreenAdminPropertyAdd'
 import ScreenAdminPropertyEdit from '../admin/ScreenAdminPropertyEdit'
+import ScreenAdminPropertyMenu from '../admin/ScreenAdminPropertyMenu'
 //navigation
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 //stack
@@ -13,6 +14,7 @@ const StackAdminProperty = () => {
     return (
             <Stack.Navigator>
                 <Stack.Screen name="ScreenAdminPropertyManagement" component={ScreenAdminPropertyManagement} options={{headerShown: false}} />
+                <Stack.Screen name="ScreenAdminPropertyMenu" component={ScreenAdminPropertyMenu} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenAdminPropertyAdd" component={ScreenAdminPropertyAdd} options={{headerShown: false}} />
                 <Stack.Screen name="ScreenAdminPropertyEdit" component={ScreenAdminPropertyEdit} options={{headerShown: false}} />
         

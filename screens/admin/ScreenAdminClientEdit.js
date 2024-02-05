@@ -30,7 +30,7 @@ import { setGroups } from '../../redux/actions/actionGroups'
 
 const ScreenAdminClientEdit = ({navigation, route}) => {
     //route params
-    const { userKey, clientData } = route.params
+    const { key, data } = route.params
     //local variables
     const formRef = useRef()
     const firstFormFieldRef = useRef()
@@ -137,7 +137,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
           }
         setLoading(false)
       }
-      fetchUserDoc(userKey)
+      fetchUserDoc(key)
     },[])
 
     useEffect(()=> {
@@ -214,7 +214,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
 
     return (
       <>
-        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {clientData: {firstName: formValues.firstName, lastName: formValues.lastName}, userKey, key: Math.random()})}} />
+        <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {data: {firstName: formValues.firstName, lastName: formValues.lastName}, key, key: Math.random()})}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
                 <ComponentAdminTitle title={'EDIT CLIENT'} />

@@ -15,7 +15,9 @@ import ComponentAdminLoadingIndicator from '../../components/admin/componentAdmi
 import ComponentAdminAddButton from '../../components/admin/componentAdminAddButton'
 
 
-const ScreenAdminPropertyManagement = ({ navigation }) => {
+const ScreenAdminPropertyManagement = ({ navigation, route }) => {
+    //local variables
+    const { message = '' } = route?.params || {}
     //local state
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false) 
@@ -26,7 +28,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
     const collectionRef = collection(db, 'properties')
     const whereRef = where("isDeleted", "==", false)
     const orderActiveRef = orderBy("isActive", "desc")
-    const orderTitleRef = orderBy("title", "desc")
+    const orderTitleRef = orderBy("title", "asc")
     const queryRef = query(collectionRef, whereRef, orderActiveRef, orderTitleRef)
     //search filter
     const [filteredProperties, setFilteredProperties] = useState([])
@@ -36,6 +38,12 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
       const filteredArray = properties.filter((item) => item.docData.title.toLowerCase().includes(searchString.toLowerCase()))
       setFilteredProperties(filteredArray)
     }
+    //effect for if message is passed in route params
+    useEffect(() => {
+      if(message){
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:message, icon:'ios-warning'}})
+      }
+    },[message])
     //firestore listener
     useEffect(() => {
       const unsubscribe = onSnapshot(queryRef, (snapshot) => {
@@ -73,7 +81,7 @@ const ScreenAdminPropertyManagement = ({ navigation }) => {
                 {filteredProperties &&    
                   <FlatList style={{width:'100%'}}
                     data={filteredProperties}
-                    renderItem={({ item }) => <ComponentAdminListItem title={item.docData.title.toUpperCase() + ' - ' + item.docData.location.toUpperCase()} subTitle={!item.docData.isActive ? 'PROPERTY INACTIVE' : 'PROPERTY LIVE'} onPress={() => {navigation.navigate('ScreenAdminPropertyEdit', {key:item.id})}} />}
+                    renderItem={({ item }) => <ComponentAdminListItem title={item.docData.title.toUpperCase() + ' - ' + item.docData.location.toUpperCase()} subTitle={!item.docData.isActive ? 'INACTIVE' : 'LIVE'} onPress={() => {navigation.navigate('ScreenAdminPropertyMenu', {key:item.id, data: {title: item.docData.title, location: item.docData.location, isActive: item.docData.isActive}})}} />}
                     keyExtractor={(item) => item.id}
                     showVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
