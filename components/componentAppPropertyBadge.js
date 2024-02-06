@@ -20,13 +20,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding:8,
-    marginBottom: 32
+    marginBottom: 32,
+    borderWidth: 2,
+    borderColor: colors.gold,
   },
   badgeTitle: {
     color: colors.gold,
     fontFamily: 'primary-medium',
     textAlign:'center',
-    fontSize: 12,
+    fontSize: 16,
     letterSpacing: 3,
     paddingLeft: Platform.OS === 'ios' ? 3 : 0,
   }

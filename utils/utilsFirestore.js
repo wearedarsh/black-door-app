@@ -133,11 +133,10 @@ const UtilsFirestore = {
             const firestoreTimeStamp = Timestamp.fromDate(date)
             return firestoreTimeStamp
         },
-        convertFirestoreTimestampToDate: async function(payload){
+        convertFirestoreTimestampToDateObject: async function(payload){
             const { date } = payload
-            
-            const dateString = date.toDateString()
-            return dateString
+            const dateObject = date.toDate()
+            return dateObject
         }
 }
 

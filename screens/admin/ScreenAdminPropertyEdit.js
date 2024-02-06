@@ -14,6 +14,8 @@ import ComponentAdminLoadingIndicator from '../../components/admin/componentAdmi
 import ComponentAppSpacerView from '../../components/componentAppSpacerView'
 import ComponentAdminSelectButton from '../../components/admin/componentAdminSelectButton'
 import ComponentAdminToggle from '../../components/admin/componentAdminToggle'
+import ComponentAdminDateInput from '../../components/admin/componentAdminDateInput'
+
 //firestore
 import { app } from '../../config/configFirebase'
 import { getFirestore, collection, getDocs, onSnapshot, where, orderBy, query, limit } from "firebase/firestore"
@@ -43,7 +45,13 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
       squareFeet:'',
       groups: [],
       isActive: false,
-      isDeleted: false
+      isDeleted: false,
+      isSold: false,
+      isUnderOffer: false,
+      listedAt: '',
+      listedAtDD: '',
+      listedAtMM: '',
+      listedAtYY: ''
     })
 
     //update groups selected value
@@ -132,6 +140,9 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
           if(propertyDoc.error){
             UtilsValidation.showHideFeedback({duration: 3000, data: {title:propertyDoc.error, icon: 'ios-warning'}, setterFunc: setFeedback})
           }else{
+            //convert the date to string
+            const listedAtDateObject = await UtilsFirestore.convertFirestoreTimestampToDateObject({date: propertyDoc.listedAt})
+            const listedAtDateStrings = await UtilsHelpers.splitDateObjectToStrings({date: listedAtDateObject})
             setFormValues(prevState => ({
               ...formValues,
               title:propertyDoc.title,
@@ -142,7 +153,13 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
               squareFeet: propertyDoc.squareFeet,
               groups: propertyDoc.groups,
               isActive: propertyDoc.isActive,
-              isDeleted: propertyDoc.isDeleted
+              isDeleted: propertyDoc.isDeleted,
+              isSold: propertyDoc.isSold,
+              isUnderOffer: propertyDoc.isUnderOffer,
+              listedAt: propertyDoc.listedAt,
+              listedAtDD: listedAtDateStrings.day,
+              listedAtMM: listedAtDateStrings.month,
+              listedAtYY: listedAtDateStrings.year,
             }))
             setLoading(false)
           }  
@@ -154,15 +171,33 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
     const formSubmit = async () => {
         //check inputs are populated
         if(!UtilsValidation.inputsPopulated({data: {
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          emailAddress: formValues.emailAddress,
-          mobileNumber: formValues.mobileNumber,
+          title: formValues.title,
+          location: formValues.lastName,
+          price: formValues.emailAddress,
+          shortDescription: formValues.mobileNumber,
+          size: formValues.size,
+          heroImageURL: formValues.heroImageURL,
+          dd: formValues.listedAtDD,
+          mm: formValues.listedAtMM,
+          yy: formValues.listedAtYY,
         }})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
           return
         }
+
+        //convert date string to date
+      const convertedDate = await UtilsHelpers.stringToDate({day:formValues.listedAtDD, month:formValues.listedAtMM, year:formValues.listedAtYY})
+      //check date is a number and is valid
+      const isDate = UtilsHelpers.isValidDate({date:convertedDate})
+      if(!isDate){
+        setLoading(false)
+        UtilsHelpers.scrollToTop({ref: formRef, animated: true})
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please enter a valid date', icon:'ios-warning'}})
+        return
+      }
+      //convert date to timestamp for firestore
+      const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date: convertedDate})
         setLoading(true)
         //Update formValues with code and groups ready for submit
         const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
@@ -170,10 +205,13 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
         const formValuesForSubmit = ({
           ...formValues,
           groups: selectedGroups,
+          listedAt: firestoreTimeStamp
         })
+        //remove the seperate date values
+        const { listedAtDD, listedAtMM, listedAtYY, ...cleanedFormValues } = formValuesForSubmit
 
         try{
-          const response = await UtilsFirestore.setDocument({currentCollection: 'properties', data: formValuesForSubmit, key})
+          const response = await UtilsFirestore.setDocument({currentCollection: 'properties', data: cleanedFormValues, key})
           if(response.error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 3000, data: {title:response.error, icon: 'ios-warning'}, setterFunc: setFeedback})
@@ -218,8 +256,15 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
                   <ComponentAdminInput placeholder={'Enter image URL..'} label={'IMAGE URL'} value={formValues.heroImageURL} onChangeText={newValue => updateFormFields(newValue, 'heroImage')} />
                   <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
+                    <Text style={styles.subTitle}>LISTING DATE</Text>
+                    <ComponentAdminDateInput onChangeTextDD={newValue => updateFormFields(newValue, 'listedAtDD')} onChangeTextMM={newValue => updateFormFields(newValue, 'listedAtMM')} onChangeTextYY={newValue => updateFormFields(newValue, 'listedAtYY')} valueDD={formValues.listedAtDD.toString()} valueMM={formValues.listedAtMM.toString()} valueYY={formValues.listedAtYY.toString()} />
                     <Text style={styles.subTitle}>PROPERTY STATUS</Text>
+                    <ComponentAdminToggle title={'SOLD'} selectedValue={formValues.isSold} setterFunction={() => {setFormValues({...formValues, isSold: !formValues.isSold})}} />
+                    <ComponentAppSpacerView height={16} />
+                    <ComponentAdminToggle title={'UNDER OFFER'} selectedValue={formValues.isUnderOffer} setterFunction={() => {setFormValues({...formValues, isUnderOffer: !formValues.isUnderOffer})}} />
+                    <ComponentAppSpacerView height={16} />
                     <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.isActive} setterFunction={() => {setFormValues({...formValues, isActive: !formValues.isActive})}} />
+                    <ComponentAppSpacerView height={24} />
                   <ComponentAppBtnPrimary label={'EDIT PROPERTY'} onPress={() => {formSubmit()}} />
                   <ComponentAppSpacerView height={32} />
                  </ScrollView>

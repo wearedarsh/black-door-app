@@ -8,43 +8,53 @@ import ComponentAppPropertyListing from '../../components/componentAppPropertyLi
 import ComponentAppTitle from '../../components/componentAppTitle'
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
+import UtilsHelpers from '../../utils/utilsHelpers'
+//firestore
+import { app } from '../../config/configFirebase'
+import { getFirestore, query, collection, where, orderBy, onSnapshot } from 'firebase/firestore'
 
 const ScreenAppPropertyListing = () => {
     //local state
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false)
-    //fetch data
-    const fetchData = async () => {
-        console.log('I ave been called')
-        try{
-            console.log('I have tried')
-            const propertyData = await UtilsFirestore.getDocumentsWhere({currentCollection: 'properties', conditions: [{fieldName: 'deleted', operator: '==', fieldValue: false},{fieldName: 'active', operator: '==', fieldValue: true}]})
-            console.log(JSON.stringify(propertyData))
-        }catch(error){
-            console.log(error.message)
-        }
-    }
-
-    const data = [
-        {id:0, title:'PENTHOUSE ONE', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location: 'NYC', size:'3,100 SQ FT', badge: false},
-        {id:1, title:'PENTHOUSE TWO', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/02.png', location: 'SF', size:'2,200 SQ FT', badge: false},
-        {id:2, title:'PENTHOUSE THREE', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/03.png', location: 'FLORIDA', size:'1,800 SQ FT', badge: false},
-        {id:3, title:'PENTHOUSE FOUR', imageURL:'https://www.wearedarsh.com/blkdr/demo-property-images/04.png', location: 'LONDON', size:'5,000 SQ FT', badge: false}]
-    
+    const [properties, setProperties] = useState(null)
+    //firestore
+    const db = getFirestore(app)
+    //effect
     useEffect(() => {
-        fetchData()
-    }, [])
-    
-    
+        //specify query for firestore
+        const collectionRef = collection(db, 'properties')
+        const whereDeleteRef = where("isDeleted", "==", false)
+        const whereActiveRef = where("isActive", "==", true)
+        const orderByRef = orderBy("listedAt", "desc")
+        const queryRef = query(collectionRef, whereDeleteRef, whereActiveRef, orderByRef)
+        //create realtime updates listener for properties
+        const unsubscribe = onSnapshot(queryRef, (snapshot) => {
+        //map data to array for flatlist
+          const propertiesArray = snapshot.docs.map((doc) => ({
+            data:doc.data(),
+            id: doc.id
+          }))
+          //update local state with new array
+          setProperties(propertiesArray)
+        })
+        //callback function on unmount
+        return () => {
+            unsubscribe()
+        }
+    },[])
+
     return(
         <>
         <ComponentAppBrandingHeader gradient={true} />
-        
             <View style={styles.container}>
             <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
                 <FlatList
-                data={data}
-                renderItem={({ item }) => <ComponentAppPropertyListing image={item.imageURL} title={item.title} location={item.location} size={item.size} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.badge} marginBottom={16}  />}
+                data={properties}
+                renderItem={({ item }) => (
+                    <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + UtilsFirestore.convertFirestoreTimestampToDateObject({date:item.data.listedAt})} marginBottom={16}  />
+                    )
+                }
                 keyExtractor={(item) => item.id}
                 showVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}

@@ -14,6 +14,7 @@ import ComponentAdminLoadingIndicator from '../../components/admin/componentAdmi
 import ComponentAppSpacerView from '../../components/componentAppSpacerView'
 import ComponentAdminSelectButton from '../../components/admin/componentAdminSelectButton'
 import ComponentAdminToggle from '../../components/admin/componentAdminToggle'
+import ComponentAdminDateInput from '../../components/admin/componentAdminDateInput'
 //firestore
 import { app } from '../../config/configFirebase'
 import { getFirestore, collection, getDocs, onSnapshot, where, orderBy, query, limit } from "firebase/firestore"
@@ -33,6 +34,7 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
     //firestore
     const db = getFirestore(app)
     //initialise form values
+    const today = new Date()
     const [formValues, setFormValues] = useState({
       title: '',
       location: '',
@@ -42,7 +44,13 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
       squareFeet:'',
       groups: [],
       isActive: false,
-      isDeleted: false
+      isDeleted: false,
+      isSold: false,
+      isUnderOffer: false,
+      listedAt: '',
+      listedAtDD: today.getDate().toString(),
+      listedAtMM: today.getMonth().toString(),
+      listedAtYY: today.getFullYear().toString()
     })
     //update groups selected value
     const updateGroupSelected = (key) => {
@@ -123,6 +131,8 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
 
       //form submit
     const formSubmit = async () => {
+      
+    
       //check inputs are populated
       if(!UtilsValidation.inputsPopulated({data: {
         title: formValues.title,
@@ -130,13 +140,30 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
         price: formValues.emailAddress,
         shortDescription: formValues.mobileNumber,
         size: formValues.size,
-        heroImageURL: formValues.heroImageURL
+        heroImageURL: formValues.heroImageURL,
+        dd: formValues.listedAtDD,
+        mm: formValues.listedAtMM,
+        yy: formValues.listedAtYY,
       }})){
         setLoading(false)
         UtilsHelpers.scrollToTop({ref: formRef, animated: true})
         UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
         return
       }
+      
+      //convert date string to date
+      const convertedDate = await UtilsHelpers.stringToDate({day:formValues.listedAtDD, month:formValues.listedAtMM, year:formValues.listedAtYY})
+      //check date is a number and is valid
+      const isDate = UtilsHelpers.isValidDate({date:convertedDate})
+      if(!isDate){
+        setLoading(false)
+        UtilsHelpers.scrollToTop({ref: formRef, animated: true})
+        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please enter a valid date', icon:'ios-warning'}})
+        return
+      }
+      //convert date to timestamp for firestore
+      const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date: convertedDate})
+
       setLoading(true)
       //Update formValues with code and groups ready for submit
       const selectedGroups = Object.keys(groups).filter(key => groups[key].selected)
@@ -144,10 +171,13 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
       const formValuesForSubmit = ({
         ...formValues,
         groups: selectedGroups,
+        listedAt: firestoreTimeStamp,
       })
-
+      //remove the seperate date values
+      const { listedAtDD, listedAtMM, listedAtYY, ...cleanedFormValues } = formValuesForSubmit
+      //try to add to firestore
       try{
-        const response = await UtilsFirestore.addDocument({currentCollection: 'properties', data: formValuesForSubmit})
+        const response = await UtilsFirestore.addDocument({currentCollection: 'properties', data: cleanedFormValues})
         if(response.error){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, data: {title:response.error, icon: 'ios-warning'}, setterFunc: setFeedback})
@@ -214,8 +244,15 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
                   <ComponentAdminInput placeholder={'Enter image URL..'} label={'IMAGE URL'} value={formValues.heroImageURL} onChangeText={newValue => updateFormFields(newValue, 'heroImageURL')} />
                   <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
+                    <Text style={styles.subTitle}>LISTING DATE</Text>
+                    <ComponentAdminDateInput onChangeTextDD={newValue => updateFormFields(newValue, 'listedAtDD')} onChangeTextMM={newValue => updateFormFields(newValue, 'listedAtMM')} onChangeTextYY={newValue => updateFormFields(newValue, 'listedAtYY')} valueDD={formValues.listedAtDD} valueMM={formValues.listedAtMM} valueYY={formValues.listedAtYY} />
                     <Text style={styles.subTitle}>PROPERTY STATUS</Text>
+                    <ComponentAdminToggle title={'SOLD'} selectedValue={formValues.isSold} setterFunction={() => {setFormValues({...formValues, isSold: !formValues.isSold})}} />
+                    <ComponentAppSpacerView height={16} />
+                    <ComponentAdminToggle title={'UNDER OFFER'} selectedValue={formValues.isUnderOffer} setterFunction={() => {setFormValues({...formValues, isUnderOffer: !formValues.isUnderOffer})}} />
+                    <ComponentAppSpacerView height={16} />
                     <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.isActive} setterFunction={() => {setFormValues({...formValues, isActive: !formValues.isActive})}} />
+                    <ComponentAppSpacerView height={24} />
                   <ComponentAppBtnPrimary label={'ADD PROPERTY'} onPress={() => {formSubmit()}} />
                   <ComponentAppSpacerView height={32} />
                  </ScrollView>

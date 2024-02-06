@@ -46,6 +46,24 @@ const UtilsHelpers = {
         const { locale = 'en-UK', dateObject, options = {}} = payload
         const localeDateString = dateObject.toLocaleString(locale, options)
         return localeDateString
+    },
+    stringToDate: function(payload){
+        const { day, month, year } = payload
+        console.log(JSON.stringify(payload))
+        const convertedDate = new Date(year, month - 1, day)
+
+        return convertedDate
+    },
+    isValidDate: function(payload){
+        const { date } = payload
+        return date instanceof Date && !isNaN(date)
+    },
+    splitDateObjectToStrings: function(payload){
+        const { date } = payload
+        const day = date.getDate()
+        const month = date.getMonth() + 1
+        const year = date.getFullYear()
+        return { day, month, year }
     }
 }
 
