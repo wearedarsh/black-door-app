@@ -55,6 +55,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
 
     const formSubmit = async () => {
         setLoading(true)
+        let authUserKey
         let authId
         let authToken
         let userDoc
@@ -97,10 +98,24 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
                 return
             }else{
                 userDoc = response.docData
+                authUserKey = response.key
             }
         }catch(error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+            return
+        }
+
+        //check to see if account activated
+        if(!userDoc.isActive){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'Account not active', icon:'ios-warning'}})
+            return
+        }
+        //check to see if account deleted
+        if(userDoc.isDeleted){
+            setLoading(false)
+            UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:'This account does not exist', icon:'ios-warning'}})
             return
         }
         //check to see if admin 
@@ -109,8 +124,11 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         }else{
             isAdmin = false
         }
-        //add userDoc, authToken and admin to secure storage
+        //add to secure storage
         try{
+            
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authUserKey', value: authUserKey})
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authId', value: authId})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authToken', value: authToken})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authDoc', value: JSON.stringify(userDoc)})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authIsAdmin', value: isAdmin ? 'true' : 'false' })
@@ -120,10 +138,10 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
-        //add userDoc, authToken and admin to redux state
+        //update state
         try{
             setLoading(false)
-            await dispatch(setUserAuth({authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
+            await dispatch(setUserAuth({authUserKey: authUserKey, authId: authId, authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
         }catch(error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})

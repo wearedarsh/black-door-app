@@ -11,9 +11,9 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 //firestore
 import { app } from '../../config/configFirebase'
-import { getFirestore, getDocs, collection, query, orderBy, limit } from 'firebase/firestore'
+import { getFirestore, collection, doc, onSnapshot, where, query, getDocs } from 'firebase/firestore'
 //redux
-import { setUserAuth } from '../../redux/actions/actionUserAuth'
+import { setUserAuth, updateUserAuthDoc } from '../../redux/actions/actionUserAuth'
 import { useDispatch, useSelector } from 'react-redux'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
@@ -26,6 +26,39 @@ const ScreenAuthFlow = () => {
     //redux 
     const dispatch  = useDispatch()
     const userAuthState = useSelector((state) => state.userAuthState)
+    
+    //check for changes to the user doc
+    useEffect(() => {
+        if(isAuthenticated){
+            //firestore key for user
+            const key = userAuthState.authUserKey
+            //firestore
+            const db = getFirestore(app)
+            const collectionRef = collection(db, 'users')
+            const queryRef = doc(collectionRef, key)
+            //real time user updates
+            const unsubscribe = onSnapshot(queryRef, (snapshot) => {
+                const userData = snapshot.data()
+                dispatch(updateUserAuthDoc({authDoc: userData}))
+            })
+            //unsubscribe on unmount
+            return () => {
+                unsubscribe()
+            }
+        }
+    },[isAuthenticated])
+
+    useEffect(() => {
+        //if user is deleted logout
+        if(userAuthState.authDoc.isDeleted){
+            console.log('Ive been deleted')
+        }
+        //if user is deactivated logout
+        if(!userAuthState.authDoc.isActive){
+            console.log('Ive been deactivated')
+        }
+        
+    }, [userAuthState.authDoc])
     
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -42,11 +75,13 @@ const ScreenAuthFlow = () => {
                 return
             }
             //Check to see if user saved in secure storage
+            const authUserKey = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authUserKey'})
+            const authId = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authId'})
             const authToken = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authToken'})
             const authDoc = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authDoc'})
             const authIsAdmin = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authIsAdmin'})
-            if(authToken && authDoc && authIsAdmin){
-                await dispatch(setUserAuth({authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
+            if(authToken && authDoc && authIsAdmin && authId && authUserKey){
+                await dispatch(setUserAuth({authUserKey: authUserKey, authId: authId, authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
                 await setIsAuthenticated(true)
                 return
             }else{

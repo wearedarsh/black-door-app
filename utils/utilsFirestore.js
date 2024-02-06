@@ -78,9 +78,10 @@ const UtilsFirestore = {
             //check if document is returned
             if (querySnapshot.size === 1) {
                 const docSnapshot = querySnapshot.docs[0]
-                const response = docSnapshot.data()
+                const docData = docSnapshot.data()
+                const key = docSnapshot.id
                 
-                return { success: true, docData: response }
+                return { success: true, docData, key }
             } else {
                 return { error: 'Single document not found' }
             }
