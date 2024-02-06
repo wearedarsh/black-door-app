@@ -13,7 +13,7 @@ import UtilsHelpers from '../../utils/utilsHelpers'
 import { app } from '../../config/configFirebase'
 import { getFirestore, query, collection, where, orderBy, onSnapshot } from 'firebase/firestore'
 
-const ScreenAppPropertyListing = () => {
+const ScreenAppPropertyListing = ({navigation}) => {
     //local state
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -22,6 +22,7 @@ const ScreenAppPropertyListing = () => {
     const db = getFirestore(app)
     //effect
     useEffect(() => {
+        setLoading(true)
         //specify query for firestore
         const collectionRef = collection(db, 'properties')
         const whereDeleteRef = where("isDeleted", "==", false)
@@ -40,6 +41,7 @@ const ScreenAppPropertyListing = () => {
           //update local state with new array
           setProperties(propertiesArray)
         })
+        setLoading(false)
         //callback function on unmount
         return () => {
             unsubscribe()
@@ -63,7 +65,7 @@ const ScreenAppPropertyListing = () => {
                     const dateObject = item.data.listedAt.toDate()
                     const dateToDisplay = dateObject.toLocaleDateString('en-UK', {year:"numeric",  month:"short", day: 'numeric'})
                     return (
-                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay} marginBottom={16}  />
+                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay} marginBottom={16} onPress={() => {navigation.navigate('ScreenAppPropertyView', {key: item.id})}}  />
                     )
                     }
                 }

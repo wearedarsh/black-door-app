@@ -15,7 +15,7 @@ const ComponentAppCarousel = (props) => {
             <FlatList
             data={data}
             horizontal
-            renderItem={({ item }) => <ComponentAppCarouselSlide windowWidth={windowWidth} />}
+            renderItem={({ item }) => <ComponentAppCarouselSlide windowWidth={windowWidth} image={item} />}
             keyExtractor={(item) => item}
             pagingEnabled
             showVerticalScrollIndicator={false}

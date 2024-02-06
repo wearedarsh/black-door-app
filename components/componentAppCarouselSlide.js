@@ -6,7 +6,7 @@ const ComponentAppCarouselSlide = (props) => {
     const { image, windowWidth } = props
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/img/demo-property-image.png')} style={{...styles.image, width: windowWidth}} />
+            <Image source={{uri: image}} style={{...styles.image, width: windowWidth}} />
         </View>
     )
 }
