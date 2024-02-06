@@ -9,10 +9,11 @@ import ComponentAppPropertyBadge from './componentAppPropertyBadge'
 
 const ComponentAppPropertyListing = (props) => {
     
-    const { onPress = () => {}, cta = 'CTA PROP', title = 'SET TITLE PROP', image = 'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location = 'SET LOCATION PROP', size = 'SET SIZE PROP', heightPercent=100, badge = 'under offer', marginBottom=0 } = props
+    const { onPress = () => {}, cta = 'CTA PROP', title = 'SET TITLE PROP', image = 'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location = 'SET LOCATION PROP', size = 'SET SIZE PROP', heightPercent=100, badge = 'under offer', marginBottom=0, convertDateToDisplay= () => {}} = props
     const windowHeight = Dimensions.get('window').height
     const windowWidth = Dimensions.get('window').width
     const height = (windowHeight/100 * heightPercent) - 100 //bottom tabs are 100
+
     return (
         <View style={{...styles.wrapper, height: height, width: windowWidth, marginBottom: marginBottom}}>
             <ImageBackground source={{uri: image}} style={{...styles.backgroundImage}}>

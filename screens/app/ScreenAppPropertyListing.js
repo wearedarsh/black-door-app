@@ -30,11 +30,13 @@ const ScreenAppPropertyListing = () => {
         const queryRef = query(collectionRef, whereDeleteRef, whereActiveRef, orderByRef)
         //create realtime updates listener for properties
         const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-        //map data to array for flatlist
-          const propertiesArray = snapshot.docs.map((doc) => ({
-            data:doc.data(),
-            id: doc.id
-          }))
+            //map data to array for flatlist
+            const propertiesArray = snapshot.docs.map((doc) => {
+                return {
+                    data:doc.data(),
+                    id: doc.id,
+                }
+            })
           //update local state with new array
           setProperties(propertiesArray)
         })
@@ -44,6 +46,12 @@ const ScreenAppPropertyListing = () => {
         }
     },[])
 
+    const convertDateForDisplay = async(date) => {
+        const dateObject = await UtilsFirestore.convertFirestoreTimestampToDateObject({date})
+        const dateToDisplay = await UtilsHelpers.localeDateString({dateObject, locale:'en-UK', options: {day: "numeric", month:"short", hour: "numeric", minute: "numeric"}})
+        return dateToDisplay
+    }
+
     return(
         <>
         <ComponentAppBrandingHeader gradient={true} />
@@ -51,9 +59,13 @@ const ScreenAppPropertyListing = () => {
             <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
                 <FlatList
                 data={properties}
-                renderItem={({ item }) => (
-                    <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + UtilsFirestore.convertFirestoreTimestampToDateObject({date:item.data.listedAt})} marginBottom={16}  />
+                renderItem={({ item }) => {
+                    const dateObject = item.data.listedAt.toDate()
+                    const dateToDisplay = dateObject.toLocaleDateString('en-UK', {year:"numeric",  month:"short", day: 'numeric'})
+                    return (
+                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay} marginBottom={16}  />
                     )
+                    }
                 }
                 keyExtractor={(item) => item.id}
                 showVerticalScrollIndicator={false}
