@@ -50,8 +50,8 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
       emailOptIn: true,
       pushOptIn: true,
       decryptedCode: '',
-      active:true,
-      deleted: false,
+      isActive:true,
+      isDeleted: false,
     })
     //initialise code
     const [codeValue, setCodeValue] = useState('')
@@ -85,7 +85,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                   selected: formValues.groups.includes(doc.id) ? true : false,
                   order: groupData.order,
                   title: groupData.title,
-                  active: groupData.active
+                  isActive: groupData.isActive
                 }
               })
 

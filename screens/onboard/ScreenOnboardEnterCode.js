@@ -29,11 +29,14 @@ const ScreenOnboardEnterCode = ({navigation}) => {
     const [codeValue, setCodeValue] = useState('')
     const [feedback, setFeedback] = useState(false)
     const [loading, setLoading] = useState(false)
+    //local variables
+    let hashedString
     //firestore
     const db = getFirestore(app)
 
     const verifyCode = async (code) => {
         let deviceIP = ''
+        let codeId = ''
         setLoading(true)
         //fetch IP address of user
         try{
@@ -67,7 +70,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
         //check code exists in live codes table
         try{
             //create hashed version of code
-            const hashedString = await UtilsEncryption.returnHashedString({string: code})
+            hashedString = await UtilsEncryption.returnHashedString({string: code})
             //create firestore friendly timestamp
             const firestoreTimeStamp = await UtilsFirestore.convertDateToFirestoreTimestamp({date:new Date()})
             //check if code exists
@@ -98,13 +101,15 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                 //insert IP into code attempts collection
                 const responseIP = UtilsFirestore.addDocument({currentCollection: 'codeAttempts', data: {IP: deviceIP, timestamp: firestoreTimeStamp, success: true}})
                 //get user id
-                const { data } = response
+                const { data, id } = response
                 const { userId } = data
+                //set code id for passing
+                codeId = id
                 //grab the user details and pass the data through root params to next screen
                 const userDetails = await UtilsFirestore.getDocumentByKey({currentCollection: 'users', key: userId})
                 if(!userDetails.error){
                     setLoading(false)
-                    navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userId, message: 'Code entered successfully'})
+                    navigation.navigate('ScreenOnboardCheckDetails', {clientData: userDetails, userKey: userId, message: 'Code entered successfully', code: hashedString, codeId})
                     return
                 }else{
                     setLoading(false)

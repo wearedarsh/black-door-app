@@ -10,6 +10,7 @@ import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
+import UtilsAuthentication from '../../utils/utilsAuthentication'
 //redux
 import { removeUserAuth } from '../../redux/actions/actionUserAuth'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,14 +22,7 @@ const ScreenAppSettings = () => {
     //log out function
     const logOut = async () => {
         setLoading(true)
-        //remove from securestorage
-        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authToken'})
-        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authDoc'})
-        await UtilsSecureStorage.removeFromSecureStorage({ key: 'authIsAdmin'})
-        //clear state
-        //log out auth
-        await UtilsFirebaseAuth.signOutAuthUser()
-        await dispatch(removeUserAuth())
+        const response = await UtilsAuthentication.logoutUser({dispatch})
         setLoading(false)
     }
 

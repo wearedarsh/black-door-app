@@ -20,11 +20,14 @@ import { colors } from '../../assets/style/theme'
 //redux
 import { useSelector, useDispatch } from 'react-redux'
 import { setLoading } from '../../redux/actions/actionLoading'
+//firestore
+import { app } from '../../config/configFirebase'
+import { getFirestore, where, collection, updateDoc } from 'firebase/firestore'
 
 
 const ScreenOnboardPushPermission = ({navigation, route}) => {
     //route params
-    const { formValues, userKey } = route.params
+    const { formValues, userKey, code, codeId } = route.params
     //local variables
     let userAuthId
     let userPushToken
@@ -33,9 +36,9 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
     const [pushConfirm, setPushConfirm] = useState(true)
     const [emailConfirm, setEmailConfirm] = useState(true)
     const [feedback, setFeedback] = useState(false)
-    //redux
-    const dispatch = useDispatch()
-    const loading = useSelector(state => state.loadingState.loading)
+    const [loading, setLoading] = useState(false)
+    //firestore
+    const db  = getFirestore(app)
     //push notifications register
     const registerForPushNotifications = async () => {
         
@@ -55,6 +58,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
             let finalStatus = existingStatus
             if (existingStatus !== 'granted') {
                 const { status } = await Notifications.requestPermissionsAsync()
+            
                 finalStatus = status
             }
             if (finalStatus !== 'granted') {
@@ -68,13 +72,14 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
     }
 
     const createUserAccount = async () => {
-        dispatch(setLoading({loading: true}))
+        
+        setLoading(true)
         //first check to see if user has allowed push notifications
         if(pushConfirm){
             try{
                 const response = await registerForPushNotifications()
                 if(response.error){
-                    dispatch(setLoading({loading: false}))
+                    setLoading(false)
                     UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                     return
                 }else{
@@ -82,10 +87,10 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                         ...formValues,
                         pushToken: response.token,
                         pushOptIn: true
-                    }
+                    }                    
                 }
             }catch(error){
-                dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
                 return
             }
@@ -96,59 +101,66 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                 ...clientData,
                 emailOptIn: true
             }
+
+        
         }
         //if ok then create a firebase auth user
         try{
             const response = await UtilsFirebaseAuth.createAuthUser({email: formValues.emailAddress, password: formValues.password})
             if(response.error){
-                dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return   
-            }else{
-                userAuthId = response
-                //add userAuthID and update status to approved
-                clientData = {
-                    ...clientData,
-                    authId: userAuthId,
-                    status: 1
-                }
-                //remove password field from clientData
-                delete clientData.password
             }
+            //if all ok set clientData
+            userAuthId = response
+            //add userAuthID and update status to approved
+            clientData = {
+                ...clientData,
+                authId: userAuthId,
+                isActive: true,
+                code
+
+            }
+
+            //remove password field from clientData
+            delete clientData.password
+        
+
         }catch(error){
-            dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
-        //add authkey to user on firestore
+        //add user document on firestore
         try{
             const responseAuth = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', data: {...clientData}, key: userKey})
+            
             if(responseAuth.error){
-                dispatch(setLoading({loading: false}))
+                console.log(responseAuth.error)
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:responseAuth.error, icon:'ios-warning'}})
                 return   
             }
-
         }catch(error){
-            dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
-        //remove code from codes document
+        //update invite code to redeemed
         try{
-            const response = await UtilsFirestore.removeFieldFromDocument({currentCollection: 'config', key: 'inviteCodes', field: clientData.code})
+            const response = UtilsFirestore.updateDocumentByKey({currentCollection: 'inviteCodes', data: {redeemed: true}, key: codeId})
             if(response.error){
-                dispatch(setLoading({loading: false}))
+                setLoading(false)
                 UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:response.error, icon:'ios-warning'}})
                 return
             }
         }catch(error){
-            dispatch(setLoading({loading: false}))
+            setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
             return
         }
-
-        dispatch(setLoading({loading: false}))
+        setLoading(false)
         navigation.navigate('ScreenLoginEnterDetails', {message: 'Account created successfully'})
     }
      
@@ -157,7 +169,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
             {loading && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppLoadingIndicator /></View></Modal>}
             {feedback && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppFeedback title={feedback.title} icon={feedback.icon} /></View></Modal>}
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
-            <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardCheckDetails', {clientData: formValues, userKey})}} />
+            <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardCheckDetails', {userKey: userKey, clientData: formValues, code, codeId})}} />
                 <View style={{flex:8, justifyContent: 'flex-start', marginTop:128}}>
                     <ComponentHeroTitle title="CLICK ALLOW TO RECEIVE YOUR EXCLUSIVE UPDATES" />
                         <View style={styles.form}>

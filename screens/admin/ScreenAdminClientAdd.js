@@ -49,8 +49,8 @@ const ScreenAdminClientAdd = ({navigation}) => {
       emailOptIn: true,
       pushOptIn: true,
       isAdmin: false,
-      active: false,
-      deleted: false
+      isActive: false,
+      isDeleted: false
     })
   //initialise code
   const [codeValue, setCodeValue] = useState('')
@@ -85,7 +85,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
             groupsSnapshot.forEach((doc) =>{
               const data = doc.data()
               groupsTempObject[doc.id] = {
-                active: data.active,
+                isActive: data.isActive,
                 order: data.order,
                 title: data.title,
                 selected: false

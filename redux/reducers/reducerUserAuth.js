@@ -20,7 +20,7 @@ const reducerUserAuth = createReducer(initialState, (builder) => {
         state.authIsAdmin = authIsAdmin
     })
     .addCase(removeUserAuth, (state, action) => {
-        state.authUserKey = authUserKey
+        state.authUserKey = ''
         state.authId = ''
         state.authToken = ''
         state.authDoc = {}

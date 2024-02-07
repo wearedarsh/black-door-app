@@ -22,16 +22,15 @@ import { setLoading } from '../../redux/actions/actionLoading'
 
 const ScreenOnboardCheckDetails = ({navigation, route}) => {
     //client object
-    const { clientData, userKey, message = '' } = route.params
-    const { firstName, lastName, emailAddress, mobileNumber, code } = clientData
+    const { clientData, userKey, message = '', code, codeId } = route.params
+    const { firstName, lastName, emailAddress, mobileNumber } = clientData
     //local state
     const [formValues, setFormValues] = useState({
         firstName,
         lastName,
         emailAddress,
         mobileNumber,
-        password: '',
-        code
+        password: ''
     })
     const [feedback, setFeedback] = useState(false)
     //update form fields
@@ -75,7 +74,7 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
         }
         dispatch(setLoading({loading: false}))
         //if checks are ok, move to push permission and pass all vars ready for submit
-        navigation.navigate('ScreenOnboardPushPermission', {userKey: userKey, formValues: formValues})
+        navigation.navigate('ScreenOnboardPushPermission', {userKey: userKey, formValues: formValues, code, codeId})
     }
 
     return (

@@ -17,6 +17,7 @@ import { setUserAuth, updateUserAuthDoc } from '../../redux/actions/actionUserAu
 import { useDispatch, useSelector } from 'react-redux'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
+import UtilsAuthentication from '../../utils/utilsAuthentication'
 //stack
 const Stack = createNativeStackNavigator()
 
@@ -48,14 +49,23 @@ const ScreenAuthFlow = () => {
         }
     },[isAuthenticated])
 
+    //If the users status is updated log them out
     useEffect(() => {
+        let statusChanged = false
         //if user is deleted logout
-        if(userAuthState.authDoc.isDeleted){
-            console.log('Ive been deleted')
+        if(userAuthState.authToken && userAuthState.authDoc.isDeleted){
+            statusChanged = true
         }
         //if user is deactivated logout
-        if(!userAuthState.authDoc.isActive){
-            console.log('Ive been deactivated')
+        if(userAuthState.authToken && !userAuthState.authDoc.isActive){
+            statusChanged = true
+        }
+        //log the user out of the app
+        if(statusChanged){
+            const logOutUser = async () => {
+                const response = await UtilsAuthentication.logoutUser({dispatch})
+            }
+            logOutUser()
         }
         
     }, [userAuthState.authDoc])
