@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
-import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary';
+import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 
 
 const ScreenAdminMarketingMenu = ({navigation}) => {
@@ -14,8 +14,9 @@ const ScreenAdminMarketingMenu = ({navigation}) => {
             <View style={styles.container}>
                 <ComponentAdminTitle title={'MARKETING'} />
                 <View style={styles.form}>
+
                   <ComponentAppBtnPrimary label={'MANAGE GROUPS'} onPress={() => {navigation.navigate('ScreenAdminMarketingGroupManagement')}} />
-                  <ComponentAppBtnPrimary label={'SEND NOTIFICATION'} onPress={() => {navigation.navigate('ScreenAdminMarketingNotificationManagement')}} />
+                  <ComponentAppBtnPrimary label={'SEND NOTIFICATION'} onPress={() => {navigation.navigate('ScreenAdminMarketingNotificationTest')}} />
                 </View>
             </View>
       </>

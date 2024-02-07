@@ -20,6 +20,9 @@ import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 import UtilsAuthentication from '../../utils/utilsAuthentication'
 //stack
 const Stack = createNativeStackNavigator()
+//expo
+import * as Notifications from 'expo-notifications'
+
 
 const ScreenAuthFlow = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -28,6 +31,43 @@ const ScreenAuthFlow = () => {
     const dispatch  = useDispatch()
     const userAuthState = useSelector((state) => state.userAuthState)
     
+    //foreground notification handler
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: false,
+        })
+      })
+    //if notification is received whilst in app
+    const handleNotification = (notification) => {
+        console.log('Received Notification:', JSON.stringify(notification))
+    }
+    const handleNotificationAction = (notification) => {
+        
+        console.log('Notification Action:', notification)
+        if(notification.request.content.data){
+            const screen = notification.request.content.data.screen
+            const id = notification.request.content.data.id
+            console.log(screen, id)
+        }
+
+    }
+    //listen for push notifications
+    useEffect(() => {
+        //set up a listener for received
+        const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+            //handle notification in app
+            //set up a redux state slice and show a custom component
+            //like app feedback in the middle but with buttons
+            handleNotification(notification)
+        })
+        //set up a listener for action taken
+        const notificationActionListener = Notifications.addNotificationResponseReceivedListener(response => {
+            handleNotificationAction(response.notification)
+        })
+        
+      }, [])
     //check for changes to the user doc
     useEffect(() => {
         if(isAuthenticated){
