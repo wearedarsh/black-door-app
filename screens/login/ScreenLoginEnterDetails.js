@@ -150,24 +150,26 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
     }
 
     return (
-        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
             {loading && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppLoadingIndicator /></View></Modal>}
             {feedback && <Modal visible={true} transparent={true}><View style={styles.modalView}><ComponentAppFeedback title={feedback.title} icon={feedback.icon} /></View></Modal>}
             <ImageBackground source={require('../../assets/img/onboard-bgr.png')} style={styles.backgroundImage}>
             <ComponentAppBrandingHeader backButton={true} onPress={() => {navigation.navigate('ScreenOnboardHome')}} />
                 <View style={{flex:8, justifyContent: 'flex-start', marginTop:128}}>
+                    <KeyboardAwareScrollView >
                     <ComponentHeroTitle title="ENTER YOUR DETAILS" style={{marginVertical:48}} />
                     <View style={styles.form}>
                         <ComponentOnboardInput label="EMAIL ADDRESS" value={formValues.emailAddress} onChangeText={newValue => updateFormFields(newValue, 'emailAddress')} />
                         <ComponentOnboardPasswordInput information={''} value={formValues.password} onChangeText={newValue => updateFormFields(newValue, 'password')} />
                         <TouchableOpacity style={styles.forgotten}><Text style={styles.forgottenText} onPress={() => {navigation.navigate('ScreenLoginForgottenPassword')}}>FORGOTTEN PASSWORD?</Text></TouchableOpacity>
                     </View>
+                    </KeyboardAwareScrollView>
                 </View>
                 <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="LOG IN" onPress={formSubmit} />
                 </View>
             </ImageBackground>
-        </KeyboardAwareScrollView>
+        </View>
     )
 }
 
@@ -175,8 +177,7 @@ const styles = StyleSheet.create({
     container: {        
         backgroundColor: colors.slate,
         alignItems: 'center',
-        justifyContent: 'center',
-        flex:1
+        justifyContent: 'center'
     },
     forgotten: {
         width:'100%',

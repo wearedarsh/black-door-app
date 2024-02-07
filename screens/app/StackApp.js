@@ -30,7 +30,8 @@ const StackApp = () => {
             },
             tabBarStyle:{
               backgroundColor: colors.slate,
-              height:100,
+              paddingBottom:8,//height:100,
+              height:80,
               alignItems: 'flex-start',
               borderTopWidth: 0
             }

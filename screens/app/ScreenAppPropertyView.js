@@ -72,6 +72,7 @@ const ScreenAppPropertyView = ({ navigation, route }) => {
                     <ComponentAppBtnSecondary icon={false} label={'DOWNLOAD FLOORPLAN'} />
                 </View>
             </ScrollView>
+
         </View>
         </>
     )
@@ -82,10 +83,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: colors.slate,
-        marginTop: Platform.OS === 'ios' ? 128 : 100
+
     },
     wrapper: {
-        backgroundColor: colors.slate
+        backgroundColor: colors.slate,
+        marginTop: 128
     },
     content: {
         padding: 32
