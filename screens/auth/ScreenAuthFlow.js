@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from 'react-redux'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 import UtilsAuthentication from '../../utils/utilsAuthentication'
+import UtilsFirestore from '../../utils/utilsFirestore'
+import UtilsValidation from '../../utils/utilsValidation'
 //stack
 const Stack = createNativeStackNavigator()
 //expo
@@ -26,9 +28,11 @@ import Constants from 'expo-constants'
 import * as Device from 'expo-device'
 
 
-const ScreenAuthFlow = () => {
+const ScreenAuthFlow = ({navigation}) => {
+    //local state
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
+    const [feedback, setFeedback] = useState(false)
     //redux 
     const dispatch  = useDispatch()
     const userAuthState = useSelector((state) => state.userAuthState)
@@ -42,7 +46,7 @@ const ScreenAuthFlow = () => {
         })
       })
     //create actions for notification
-    const viewDetailsAction = { identifier: 'view', buttonTitle: 'View Details' }
+    const viewDetailsAction = { identifier: 'viewProperty', buttonTitle: 'View Property' }
     const dismissAction = { identifier: 'dismiss', buttonTitle: 'Dismiss' }
 
     //set a notification category for listing
@@ -65,19 +69,22 @@ const ScreenAuthFlow = () => {
         //set up a listener for actions
         const notificationActionListener = Notifications.addNotificationResponseReceivedListener((response) => {
             const { actionIdentifier } = response
-            notificationData = response.notification.request.content.data
+            const notificationData = response.notification.request.content.data
+            const categoryIdentifier = response.notification.request.content.categoryIdentifier
 
             switch(actionIdentifier) {
-                case 'view' :
-                    console.log('I will view this screen: ' + notificationData.screen)
+                case 'viewProperty' :
+                    navigation.navigate('StackAppProperty', {screen: notificationData.screen, params: {key: notificationData.key}})
                 break
 
                 case 'dismiss' :
-                    console.log('I will dismiss')
+
                 break
 
                 default:
-                    console.log('I am the fall back plan')
+                    if(categoryIdentifier === 'propertyListing'){
+                        navigation.navigate('StackAppProperty', {screen: notificationData.screen, params: {key: notificationData.key}})
+                    }
                 break
             }
         })
@@ -94,6 +101,43 @@ const ScreenAuthFlow = () => {
             const pushOptIn = userAuthState.authDoc.pushOptIn
             //fetch current permissions
             const { status: existingStatus } = await Notifications.getPermissionsAsync()
+            //if user opted in for push notifications
+            if(pushOptIn){
+                //check tokens match
+                if(currentToken != storedToken){
+                    try{
+                        //update firestore, local storage and state
+                        const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', data: {pushToken: currentToken}, key: userAuthState.authUserKey })
+                        await dispatch(updateUserAuthDocFields({fields: {pushToken: currentToken}}))
+                        await UtilsSecureStorage.addToSecureStorage({key: 'authExpoToken', value: currentToken})
+                    }catch(error){
+                        UtilsValidation.showHideFeedback({duration: 3000, setterFunc: setFeedback, data: {title:error.message, icon:'ios-warning'}})
+                        return
+                    }
+                    
+                }
+                //check current permissions for push
+                const { status: existingStatus } = await Notifications.getPermissionsAsync();
+                let finalStatus = existingStatus
+                //if permission not granted
+                if (existingStatus !== 'granted') {
+                    //ask user for permission
+                    const { status } = await Notifications.requestPermissionsAsync();
+                    finalStatus = status
+                }
+                //if user does not grant permission
+                if(finalStatus !== 'granted'){
+                    //opt out the user
+                    try{
+                        const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', data: {pushOptIn: false}, key: userAuthState.authUserKey })
+                        await dispatch(updateUserAuthDocFields({fields: {pushOptIn: false}}))
+                        await UtilsSecureStorage.addToSecureStorage({key: 'authDoc', value: JSON.stringify(userAuthState.authDoc)})
+                    }catch(error){
+                        UtilsValidation.showHideFeedback({duration: 3000, setterFunc: setFeedback, data: {title:error.message, icon:'ios-warning'}})
+                        return
+                    }
+                }
+            }
         }
         
         if(isAuthenticated){
@@ -163,12 +207,10 @@ const ScreenAuthFlow = () => {
             const authDoc = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authDoc'})
             const authIsAdmin = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authIsAdmin'})
             if(authToken && authDoc && authIsAdmin && authId && authUserKey && authExpoToken){
-                console.log('I have all mee tokens')
                 await dispatch(setUserAuth({authExpoToken: authExpoToken, authUserKey: authUserKey, authId: authId, authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
                 await setIsAuthenticated(true)
                 return
             }else{
-                console.log('I dont have all mee tokens')
                 await setIsAuthenticated(false)
                 return
             }
@@ -177,8 +219,7 @@ const ScreenAuthFlow = () => {
     }, [userAuthState])
 
     return (
-        <NavigationContainer>
-            <StatusBar barStyle="light-content" />
+        
             <Stack.Navigator>
                 {isAuthenticated ?
                 isAdmin ? <Stack.Screen name="StackAdmin" component={StackAdmin} options={{headerShown: false}} /> : <Stack.Screen name="StackApp" component={StackApp} options={{headerShown: false}} /> 
@@ -187,7 +228,7 @@ const ScreenAuthFlow = () => {
                 }
                 
             </Stack.Navigator>
-        </NavigationContainer>
+
     )
 }
 

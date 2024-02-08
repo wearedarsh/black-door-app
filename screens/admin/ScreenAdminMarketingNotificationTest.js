@@ -28,7 +28,7 @@ const ScreenAdminMarketingNotificationTest = ({navigation}) => {
     }
     const sendNotification = async () => {
         try{
-            const response = await UtilsPushNotification.sendPushNotification({expoPushToken:'ExponentPushToken[mDJrEnCWt9HumlUFq6lYor]', title: formValues.title, subtitle: formValues.subtitle, body: formValues.body, data: {screen: "ScreenAppPropertyView", id: '2o6kcd8hSJl0Xzeudcnd'}, categoryId: 'propertyListing'})
+            const response = await UtilsPushNotification.sendPushNotification({expoPushToken:'ExponentPushToken[mDJrEnCWt9HumlUFq6lYor]', title: formValues.title, subtitle: formValues.subtitle, body: formValues.body, data: {screen: "ScreenAppPropertyView", key: '2o6kcd8hSJl0Xzeudcnd'}, categoryId: 'propertyListing'})
             if(response){
                 UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.message, icon:'ios-checkmark'}})
                 return

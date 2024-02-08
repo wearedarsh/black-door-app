@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { setUserAuth, removeUserAuth, updateUserAuthDoc } from '../actions/actionUserAuth'
+import { setUserAuth, removeUserAuth, updateUserAuthDoc, updateUserAuthDocFields } from '../actions/actionUserAuth'
 
 const initialState = {
     authUserKey: '',
@@ -34,6 +34,16 @@ const reducerUserAuth = createReducer(initialState, (builder) => {
         return {
             ...state,
             authDoc
+        }
+    })
+    .addCase(updateUserAuthDocFields, (state, action) => {
+        const { fields } = action.payload
+        return{
+            ...state,
+            authDoc : {
+                ...state.authDoc,
+                ...data
+            }
         }
     })
 })
