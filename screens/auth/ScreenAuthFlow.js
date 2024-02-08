@@ -46,11 +46,13 @@ const ScreenAuthFlow = ({navigation}) => {
         })
       })
     //create actions for notification
-    const viewDetailsAction = { identifier: 'viewProperty', buttonTitle: 'View Property' }
+    const viewPropertyAction = { identifier: 'viewProperty', buttonTitle: 'View Property' }
+    const viewLinkAction = { identifier: 'viewLink', buttonTitle: 'View link' }
     const dismissAction = { identifier: 'dismiss', buttonTitle: 'Dismiss' }
 
-    //set a notification category for listing
-    Notifications.setNotificationCategoryAsync('propertyListing', [viewDetailsAction, dismissAction])
+    //set a notification categories
+    Notifications.setNotificationCategoryAsync('propertyListing', [viewPropertyAction, dismissAction])
+    Notifications.setNotificationCategoryAsync('viewExternalLink', [viewLinkAction, dismissAction])
 
     //if notification is received whilst in app
     const handleNotification = (notification) => {

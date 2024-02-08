@@ -7,6 +7,7 @@ import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
 import ComponentAppBrandingHeader from '../../components/componentAppBrandingHeader'
 import ComponentAppTitle from '../../components/componentAppTitle'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
+import ComponentOnboardToggle from '../../components/componentOnboardToggle'
 //utils
 import UtilsSecureStorage from '../../utils/utilsSecureStorage'
 import UtilsFirebaseAuth from '../../utils/utilsFirebaseAuth'
@@ -19,6 +20,8 @@ const ScreenAppSettings = () => {
     //redux
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(true)
+    const [pushOptIn, setPushOptIn] = useState()
+    
     //log out function
     const logOut = async () => {
         setLoading(true)

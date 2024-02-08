@@ -17,7 +17,7 @@ const ScreenAdminMarketingNotificationTest = ({navigation}) => {
     const [formValues, setFormValues ] = useState({
         title: 'BLKDR APP',
         subtitle: 'Exclusive access',
-        body: '£300M NYC Penthouse, viewings open'
+        body: '£300M NYC Penthouse, click to view'
     })
     //update form fields on entry
     const updateFormFields = (string, key) => {
