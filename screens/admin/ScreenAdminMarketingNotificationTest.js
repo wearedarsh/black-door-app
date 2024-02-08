@@ -15,8 +15,9 @@ const ScreenAdminMarketingNotificationTest = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [feedback, setFeedback] = useState(false)
     const [formValues, setFormValues ] = useState({
-        title: '',
-        body: ''
+        title: 'BLKDR APP',
+        subtitle: 'Exclusive access',
+        body: '£300M NYC Penthouse, viewings open'
     })
     //update form fields on entry
     const updateFormFields = (string, key) => {
@@ -27,7 +28,7 @@ const ScreenAdminMarketingNotificationTest = ({navigation}) => {
     }
     const sendNotification = async () => {
         try{
-            const response = await UtilsPushNotification.sendPushNotification({expoPushToken:'ExponentPushToken[mDJrEnCWt9HumlUFq6lYor]', title: formValues.title, body: formValues.body, data: {screen: "ScreenAppPropertyView", id: '2o6kcd8hSJl0Xzeudcnd'}})
+            const response = await UtilsPushNotification.sendPushNotification({expoPushToken:'ExponentPushToken[mDJrEnCWt9HumlUFq6lYor]', title: formValues.title, subtitle: formValues.subtitle, body: formValues.body, data: {screen: "ScreenAppPropertyView", id: '2o6kcd8hSJl0Xzeudcnd'}, categoryId: 'propertyListing'})
             if(response){
                 UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:response.message, icon:'ios-checkmark'}})
                 return
@@ -41,10 +42,11 @@ const ScreenAdminMarketingNotificationTest = ({navigation}) => {
       <>
         <ComponentAdminHeader />
             <View style={styles.container}>
-                <ComponentAdminTitle title={'MARKETING'} />
+                <ComponentAdminTitle title={'MARKETING TEST'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} />}
                 <View style={styles.form}>
                     <ComponentAdminInput placeholder={'Enter title...'} label={'TITLE'} value={formValues.title} onChangeText={newValue => updateFormFields(newValue, 'title')} />
+                    <ComponentAdminInput placeholder={'Enter title...'} label={'SUBTITLE'} value={formValues.subtitle} onChangeText={newValue => updateFormFields(newValue, 'subtitle')} />
                     <ComponentAdminInput placeholder={'Enter body...'} label={'BODY'} value={formValues.body} onChangeText={newValue => updateFormFields(newValue, 'body')} />
                     <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{sendNotification()}} icon={true} iconName={'create'} />
                 </View>

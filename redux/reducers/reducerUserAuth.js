@@ -6,18 +6,20 @@ const initialState = {
     authId: '',
     authToken: '',
     authDoc: {},
-    authIsAdmin: null
+    authIsAdmin: null,
+    authExpoToken: ''
 }
 
 const reducerUserAuth = createReducer(initialState, (builder) => {
     builder
     .addCase(setUserAuth, (state, action) => {
-        const { authToken, authDoc, authIsAdmin, authId, authUserKey } = action.payload
+        const { authToken, authDoc, authIsAdmin, authId, authUserKey, authExpoToken } = action.payload
         state.authUserKey = authUserKey
         state.authId = authId
         state.authToken = authToken
         state.authDoc = authDoc
         state.authIsAdmin = authIsAdmin
+        state.authExpoToken = authExpoToken
     })
     .addCase(removeUserAuth, (state, action) => {
         state.authUserKey = ''
@@ -25,6 +27,7 @@ const reducerUserAuth = createReducer(initialState, (builder) => {
         state.authToken = ''
         state.authDoc = {}
         state.authIsAdmin = null
+        state.authExpoToken = ''
     })
     .addCase(updateUserAuthDoc, (state, action) => {
         const { authDoc } = action.payload

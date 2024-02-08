@@ -3,16 +3,18 @@ import axios from 'axios'
 
 export default UtilsPushNotification = {
     sendPushNotification: async function(payload){
-        const { expoPushToken, title, body, data = null } = payload
+        const { expoPushToken, subtitle, title, body, data, categoryId } = payload
         try {
             const response = await axios.post(
               'https://exp.host/--/api/v2/push/send',
               {
                 to: expoPushToken,
-                title: title,
-                body: body,
+                title,
+                subtitle,
+                body,
                 sound: 'default',
-                data: data && data
+                data,
+                categoryId
               }
             )
             if(response.status === 200){

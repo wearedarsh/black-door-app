@@ -22,6 +22,8 @@ import UtilsAuthentication from '../../utils/utilsAuthentication'
 const Stack = createNativeStackNavigator()
 //expo
 import * as Notifications from 'expo-notifications'
+import Constants from 'expo-constants'
+import * as Device from 'expo-device'
 
 
 const ScreenAuthFlow = () => {
@@ -39,38 +41,66 @@ const ScreenAuthFlow = () => {
           shouldSetBadge: false,
         })
       })
+    //create actions for notification
+    const viewDetailsAction = { identifier: 'view', buttonTitle: 'View Details' }
+    const dismissAction = { identifier: 'dismiss', buttonTitle: 'Dismiss' }
+
+    //set a notification category for listing
+    Notifications.setNotificationCategoryAsync('propertyListing', [viewDetailsAction, dismissAction])
+
     //if notification is received whilst in app
     const handleNotification = (notification) => {
-        console.log('Received Notification:', JSON.stringify(notification))
+        //may be required
     }
     const handleNotificationAction = (notification) => {
-        
-        console.log('Notification Action:', notification)
-        if(notification.request.content.data){
-            const screen = notification.request.content.data.screen
-            const id = notification.request.content.data.id
-            console.log(screen, id)
-        }
-
+        //may be required
     }
     //listen for push notifications
     useEffect(() => {
+        if(Device.isDevice){
         //set up a listener for received
         const notificationListener = Notifications.addNotificationReceivedListener(notification => {
-            //handle notification in app
-            //set up a redux state slice and show a custom component
-            //like app feedback in the middle but with buttons
-            handleNotification(notification)
+            notificationData = notification.request.content.data
         })
-        //set up a listener for action taken
-        const notificationActionListener = Notifications.addNotificationResponseReceivedListener(response => {
-            handleNotificationAction(response.notification)
+        //set up a listener for actions
+        const notificationActionListener = Notifications.addNotificationResponseReceivedListener((response) => {
+            const { actionIdentifier } = response
+            notificationData = response.notification.request.content.data
+
+            switch(actionIdentifier) {
+                case 'view' :
+                    console.log('I will view this screen: ' + notificationData.screen)
+                break
+
+                case 'dismiss' :
+                    console.log('I will dismiss')
+                break
+
+                default:
+                    console.log('I am the fall back plan')
+                break
+            }
         })
-        
+        }
       }, [])
-    //check for changes to the user doc
+
     useEffect(() => {
+        //check push notification token
+        const checkPushToken = async () => {
+            const projectId = Constants.expoConfig.extra.eas.projectId
+            //fetch current token
+            const currentToken = (await Notifications.getExpoPushTokenAsync({ projectId: projectId })).data
+            const storedToken = userAuthState.authExpoToken
+            const pushOptIn = userAuthState.authDoc.pushOptIn
+            //fetch current permissions
+            const { status: existingStatus } = await Notifications.getPermissionsAsync()
+        }
+        
         if(isAuthenticated){
+            //check device tokens upon log in
+            if(Device.isDevice){
+                checkPushToken()
+            }
             //firestore key for user
             const key = userAuthState.authUserKey
             //firestore
@@ -80,6 +110,7 @@ const ScreenAuthFlow = () => {
             //real time user updates
             const unsubscribe = onSnapshot(queryRef, (snapshot) => {
                 const userData = snapshot.data()
+                //update user doc
                 dispatch(updateUserAuthDoc({authDoc: userData}))
             })
             //unsubscribe on unmount
@@ -125,16 +156,19 @@ const ScreenAuthFlow = () => {
                 return
             }
             //Check to see if user saved in secure storage
+            const authExpoToken = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authExpoToken'})
             const authUserKey = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authUserKey'})
             const authId = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authId'})
             const authToken = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authToken'})
             const authDoc = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authDoc'})
             const authIsAdmin = await UtilsSecureStorage.fetchFromSecureStorage({key: 'authIsAdmin'})
-            if(authToken && authDoc && authIsAdmin && authId && authUserKey){
-                await dispatch(setUserAuth({authUserKey: authUserKey, authId: authId, authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
+            if(authToken && authDoc && authIsAdmin && authId && authUserKey && authExpoToken){
+                console.log('I have all mee tokens')
+                await dispatch(setUserAuth({authExpoToken: authExpoToken, authUserKey: authUserKey, authId: authId, authToken:authToken, authDoc: JSON.parse(authDoc), authIsAdmin:authIsAdmin}))
                 await setIsAuthenticated(true)
                 return
             }else{
+                console.log('I dont have all mee tokens')
                 await setIsAuthenticated(false)
                 return
             }

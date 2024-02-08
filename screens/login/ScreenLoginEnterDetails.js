@@ -39,8 +39,8 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
     },[])
     //form values 
     const [formValues, setFormValues] = useState({
-        emailAddress: '',
-        password: ''
+        emailAddress: 'harley@wearedarsh.com',
+        password: 'Yelrahmot123!'
     })
     //update form values
     const updateFormFields = (string, key) => {
@@ -60,6 +60,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         let authToken
         let userDoc
         let isAdmin
+        let authExpoToken
         //check both fields are populated
         try{
             const formPopulated  = await UtilsValidation.inputsPopulated({data: formValues})
@@ -99,6 +100,8 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
             }else{
                 userDoc = response.docData
                 authUserKey = response.key
+                authExpoToken = userDoc.pushToken
+                console.log('authExpoToken: ' + authExpoToken)
             }
         }catch(error){
             setLoading(false)
@@ -126,8 +129,8 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         }
         //add to secure storage
         try{
-            
             await UtilsSecureStorage.addToSecureStorage({ key: 'authUserKey', value: authUserKey})
+            await UtilsSecureStorage.addToSecureStorage({ key: 'authExpoToken', value: authExpoToken})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authId', value: authId})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authToken', value: authToken})
             await UtilsSecureStorage.addToSecureStorage({ key: 'authDoc', value: JSON.stringify(userDoc)})
@@ -141,7 +144,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
         //update state
         try{
             setLoading(false)
-            await dispatch(setUserAuth({authUserKey: authUserKey, authId: authId, authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
+            await dispatch(setUserAuth({authExpoToken: authExpoToken, authUserKey: authUserKey, authId: authId, authToken: authToken, authDoc: userDoc, authIsAdmin: isAdmin ? 'true' : 'false'}))
         }catch(error){
             setLoading(false)
             UtilsValidation.showHideFeedback({duration: 1500, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
