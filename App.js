@@ -42,9 +42,8 @@ export default function App() {
           <Stack.Screen
             name="AuthFlow"
             component={ScreenAuthFlow}
-            options={{ headerShown: false }} // You can customize the header options
+            options={{ headerShown: false }}
           />
-          {/* Add more screens if needed */}
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
