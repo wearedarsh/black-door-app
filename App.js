@@ -13,9 +13,9 @@ const Stack = createNativeStackNavigator();
 
 const getFonts = () => {
   return Font.loadAsync({
-    'primary-regular' : require('./assets/fonts/brandon-regular.otf'),
-    'primary-medium' : require('./assets/fonts/brandon-medium.otf'),
-    'primary-bold' : require('./assets/fonts/brandon-bold.otf'),
+    'primary-regular' : require('./assets/fonts/inter-regular.ttf'),
+    'primary-medium' : require('./assets/fonts/inter-medium.ttf'),
+    'primary-bold' : require('./assets/fonts/inter-semi-bold.ttf'),
     'hero' : require('./assets/fonts/engravers-gothic.ttf')
   })
 }
@@ -24,9 +24,9 @@ const getFonts = () => {
 export default function App() {
 
   const [fontsLoaded] = useFonts({
-    'primary-regular' : require('./assets/fonts/brandon-regular.otf'),
-    'primary-medium' : require('./assets/fonts/brandon-medium.otf'),
-    'primary-bold' : require('./assets/fonts/brandon-bold.otf'),
+    'primary-regular' : require('./assets/fonts/inter-regular.ttf'),
+    'primary-medium' : require('./assets/fonts/inter-medium.ttf'),
+    'primary-bold' : require('./assets/fonts/inter-semi-bold.ttf'),
     'hero' : require('./assets/fonts/engravers-gothic.ttf')
   })
 

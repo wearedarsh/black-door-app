@@ -40,10 +40,15 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
       title: '',
       location: '',
       price: '',
+      secondaryPrice: '',
       shortDescription: '',
       heroImageURL:'',
       squareFeet:'',
+      bedrooms: '',
+      bathrooms: '',
       groups: [],
+      long: '',
+      lat: '',
       isActive: false,
       isDeleted: false,
       isSold: false,
@@ -252,7 +257,7 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
                   <ComponentAdminInput placeholder={'Enter location..'} label={'LOCATION'} value={formValues.location} onChangeText={newValue => updateFormFields(newValue, 'location')}/>
                   <ComponentAdminInput placeholder={'Enter price..'} label={'PRICE'} value={formValues.price} onChangeText={newValue => updateFormFields(newValue, 'price')} />
                   <ComponentAdminInput placeholder={'Enter description..'} label={'DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.shortDescription} onChangeText={newValue => updateFormFields(newValue, 'shortDescription')} />
-                  <ComponentAdminInput placeholder={'Enter size..'} label={'SIZE'} value={formValues.squareFeet} onChangeText={newValue => updateFormFields(newValue, 'squareFeet')} />
+                  <ComponentAdminInput placeholder={'Enter size..'} label={'SQUARE FEET'} value={formValues.squareFeet} onChangeText={newValue => updateFormFields(newValue, 'squareFeet')} />
                   <ComponentAdminInput placeholder={'Enter image URL..'} label={'IMAGE URL'} value={formValues.heroImageURL} onChangeText={newValue => updateFormFields(newValue, 'heroImage')} />
                   <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}

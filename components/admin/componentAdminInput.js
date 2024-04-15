@@ -25,16 +25,16 @@ const styles = StyleSheet.create({
         paddingLeft: Platform.OS === 'ios' ? 2 : 0
     },
     input: {
-        borderWidth:1,
-        borderColor:colors.slate,
+        borderRadius: 18,
+        backgroundColor: colors.white,
         width:'100%',
         height:48,
-        paddingHorizontal: 16,
+        padding: 16,
         color: colors.slate,
         fontSize: 16,
         fontFamily: 'primary-regular',
-        marginBottom: 16
-
+        marginBottom: 16,
+        textAlignVertical: 'top'
     }
 });
 
