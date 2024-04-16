@@ -58,7 +58,7 @@ const ScreenAppPropertyListing = ({navigation}) => {
         <>
         <ComponentAppBrandingHeader gradient={true} />
             <View style={styles.container}>
-            <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
+            <ComponentAppTitle title={'LISTINGS'} />
                 <FlatList
                 data={properties}
                 renderItem={({ item }) => {

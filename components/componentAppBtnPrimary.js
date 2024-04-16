@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontFamily: 'primary-regular',
         fontSize: 16,
-        letterSpacing:3,
-        paddingLeft: Platform.OS === 'ios' ? 3 : 0
+        letterSpacing:1,
+        paddingLeft: Platform.OS === 'ios' ? 1 : 0
     }
 })
 

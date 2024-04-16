@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: colors.white,
         textAlign: 'center',
-        letterSpacing: 5,
-        paddingLeft: Platform.OS === 'ios' ? 5 : 0
+        letterSpacing: 2,
+        paddingLeft: Platform.OS === 'ios' ? 2 : 0
     }
 })
 

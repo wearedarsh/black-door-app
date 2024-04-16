@@ -28,9 +28,9 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontFamily: 'primary-medium',
     textAlign:'center',
-    fontSize: 16,
-    letterSpacing: 3,
-    paddingLeft: Platform.OS === 'ios' ? 3 : 0,
+    fontSize: 12,
+    letterSpacing: 1,
+    paddingLeft: Platform.OS === 'ios' ? 0 : 0,
   }
 });
 

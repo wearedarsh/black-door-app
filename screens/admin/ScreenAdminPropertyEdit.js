@@ -161,6 +161,10 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
               isDeleted: propertyDoc.isDeleted,
               isSold: propertyDoc.isSold,
               isUnderOffer: propertyDoc.isUnderOffer,
+              long: propertyDoc.long,
+              lat: propertyDoc.lat,
+              bedrooms: propertyDoc.bedrooms,
+              bathrooms: propertyDoc.bathrooms,
               listedAt: propertyDoc.listedAt,
               listedAtDD: listedAtDateStrings.day,
               listedAtMM: listedAtDateStrings.month,
@@ -185,6 +189,10 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
           dd: formValues.listedAtDD,
           mm: formValues.listedAtMM,
           yy: formValues.listedAtYY,
+          long: formValues.long,
+          lat: formValues.lat,
+          bedrooms: formValues.bedrooms,
+          bathrooms: formValues.bathrooms
         }})){
           setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
@@ -258,6 +266,10 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
                   <ComponentAdminInput placeholder={'Enter price..'} label={'PRICE'} value={formValues.price} onChangeText={newValue => updateFormFields(newValue, 'price')} />
                   <ComponentAdminInput placeholder={'Enter description..'} label={'DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.shortDescription} onChangeText={newValue => updateFormFields(newValue, 'shortDescription')} />
                   <ComponentAdminInput placeholder={'Enter size..'} label={'SQUARE FEET'} value={formValues.squareFeet} onChangeText={newValue => updateFormFields(newValue, 'squareFeet')} />
+                  <ComponentAdminInput placeholder={'Enter size..'} label={'NUMBER OF BEDROOMS'} value={formValues.bedrooms} onChangeText={newValue => updateFormFields(newValue, 'bedrooms')} />
+                  <ComponentAdminInput placeholder={'Enter size..'} label={'NUMBER OF BATHROOMS'} value={formValues.bathrooms} onChangeText={newValue => updateFormFields(newValue, 'bathrooms')} />
+                  <ComponentAdminInput placeholder={'Enter size..'} label={'LONG'} value={formValues.long} onChangeText={newValue => updateFormFields(newValue, 'long')} />
+                  <ComponentAdminInput placeholder={'Enter size..'} label={'LAT'} value={formValues.lat} onChangeText={newValue => updateFormFields(newValue, 'lat')} />
                   <ComponentAdminInput placeholder={'Enter image URL..'} label={'IMAGE URL'} value={formValues.heroImageURL} onChangeText={newValue => updateFormFields(newValue, 'heroImage')} />
                   <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}

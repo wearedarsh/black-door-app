@@ -19,17 +19,17 @@ const styles = StyleSheet.create({
     },
     headline: {
         color: colors.gold,
-        fontSize: 48,
-        letterSpacing: 12,
-        paddingLeft:Platform.OS === 'ios' ? 12 : 0,
-        lineHeight: 48,
+        fontSize: 32,
+        letterSpacing: 4,
+        paddingLeft:Platform.OS === 'ios' ? 4 : 0,
+        lineHeight: 32,
         fontFamily: 'hero'
     },
     strapline: {
         color: colors.gold,
-        fontSize: 16,
-        letterSpacing: 32,
-        paddingLeft:Platform.OS === 'ios' ? 32 : 0,
+        fontSize: 12,
+        letterSpacing: 8,
+        paddingLeft:Platform.OS === 'ios' ? 8 : 0,
         fontFamily: 'hero'
     }
 })

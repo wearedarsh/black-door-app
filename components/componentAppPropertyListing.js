@@ -24,7 +24,7 @@ const ComponentAppPropertyListing = (props) => {
                     <Text style={{...styles.textContent, textAlign: 'left'}}>{title}</Text>
                 </View>
                 <View style={styles.info}>
-                        <Ionicons style={styles.infoIcon} name={'map-outline'} size={24} color={colors.white} />
+                        <Ionicons style={styles.infoIcon} name={'map-outline'} size={16} color={colors.white} />
                         <Text style={styles.textContent}>{location}</Text>
                 </View>
                 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     info: {
         flexDirection: 'row',
         marginBottom: 16,
-        padding:12,
+        padding:8,
         backgroundColor: 'rgba(35, 31, 32, 0.7)',
         width:'90%'
     },
@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
     },
     textContent: {
         fontFamily: 'primary-medium',
-        fontSize: 16,
+        fontSize: 12,
         color: colors.white,
-        letterSpacing: 3,
-        paddingLeft: Platform.OS === 'ios' ? 3 : 0
+        letterSpacing: 1,
+        paddingLeft: Platform.OS === 'ios' ? 1 : 0
     },
     infoIcon:{
         marginRight:8

@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontFamily: 'primary-regular',
         fontSize: 16,
-        letterSpacing: 5,
-        paddingLeft: Platform.OS === 'ios' ? 5 : 0
+        letterSpacing: 2,
+        paddingLeft: Platform.OS === 'ios' ? 2 : 0
     }
 });
 

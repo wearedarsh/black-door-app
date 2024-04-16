@@ -149,6 +149,10 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
         dd: formValues.listedAtDD,
         mm: formValues.listedAtMM,
         yy: formValues.listedAtYY,
+        long: formValues.long,
+        lat: formValues.lat,
+        bedrooms: formValues.bedrooms,
+        bathrooms: formValues.bathrooms
       }})){
         setLoading(false)
         UtilsHelpers.scrollToTop({ref: formRef, animated: true})
