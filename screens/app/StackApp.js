@@ -51,7 +51,7 @@ const StackApp = () => {
               component={StackAppProperty} 
               options={{
                 tabBarIcon: ({ focused }) => (
-                  <ComponentAppTabItem label={'PROPERTIES'} icon={'earth'} focused={focused} />
+                  <ComponentAppTabItem label={'LISTINGS'} icon={'earth'} focused={focused} />
                 ),
               }}   
             />

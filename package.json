@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.23.3",
+    "@fortawesome/react-native-fontawesome": "^0.3.0",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
@@ -37,9 +38,10 @@
     "react-native-confirmation-code-field": "^7.3.1",
     "react-native-crypto-js": "^1.0.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-maps": "1.7.1",
+    "react-native-vector-icons": "^10.0.3",
     "react-redux": "^8.1.2",
-    "semver": "^7.5.4",
-    "react-native-maps": "1.7.1"
+    "semver": "^7.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

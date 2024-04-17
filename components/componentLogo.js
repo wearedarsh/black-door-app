@@ -15,19 +15,19 @@ const ComponentLogo = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center'
+        alignItems: 'center',
     },
     headline: {
         color: colors.gold,
-        fontSize: 32,
+        fontSize: 40,
         letterSpacing: 4,
         paddingLeft:Platform.OS === 'ios' ? 4 : 0,
-        lineHeight: 32,
+        lineHeight: 40,
         fontFamily: 'hero'
     },
     strapline: {
         color: colors.gold,
-        fontSize: 12,
+        fontSize: 16,
         letterSpacing: 8,
         paddingLeft:Platform.OS === 'ios' ? 8 : 0,
         fontFamily: 'hero'

@@ -58,14 +58,15 @@ const ScreenAppPropertyListing = ({navigation}) => {
         <>
         <ComponentAppBrandingHeader gradient={true} />
             <View style={styles.container}>
-            <ComponentAppTitle title={'LISTINGS'} />
+            <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
                 <FlatList
                 data={properties}
                 renderItem={({ item }) => {
                     const dateObject = item.data.listedAt.toDate()
                     const dateToDisplay = dateObject.toLocaleDateString('en-UK', {year:"numeric",  month:"short", day: 'numeric'})
                     return (
-                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW PROPERTY'} heightPercent={70} badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay} marginBottom={16} onPress={() => {navigation.navigate('ScreenAppPropertyView', {key: item.id})}}  />
+                        // badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay}
+                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW'} heightPercent={70}  marginBottom={16} onPress={() => {navigation.navigate('ScreenAppPropertyView', {key: item.id})}} value={item.data.price}  />
                     )
                     }
                 }

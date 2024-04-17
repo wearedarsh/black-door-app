@@ -8,6 +8,7 @@ import ComponentAppBrandingHeader from '../../components/componentAppBrandingHea
 import ComponentAppIconCopy from '../../components/componentAppIconCopy'
 import ComponentAppBtnPrimary from '../../components/componentAppBtnPrimary'
 import ComponentAppBtnSecondary from '../../components/componentAppBtnSecondary'
+import ComponentAppSpacerView from '../../components/componentAppSpacerView'
 //firebase
 import { app } from '../../config/configFirebase'
 import { getFirestore, onSnapshot, getDoc, collection, doc } from 'firebase/firestore'
@@ -27,10 +28,13 @@ const ScreenAppPropertyView = ({ navigation, route }) => {
         isDeleted: false,
         isSold: false,
         isUnderOffer: false,
+        bedrooms: '',
+        bathrooms: '',
         listedAt: '',
         location: '',
         price: '',
         shortDescription: '',
+        longDescription: '',
         squareFeet: '',
         title: ''
     })
@@ -67,9 +71,16 @@ const ScreenAppPropertyView = ({ navigation, route }) => {
                     <Text style={{...styles.copy}}>{propertyData.shortDescription.toUpperCase()}</Text>
                     <ComponentAppIconCopy iconName={'map-outline'} copy={propertyData.location.toUpperCase()} marginTop={32} />
                     <ComponentAppIconCopy iconName={'resize-outline'} copy={propertyData.squareFeet.toUpperCase()} />
-                    <ComponentAppIconCopy iconName={'cash-outline'} copy={propertyData.price.toUpperCase()} />
-                    <ComponentAppBtnPrimary label={'SPEAK TO AGENT'} onPress={()=>{}} marginTop={32} />
+                    <ComponentAppIconCopy iconName={'pricetag-outline'} copy={propertyData.price.toUpperCase()} />
+                    <View style={styles.row}>
+                        <ComponentAppIconCopy iconName={'water-outline'} copy={propertyData.bathrooms.toUpperCase() + ' BATHS'} />
+                        <ComponentAppIconCopy iconName={'bed-outline'} copy={propertyData.bedrooms.toUpperCase() + ' BEDS'} />
+                    </View>
+                    <ComponentAppSpacerView height={16} />
+                    <ComponentAppBtnPrimary label={'REQUEST VIEWING'} onPress={()=>{}} marginTop={16} />
                     <ComponentAppBtnSecondary icon={false} label={'DOWNLOAD FLOORPLAN'} />
+                    <ComponentAppSpacerView height={32} />
+                    <Text style={{...styles.copy}}>{propertyData.longDescription.toUpperCase()}</Text>
                 </View>
             </ScrollView>
 
@@ -85,9 +96,13 @@ const styles = StyleSheet.create({
         backgroundColor: colors.slate,
 
     },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
     wrapper: {
         backgroundColor: colors.slate,
-        marginTop: 128
+        marginTop: Platform.OS === 'ios' ? 108 : 100
     },
     content: {
         padding: 32

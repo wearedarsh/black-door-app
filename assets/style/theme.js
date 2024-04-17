@@ -7,7 +7,7 @@ export const colors = {
 }
 
 export const brand = {
-    logoHeadline: 'BLACKDOOR',
+    logoHeadline: 'BLKDR',
     logoStrapline: 'VIP',
     logoStraplineAdmin: 'ADMIN',
     appHomeStrapline: 'EXCLUSIVE ACCESS TO SUPER PRIME PROPERTY',

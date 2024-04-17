@@ -21,14 +21,14 @@ const ComponentAppBrandingHeader = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: Platform.OS === 'ios' ? 128 : 100, 
+        height: Platform.OS === 'ios' ? 108 : 80, 
         width:'100%', 
         alignItems: 'center', 
         justifyContent:'flex-end', 
         position:'absolute', 
         top:0,
         zIndex: 300,
-        paddingBottom: 16
+        paddingBottom: 16,
     },
     gradient:{
         position:'absolute',
