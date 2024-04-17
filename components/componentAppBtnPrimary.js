@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
     btnText: {
         textAlign:'center',
         color: colors.white,
-        fontFamily: 'primary-regular',
-        fontSize: 16,
-        letterSpacing:1,
+        fontFamily: 'hero',
+        fontSize: 20,
+        letterSpacing:2,
         paddingLeft: Platform.OS === 'ios' ? 1 : 0
     }
 })

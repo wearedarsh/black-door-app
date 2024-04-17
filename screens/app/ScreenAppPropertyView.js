@@ -62,7 +62,7 @@ const ScreenAppPropertyView = ({ navigation, route }) => {
 
     return(
         <>
-        <ComponentAppBrandingHeader gradient={true} backButton={true} onPress={()=>{navigation.navigate('ScreenAppPropertyListing')}} />
+        <ComponentAppBrandingHeader gradient={false} backButton={true} onPress={()=>{navigation.navigate('ScreenAppPropertyListing')}} />
         <View style={styles.wrapper}>
             <ScrollView contentContainerStyle={styles.container}>
                 { <ComponentAppCarousel data={carouselData} heightPercent={50} /> }
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         backgroundColor: colors.slate,
-        marginTop: Platform.OS === 'ios' ? 108 : 100
+        marginTop: Platform.OS === 'ios' ? 98 : 70
     },
     content: {
         padding: 32

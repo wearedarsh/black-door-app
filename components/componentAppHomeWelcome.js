@@ -7,32 +7,21 @@ import { Ionicons } from '@expo/vector-icons'
 import ComponentAppBtnPrimary from '../components/componentAppBtnPrimary'
 import ComponentAppPropertyBadge from './componentAppPropertyBadge'
 
-const ComponentAppPropertyListing = (props) => {
+const ComponentAppHomeWelcome = (props) => {
     
     const { onPress = () => {}, cta = 'CTA PROP', addHeightForSmallScreens = 0, title = 'SET TITLE PROP', image = 'https://www.wearedarsh.com/blkdr/demo-property-images/01.png', location = 'SET LOCATION PROP', size = 'SET SIZE PROP', heightPercent=100, badge = 'under offer', value = 'ADD VALUE PROP', marginBottom=0, convertDateToDisplay= () => {}} = props
     const windowHeight = Dimensions.get('window').height
     const windowWidth = Dimensions.get('window').width
-    const height = (windowHeight/100 * heightPercent) - 100 + addHeightForSmallScreens //bottom tabs are 100
+    const height = (windowHeight/100 * heightPercent) - 80 //bottom tabs are 100
     
     return (
         <View style={{...styles.wrapper, height: height, width: windowWidth, marginBottom: marginBottom}}>
-            <ImageBackground source={{uri: image}} style={{...styles.backgroundImage}}>
+            <ImageBackground source={require('../assets/img/welcome-screen-bgr.png')} style={{...styles.backgroundImage}}>
                 {/* {badge && <View style={{position:'absolute', top:16, left:16}}><ComponentAppPropertyBadge title={badge.toUpperCase()} /></View>} */}
                 <View style={styles.info}>
-                    <Text style={{...styles.textContent, textAlign: 'left'}}>{title}</Text>
+                    <Text style={{...styles.textContent, textAlign: 'center'}}>{title}</Text>
                 </View>
 
-                <View style={styles.row} >
-                    <View style={{...styles.info, width:'45%'}}>
-                        <Ionicons style={styles.infoIcon} name={'map-outline'} size={16} color={colors.white} />
-                        <Text style={styles.textContent}>{location}</Text>
-                    </View>
-                    <View style={{...styles.info, width:'45%'}}>
-                        <Ionicons style={styles.infoIcon} name={'pricetag-outline'} size={16} color={colors.white} />
-                        <Text style={styles.textContent}>{value}</Text>
-                    </View>
-                    
-                </View>
                 
                 <View style={styles.btnHolder}>
                     <ComponentAppBtnPrimary label={cta} onPress={onPress} marginTop={16} />
@@ -59,9 +48,11 @@ const styles = StyleSheet.create({
     info: {
         flexDirection: 'row',
         marginBottom: 16,
-        padding:8,
+        padding:12,
         backgroundColor: 'rgba(35, 31, 32, 0.7)',
-        width:'90%'
+        width:'90%',
+        justifyContent: 'center'
+ 
     },
     btnHolder: {
         marginHorizontal: 32,
@@ -73,11 +64,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: colors.white,
         letterSpacing: 1,
-        paddingLeft: Platform.OS === 'ios' ? 1 : 0
+        paddingLeft: Platform.OS === 'ios' ? 1 : 0,
     },
     infoIcon:{
         marginRight:8
     }
 })
 
-export default ComponentAppPropertyListing
+export default ComponentAppHomeWelcome

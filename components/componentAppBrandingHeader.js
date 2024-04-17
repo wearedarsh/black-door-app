@@ -4,14 +4,15 @@ import { View, StyleSheet, Platform } from 'react-native'
 import ComponentLogo from '../components/componentLogo'
 import ComponentBackButton from './componentBackButton'
 //style
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient'
+import { colors } from '../assets/style/theme'
 
 const ComponentAppBrandingHeader = (props) => {
     const { backButton = false, gradient = false, gradientHeight = Platform.OS === 'ios' ? 128 : 100, onPress = () => {}, gradientFrom = 'rgba(35, 31, 32, 1)', gradientTo = 'rgba(35, 31, 32, 1)'} = props
     return(
         <>
             { gradient && <View style={styles.gradient}><LinearGradient style={{...styles.gradient,height:gradientHeight}} colors={[gradientFrom, gradientTo]} /></View>}
-            <View style={styles.container}>
+            <View style={[styles.container, !gradient && {backgroundColor: colors.slate}]}>
                 { backButton && <ComponentBackButton onPress={onPress} /> }
                 <ComponentLogo />
             </View>
@@ -21,7 +22,7 @@ const ComponentAppBrandingHeader = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: Platform.OS === 'ios' ? 108 : 80, 
+        height: Platform.OS === 'ios' ? 98 : 80, 
         width:'100%', 
         alignItems: 'center', 
         justifyContent:'flex-end', 

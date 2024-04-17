@@ -18,11 +18,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom:16
+        paddingTop: 0,
+        paddingBottom:16,
     },
     title: {
         color: colors.white,
-        fontFamily: 'primary-regular',
+        fontFamily: 'primary-medium',
         fontSize: 16,
         letterSpacing: 2,
         paddingLeft: Platform.OS === 'ios' ? 2 : 0

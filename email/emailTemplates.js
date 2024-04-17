@@ -24,6 +24,7 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
       max-width: 600px;
       margin: 0 auto;
       padding: 48px 16px;
+      background-color: #231F20;
     }
 
     .logo {

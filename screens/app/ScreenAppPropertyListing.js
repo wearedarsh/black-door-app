@@ -56,7 +56,7 @@ const ScreenAppPropertyListing = ({navigation}) => {
 
     return(
         <>
-        <ComponentAppBrandingHeader gradient={true} />
+        <ComponentAppBrandingHeader />
             <View style={styles.container}>
             <ComponentAppTitle title={'EXCLUSIVE FOR YOU'} />
                 <FlatList
@@ -66,7 +66,7 @@ const ScreenAppPropertyListing = ({navigation}) => {
                     const dateToDisplay = dateObject.toLocaleDateString('en-UK', {year:"numeric",  month:"short", day: 'numeric'})
                     return (
                         // badge={item.data.isSold ? 'SOLD' : item.data.isUnderOffer ? 'UNDER OFFER' : 'LISTED: ' + dateToDisplay}
-                        <ComponentAppPropertyListing image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW'} heightPercent={70}  marginBottom={16} onPress={() => {navigation.navigate('ScreenAppPropertyView', {key: item.id})}} value={item.data.price}  />
+                        <ComponentAppPropertyListing addHeightForSmallScreens={150} image={item.data.heroImageURL} title={item.data.title.toUpperCase()} location={item.data.location.toUpperCase()} size={item.data.squareFeet.toUpperCase()} cta={'VIEW'} heightPercent={70}  marginBottom={16} onPress={() => {navigation.navigate('ScreenAppPropertyView', {key: item.id})}} value={item.data.price}  />
                     )
                     }
                 }
@@ -81,7 +81,7 @@ const ScreenAppPropertyListing = ({navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop:Platform.OS === 'ios' ? 128 : 100,
+        marginTop:Platform.OS === 'ios' ? 98 : 80,
         flex:1,
         width:'100%',
         alignItems: 'center',
