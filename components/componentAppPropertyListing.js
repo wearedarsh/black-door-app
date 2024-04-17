@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     textContent: {
         fontFamily: 'primary-medium',
-        fontSize: 12,
+        fontSize: 16,
         color: colors.white,
         letterSpacing: 1,
         paddingLeft: Platform.OS === 'ios' ? 1 : 0
