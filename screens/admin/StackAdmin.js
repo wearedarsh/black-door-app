@@ -49,7 +49,7 @@ const StackApp = () => {
               component={StackAdminClient} 
               options={{
                 tabBarIcon: ({ focused }) => (
-                  <ComponentAppTabItem label={'CLIENTS'} icon={'person-outline'} focused={focused} />
+                  <ComponentAppTabItem label={'BUYERS'} icon={'person-outline'} focused={focused} />
                 ),
               }}   
             />

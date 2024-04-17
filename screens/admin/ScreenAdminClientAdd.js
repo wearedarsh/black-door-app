@@ -231,7 +231,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
             })
             if(!response.error){
               setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Client added and invite email sent', icon:'ios-checkmark'}})
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Buyer added and invite email sent', icon:'ios-checkmark'}})
               return
             }
           }catch(error){
@@ -242,7 +242,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
         }
         const sendEmailToClient = async () => {
           
-          Alert.alert('Client Added', 'Would you like to send an email notification?', [
+          Alert.alert('Buyer Added', 'Would you like to send an invite email to the buyer?', [
             {
               text: 'No',
               style: 'cancel',
@@ -293,7 +293,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
         <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientManagement')}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
-                <ComponentAdminTitle title={'ADD CLIENT'} />
+                <ComponentAdminTitle title={'ADD BUYER'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} />}
                   <ScrollView style={styles.form} ref={formRef}>
                     <Text style={styles.subTitle}>PERSONAL DETAILS</Text>
@@ -310,7 +310,7 @@ const ScreenAdminClientAdd = ({navigation}) => {
                     {groupsComponentArray && groupsComponentArray}
                     <Text style={styles.subTitle}>INVITE CODE</Text>
                     <ComponentAdminCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} />
-                    <ComponentAppBtnPrimary label={'ADD CLIENT'} onPress={()=>{submitForm(codeValue)}} />
+                    <ComponentAppBtnPrimary label={'ADD BUYER'} onPress={()=>{submitForm(codeValue)}} />
                     <ComponentAppSpacerView height={120} />
                   </ScrollView>
             </View>

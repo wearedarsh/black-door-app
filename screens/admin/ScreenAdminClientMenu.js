@@ -82,7 +82,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
         const response = await UtilsFirestore.updateDocumentByKey({currentCollection: 'users', key, data:{isDeleted: true}})
         if(!response.error){
           setLoading(false)
-          navigation.navigate('ScreenAdminClientManagement', {message: 'Client has been deleted'})
+          navigation.navigate('ScreenAdminClientManagement', {message: 'Buyer has been deleted'})
         }else{
           UtilsValidation.showHideFeedback({icon:'ios-warning', title: response.error, duration:3000, setterFunc: setFeedback})
           return
@@ -97,7 +97,7 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
     }
     //delete client alert functionality
     const deleteClient = async () => {
-      Alert.alert('Delete client', 'Are you sure you want to delete this user?', [
+      Alert.alert('Delete buyer', 'Are you sure you want to delete this buyer?', [
         {
           text: 'No',
           style: 'cancel'
@@ -117,16 +117,16 @@ const ScreenAdminClientMenu = ({route, navigation}) => {
               <ComponentAdminHeader backButton={true} onPress={()=>{navigation.navigate('ScreenAdminClientManagement')}} />
                 {loading && <ComponentAdminLoadingIndicator /> }
                   <View style={styles.container}>
-                      <ComponentAdminTitle title={'MANAGE CLIENT'}  />
+                      <ComponentAdminTitle title={'MANAGE BUYER'}  />
                       {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                       <View style={styles.form}>
                       <Text style={styles.subTitle}>{firstName.toUpperCase() + ' ' + lastName.toUpperCase()}</Text>
                       {!hasSignedUp ? userLiveCode && codeExpiryDate ?  <ComponentAdminInformation information={'This clients invite code expires on ' + codeExpiryDate} /> : <ComponentAdminInformation information={'This clients invite code has expired'} /> : null}
                         {!hasSignedUp ? <ComponentAppBtnPrimary label={'CREATE NEW CODE'} onPress={() => {navigation.navigate('ScreenAdminClientCreateCode', {data, key, codeKey: liveCodeKey})}} /> : <ComponentAdminInformation information={'This account is live'} />  }
                         
-                        <ComponentAppBtnPrimary label={'EDIT CLIENT'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {key, data})}} />
+                        <ComponentAppBtnPrimary label={'EDIT BUYER'} onPress={() => {navigation.navigate('ScreenAdminClientEdit', {key, data})}} />
 
-                        <ComponentAppBtnSecondary label={'DELETE CLIENT'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'}  />
+                        <ComponentAppBtnSecondary label={'DELETE BUYER'} onPress={()=>{deleteClient()}}  icon={true} iconName={'trash-outline'}  />
                         
                       </View>
                   </View>

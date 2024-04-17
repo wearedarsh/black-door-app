@@ -1,4 +1,4 @@
 export const systemEmailSubjectTemplates = {
-    invite: '💎 VIP Invite to BLKDR App',
+    invite: 'Exclusive Invite to BLKDR vip app',
     newCode: 'Your new code for the BLKDR App',
 }

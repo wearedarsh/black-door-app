@@ -73,9 +73,9 @@ const ScreenAdminClientManagement = ({ navigation, route }) => {
         <ComponentAdminHeader />
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
-                <ComponentAdminTitle title={'CLIENT MANAGEMENT'} />
+                <ComponentAdminTitle title={'BUYER MANAGEMENT'} />
                 
-                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminClientAdd')}} title={'ADD CLIENT'} />
+                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminClientAdd')}} title={'ADD BUYER'} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
                 {filteredClients &&

@@ -1,3 +1,5 @@
+import { brand } from '../assets/style/theme'
+
 export const systemEmailHTMLTemplate = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +14,12 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
       padding: 0;
     }
 
+    p {
+      font-family: sans-serif;
+      font-size: 16px;
+      padding: 0;
+    }
+
     .container {
       max-width: 600px;
       margin: 0 auto;
@@ -19,7 +27,7 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
     }
 
     .logo {
-      margin-bottom: 32px;
+      margin-bottom: 16px;
       text-align: center;
     }
 
@@ -28,23 +36,45 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
     }
 
     .content-panel {
-      background-color: #ffffff;
       border-radius: 8px;
       padding: 16px;
     }
 
-    .content-panel p {
+    .code-content-panel {
+      background-color: #343232;
+      border-radius: 8px;
+      padding: 12px;
       text-align: center;
-      font-size: 24px;
+    }
+
+    .content-panel p {
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .small {
+      font-size: 12px;
+    }
+
+    #code-number-holder {
+      background-color: #231F20;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    #code-content-p {
+      font-size: 40px;
+      color: #AF9A63;
+      padding:8px;
+      line-height: 40px;
+      margin:0;
     }
 
     .footer {
       margin-top: 32px;
       text-align: center;
-    }
-
-    .footer .heart {
-      font-size: 24px;
     }
 
     .footer p {
@@ -56,14 +86,13 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
 <body>
   <div class="container">
     <div class="logo">
-      <img src="https://www.wearedarsh.com/blkdr/email/img/BLKDR-email-logo@2x.png?=v1" alt="BLKDR VIP" width="250">
+      <img src="${brand.brandAssetDomain}/email/img/email-header-logo@2x.png?=v2" alt="BLKDR vip logo" width="250">
     </div>
     <div class="content-panel">
       %emailContent%
     </div>
     <div class="footer">
-      <p class="heart"></p>
-      <p>Sent from the BLKDR app.</p>
+      <p>${brand.emailFooterStrapline}</p>
     </div>
   </div>
 </body>

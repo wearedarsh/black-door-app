@@ -217,7 +217,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
         <ComponentAdminHeader backButton={true} onPress={() => {navigation.navigate('ScreenAdminClientMenu', {data: {firstName: formValues.firstName, lastName: formValues.lastName}, key})}} />
         {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
-                <ComponentAdminTitle title={'EDIT CLIENT'} />
+                <ComponentAdminTitle title={'EDIT BUYER'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} />}
                   <ScrollView style={styles.form} ref={formRef}>
                     <Text style={styles.subTitle}>PERSONAL DETAILS</Text>
@@ -235,7 +235,7 @@ const ScreenAdminClientEdit = ({navigation, route}) => {
                     <Text style={styles.subTitle}>ACCOUNT STATUS</Text>
                     <ComponentAdminToggle title={'ACTIVE'} selectedValue={formValues.isActive} setterFunction={() => {setFormValues({...formValues, isActive: !formValues.isActive})}} />
                     <ComponentAppSpacerView height={24} />
-                    <ComponentAppBtnPrimary label={'UPDATE CLIENT'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} />
+                    <ComponentAppBtnPrimary label={'UPDATE BUYER'} onPress={()=>{submitForm()}} icon={true} iconName={'create'} />
                 
                     <ComponentAppSpacerView height={120} />
                   </ScrollView>

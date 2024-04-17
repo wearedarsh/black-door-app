@@ -260,7 +260,7 @@ const ScreenAdminPropertyEdit = ({route, navigation}) => {
           
           {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
-                <ComponentAdminTitle title={'PROPERTY EDIT'} />
+                <ComponentAdminTitle title={'EDIT LISTING'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} /> }
             </View>
                 {formValues && 

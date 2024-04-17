@@ -238,7 +238,7 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           
           {loading && <ComponentAdminLoadingIndicator />}
             <View style={styles.container}>
-                <ComponentAdminTitle title={'PROPERTY ADD'} />
+                <ComponentAdminTitle title={'ADD LISTING'} />
                 {feedback && <ComponentAdminFeedback title={feedback.title} icon={feedback.icon} /> }
             </View>
                 {formValues && 

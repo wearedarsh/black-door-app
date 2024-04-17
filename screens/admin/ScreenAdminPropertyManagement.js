@@ -73,8 +73,8 @@ const ScreenAdminPropertyManagement = ({ navigation, route }) => {
         <ComponentAdminHeader />
         {loading && <ComponentAdminLoadingIndicator /> }
             <View style={styles.container}>
-                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminPropertyAdd')}} title={'ADD PROPERTY'} />
-                <ComponentAdminTitle title={'PROPERTY MANAGEMENT'} />
+                <ComponentAdminAddButton onPress={() => {navigation.navigate('ScreenAdminPropertyAdd')}} title={'ADD LISTING'} />
+                <ComponentAdminTitle title={'LISTING MANAGEMENT'} />
                 <ComponentAdminSearch onChangeText={onSearchChange} value={searchText} />
                 
                 {feedback && <ComponentAdminFeedback icon={feedback.icon} title={feedback.title} />}
