@@ -46,7 +46,7 @@ const UtilsEmail = {
                 return { error: response.error }
             }  
         }catch(error){
-            return {error: error}
+            return {error: error.message}
         }
     }
 }

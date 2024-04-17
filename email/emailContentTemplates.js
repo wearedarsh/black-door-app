@@ -20,4 +20,12 @@ export const systemEmailContentTemplates = {
     <p>This will expire in 48 hours.</p>
     <p style="font-size:48px;color:${colors.gold}">%inviteCode%</p>
     `,
+    newListing: `
+    <p>Hi %firstName%,</p>
+    <p>A new listing has been added to the app for you.</p>
+    <div class="code-content-panel">
+        <p><strong>%title%</strong></p>
+        <div id="code-number-holder"><a class="cta-button" href="" target="_blank">View Listing</a></div>
+      </div>
+    `
 }

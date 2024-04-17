@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text} from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Alert} from 'react-native';
 //utils
 import UtilsFirestore from '../../utils/utilsFirestore'
 import UtilsValidation from '../../utils/utilsValidation'
 import UtilsHelpers from '../../utils/utilsHelpers'
+import UtilsEmail from '../../utils/utilsEmail'
 //components
 import ComponentAdminHeader from '../../components/admin/componentAdminHeader'
 import ComponentAdminTitle from '../../components/admin/componentAdminTitle'
@@ -102,7 +103,7 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
               setGroupsComponentArray(prevState => groupsComponentTempArray)
 
             }else{
-              console.log('couldnt get groups')
+              
               setLoading(false)
               UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Error fetcing groups', icon:'ios-warning'}})
               return
@@ -139,26 +140,26 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
       
     
       //check inputs are populated
-      if(!UtilsValidation.inputsPopulated({data: {
-        title: formValues.title,
-        location: formValues.lastName,
-        price: formValues.emailAddress,
-        shortDescription: formValues.mobileNumber,
-        size: formValues.size,
-        heroImageURL: formValues.heroImageURL,
-        dd: formValues.listedAtDD,
-        mm: formValues.listedAtMM,
-        yy: formValues.listedAtYY,
-        long: formValues.long,
-        lat: formValues.lat,
-        bedrooms: formValues.bedrooms,
-        bathrooms: formValues.bathrooms
-      }})){
-        setLoading(false)
-        UtilsHelpers.scrollToTop({ref: formRef, animated: true})
-        UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
-        return
-      }
+      // if(!UtilsValidation.inputsPopulated({data: {
+      //   title: formValues.title,
+      //   location: formValues.lastName,
+      //   price: formValues.emailAddress,
+      //   shortDescription: formValues.mobileNumber,
+      //   size: formValues.size,
+      //   heroImageURL: formValues.heroImageURL,
+      //   dd: formValues.listedAtDD,
+      //   mm: formValues.listedAtMM,
+      //   yy: formValues.listedAtYY,
+      //   long: formValues.long,
+      //   lat: formValues.lat,
+      //   bedrooms: formValues.bedrooms,
+      //   bathrooms: formValues.bathrooms
+      // }})){
+      //   setLoading(false)
+      //   UtilsHelpers.scrollToTop({ref: formRef, animated: true})
+      //   UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Please complete all fields', icon:'ios-warning'}})
+      //   return
+      // }
       
       //convert date string to date
       const convertedDate = await UtilsHelpers.stringToDate({day:formValues.listedAtDD, month:formValues.listedAtMM, year:formValues.listedAtYY})
@@ -192,7 +193,7 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           UtilsValidation.showHideFeedback({duration: 3000, data: {title:response.error, icon: 'ios-warning'}, setterFunc: setFeedback})
           return
         }else{
-          setLoading(false)
+          //setLoading(false)
           UtilsValidation.showHideFeedback({duration: 3000, data: {title:'Property added successfully', icon: 'checkmark'}, setterFunc: setFeedback})
           UtilsHelpers.scrollToTop({ref: formRef, animated: true})
         }
@@ -202,8 +203,76 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           UtilsHelpers.scrollToTop({ref: formRef, animated: true})
           return
       }
+      //send email to buyers
+      const sendEmailToBuyers = async () => {
+        setLoading(true)
+        //fetch buyers that are subscribed, active and opted in
+        const collectionRef = collection(db, "users")
+        const activeWhereRef = where("isActive", "==", true)
+        const deletedWhereRef = where("isDeleted", "==",false)
+        const emailWhereRef = where("emailOptIn", "==", true)
+        const groupsWhereRef = where("groups", "array-contains-any", selectedGroups)
+        const queryRef = query(collectionRef, activeWhereRef, deletedWhereRef, emailWhereRef, groupsWhereRef)
+        const querySnapshot = await getDocs(queryRef)
+
+        try{
+          if(querySnapshot){
+            console.log('title' + formValuesForSubmit.title)
+            querySnapshot.forEach((doc) =>{
+            const userData = doc.data()
+            const response = UtilsEmail.sendSingleTemplateEmail({
+              emailSubjectTemplate: 'newListing', 
+              emailContentTemplate: 'newListing',
+              fromEmailNameTemplate: 'adminStandard',
+              fromEmail: 'adminStandard',
+              recipient: userData.emailAddress,
+              mergeFieldsArray: [
+                {field: '%firstName%', 
+                value: userData.firstName}, 
+                {field: '%title%', 
+                value: formValuesForSubmit.title}]
+            })
+            if(!response.error){
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Notification email sent', icon:'ios-checkmark'}})
+              return
+            }
+          })
+        }
+          
+        }catch(error){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+          return
+        }
+      }
+      //send notification alert
+      const sendAlertToBuyers = async () => {
+        Alert.alert('Listing Added', 'Would you like to send all subscribed buyers an email and push notification?', [
+          {
+            text: 'No',
+            style: 'cancel',
+            onPress: () => {
+              setLoading(false)
+              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Listing added', icon:'ios-checkmark'}})
+              return
+            }
+          },
+          {
+            text: 'Yes', 
+            onPress: async () => {
+              await sendEmailToBuyers()
+              //sendPushToBuyers()
+              setLoading(false)
+            }
+          },
+        ])
+      }
+
+      //check if user would like to send a notification and email to all users in groups
+      await sendAlertToBuyers()
       //clear form values
-      await UtilsHelpers.clearFormValuesObject({setFunction: setFormValues, object: formValues})
+      //await UtilsHelpers.clearFormValuesObject({setFunction: setFormValues, object: formValues})
       //scroll to top
       UtilsHelpers.scrollToTop({ref: formRef, animated: true})
       //reset groups

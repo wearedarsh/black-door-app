@@ -1,4 +1,4 @@
-import { brand } from '../assets/style/theme'
+import { brand, colors } from '../assets/style/theme'
 
 export const systemEmailHTMLTemplate = `<!DOCTYPE html>
 <html lang="en">
@@ -20,11 +20,23 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
       padding: 0;
     }
 
+    .cta-button {
+      padding: 8px 16px;
+      color: ${colors.white};
+      font-size: 16px;
+      font-weight: bold;
+      font-family: sans-serif;
+      background-color: ${colors.gold};
+      text-align:center;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
     .container {
       max-width: 600px;
       margin: 0 auto;
       padding: 48px 16px;
-      background-color: #231F20;
+      background-color: ${colors.slate};
     }
 
     .logo {
@@ -58,7 +70,7 @@ export const systemEmailHTMLTemplate = `<!DOCTYPE html>
     }
 
     #code-number-holder {
-      background-color: #231F20;
+      background-color: ${colors.slate};
       border-radius: 8px;
       text-align: center;
       max-width: 200px;
