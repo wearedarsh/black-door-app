@@ -25,7 +25,7 @@ export const systemEmailContentTemplates = {
       <p>A new listing has been added to the app for you.<br><br></p>
           <div class="code-content-panel">
               <p><strong>%title%</strong></p>
-              <p><img class="icon vMiddle" src="${brand.brandAssetDomain}/email/img/bed-icon@2x.png" /><span class="vMiddle">%bedrooms%</span><img class="icon vMiddle" style="margin-left:16px;" src="${brand.brandAssetDomain}/email/img/bath-icon@2x.png" /><span class="vMiddle">%bathrooms%</span></p>
+              <p><img class="icon vMiddle" src="${brand.brandAssetDomain}/email/img/bed-icon@2x.png" /><span class="vMiddle">%bedrooms% beds</span><img class="icon vMiddle" style="margin-left:16px;" src="${brand.brandAssetDomain}/email/img/bath-icon@2x.png" /><span class="vMiddle">%bathrooms% baths</span></p>
               <a href="${brand.brandAssetDomain}" target="_blank"><img src="%heroImageURL%" id="heroImage" /></a>
               <div id="cta-content">
                   <p><img class="icon vMiddle" src="${brand.brandAssetDomain}/email/img/price-icon@2x.png" width="40" /><span class="vMiddle" style="font-size:24px;line-height: 40px;">%price%</span></p>

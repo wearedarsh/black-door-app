@@ -27,6 +27,7 @@ import { colors } from '../../assets/style/theme'
 
 const ScreenAdminPropertyAdd = ({route, navigation}) => {
     const formRef = useRef()
+    let newDocumentKey = ''
     //local state
     const [groups, setGroups] = useState({})
     const [groupsComponentArray, setGroupsComponentArray] = useState([])
@@ -37,15 +38,16 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
     //initialise form values
     const today = new Date()
     const [formValues, setFormValues] = useState({
-      title: '',
-      location: '',
-      price: '',
+      title: 'Four bedroom apartment in Manhattan',
+      location: 'US, New York City',
+      price: '$15,999,000',
       secondaryPrice: '',
       shortDescription: '',
+      longDescription: '',
       heroImageURL:'',
       squareFeet:'',
-      bedrooms: '',
-      bathrooms: '',
+      bedrooms: '3 bedrooms',
+      bathrooms: '4 bathrooms',
       groups: [],
       long: '',
       lat: '',
@@ -194,6 +196,8 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           return
         }else{
           //setLoading(false)
+          //set key for use in push and email notifications
+          newDocumentKey = response.key
           UtilsValidation.showHideFeedback({duration: 3000, data: {title:'Property added successfully', icon: 'checkmark'}, setterFunc: setFeedback})
           UtilsHelpers.scrollToTop({ref: formRef, animated: true})
         }
@@ -203,21 +207,48 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           UtilsHelpers.scrollToTop({ref: formRef, animated: true})
           return
       }
+      //send push notification to buyers
+      const sendPushToBuyers = async () => {
+        //fetch only buyers that are acive and belong to the groups
+        const collectionRef = collection(db, "users")
+        const activeWhereRef = where("isActive", "==", true)
+        const deletedWhereRef = where("isDeleted", "==",false)
+        const optInWhereRef = where("pushOptIn", "==", true)
+        const groupsWhereRef = where("groups", "array-contains-any", selectedGroups)
+        const queryRef = query(collectionRef, activeWhereRef, deletedWhereRef, optInWhereRef, groupsWhereRef)
+        const querySnapshot = await getDocs(queryRef)
+        
+        try{
+          if(querySnapshot){
+            querySnapshot.forEach((doc) =>{
+              const userData = doc.data()
+              const sendPush = async () => {
+                const response = await UtilsPushNotification.sendPushNotification({expoPushToken:userData.pushToken, title: 'New property added for you', subtitle: formValues.title, body: formValues.price + ', ' + formValues.bedrooms + ', ' + formValues.bathrooms + ' - View Now' , data: {screen: "ScreenAppPropertyView", key: newDocumentKey}, categoryId: 'propertyListing'})
+              }
+              sendPush()
+            })
+          }
+        }catch(error){
+          setLoading(false)
+          UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:error.message, icon:'ios-warning'}})
+          return
+        }
+
+      }
       //send email to buyers
-      const sendEmailToBuyers = async () => {
+      const sendEmailsToBuyers = async () => {
         setLoading(true)
         //fetch buyers that are subscribed, active and opted in
         const collectionRef = collection(db, "users")
         const activeWhereRef = where("isActive", "==", true)
         const deletedWhereRef = where("isDeleted", "==",false)
-        const emailWhereRef = where("emailOptIn", "==", true)
+        const optInWhereRef = where("emailOptIn", "==", true)
         const groupsWhereRef = where("groups", "array-contains-any", selectedGroups)
-        const queryRef = query(collectionRef, activeWhereRef, deletedWhereRef, emailWhereRef, groupsWhereRef)
+        const queryRef = query(collectionRef, activeWhereRef, deletedWhereRef, optInWhereRef, groupsWhereRef)
         const querySnapshot = await getDocs(queryRef)
 
         try{
           if(querySnapshot){
-            console.log('title' + formValuesForSubmit.title)
             querySnapshot.forEach((doc) =>{
             const userData = doc.data()
             const response = UtilsEmail.sendSingleTemplateEmail({
@@ -241,11 +272,6 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
                 value: formValuesForSubmit.heroImageURL}
               ]
             })
-            if(!response.error){
-              setLoading(false)
-              UtilsValidation.showHideFeedback({duration: 3000, setterFunc:setFeedback, data: {title:'Notification email sent', icon:'ios-checkmark'}})
-              return
-            }
           })
         }
           
@@ -270,8 +296,8 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
           {
             text: 'Yes', 
             onPress: async () => {
-              await sendEmailToBuyers()
-              //sendPushToBuyers()
+              await sendEmailsToBuyers()
+              await sendPushToBuyers()
               setLoading(false)
             }
           },
@@ -321,12 +347,12 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
             </View>
                 {formValues && 
                 <ScrollView style={styles.form} ref={formRef}>
-                  
                   <ComponentAppSpacerView height={16} />
                   <ComponentAdminInput placeholder={'Enter title...'} label={'TITLE'} value={formValues.title} onChangeText={newValue => updateFormFields(newValue, 'title')} />
                   <ComponentAdminInput placeholder={'Enter location..'} label={'LOCATION'} value={formValues.location} onChangeText={newValue => updateFormFields(newValue, 'location')}/>
                   <ComponentAdminInput placeholder={'Enter price..'} label={'PRICE'} value={formValues.price} onChangeText={newValue => updateFormFields(newValue, 'price')} />
-                  <ComponentAdminInput placeholder={'Enter description..'} label={'DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.shortDescription} onChangeText={newValue => updateFormFields(newValue, 'shortDescription')} />
+                  <ComponentAdminInput placeholder={'Enter short description..'} label={'SHORT DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.shortDescription} onChangeText={newValue => updateFormFields(newValue, 'shortDescription')} />
+                  <ComponentAdminInput placeholder={'Enter long description..'} label={'LONG DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.longDescription} onChangeText={newValue => updateFormFields(newValue, 'longDescription')} />
                   <ComponentAdminInput placeholder={'Enter size..'} label={'SIZE'} value={formValues.squareFeet} onChangeText={newValue => updateFormFields(newValue, 'squareFeet')} />
                   <ComponentAdminInput placeholder={'Enter bedrooms..'} label={'BEDROOMS'} value={formValues.bedrooms} onChangeText={newValue => updateFormFields(newValue, 'bedrooms')} />
                   <ComponentAdminInput placeholder={'Enter bathrooms..'} label={'BATHROOMS'} value={formValues.bathrooms} onChangeText={newValue => updateFormFields(newValue, 'bathrooms')} />
