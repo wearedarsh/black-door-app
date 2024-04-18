@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontFamily: 'primary-regular',
-        color: colors.gold,
+        color: colors.primary,
         textAlign: 'center',
         width:'100%',
         marginBottom: 8,
@@ -37,10 +37,10 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth:1,
-        borderColor:colors.slate,
+        borderColor:colors.secondary,
         height:48,
         paddingHorizontal: 16,
-        color: colors.slate,
+        color: colors.secondary,
         fontSize: 16,
         fontFamily: 'primary-regular',
         marginBottom: 16, 

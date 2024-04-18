@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         width:'100%', 
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
     },
     row: {
         flexDirection: 'row'

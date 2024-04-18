@@ -230,7 +230,16 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
                 {field: '%firstName%', 
                 value: userData.firstName}, 
                 {field: '%title%', 
-                value: formValuesForSubmit.title}]
+                value: formValuesForSubmit.title},
+                {field: '%bedrooms%', 
+                value: formValuesForSubmit.bedrooms},
+                {field: '%bathrooms%', 
+                value: formValuesForSubmit.bathrooms},
+                {field: '%price%', 
+                value: formValuesForSubmit.price},
+                {field: '%heroImageURL%', 
+                value: formValuesForSubmit.heroImageURL}
+              ]
             })
             if(!response.error){
               setLoading(false)
@@ -319,6 +328,8 @@ const ScreenAdminPropertyAdd = ({route, navigation}) => {
                   <ComponentAdminInput placeholder={'Enter price..'} label={'PRICE'} value={formValues.price} onChangeText={newValue => updateFormFields(newValue, 'price')} />
                   <ComponentAdminInput placeholder={'Enter description..'} label={'DESCRIPTION'} multiline={true} numberoflines={7} height= {240} value={formValues.shortDescription} onChangeText={newValue => updateFormFields(newValue, 'shortDescription')} />
                   <ComponentAdminInput placeholder={'Enter size..'} label={'SIZE'} value={formValues.squareFeet} onChangeText={newValue => updateFormFields(newValue, 'squareFeet')} />
+                  <ComponentAdminInput placeholder={'Enter bedrooms..'} label={'BEDROOMS'} value={formValues.bedrooms} onChangeText={newValue => updateFormFields(newValue, 'bedrooms')} />
+                  <ComponentAdminInput placeholder={'Enter bathrooms..'} label={'BATHROOMS'} value={formValues.bathrooms} onChangeText={newValue => updateFormFields(newValue, 'bathrooms')} />
                   <ComponentAdminInput placeholder={'Enter image URL..'} label={'IMAGE URL'} value={formValues.heroImageURL} onChangeText={newValue => updateFormFields(newValue, 'heroImageURL')} />
                   <Text style={styles.subTitle}>MARKETING GROUPS</Text>
                     {groupsComponentArray && groupsComponentArray}
@@ -356,7 +367,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontFamily: 'primary-medium',
     fontSize: 16,
-    color: colors.slate,
+    color: colors.secondary,
     width:'100%',
     textAlign: 'center',
     letterSpacing: 2,

@@ -177,7 +177,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
                             <ComponentOnboardToggle title="RECEIVE EXCLUSIVE EMAILS" selected={emailConfirm} setterFunc={setEmailConfirm} />
                         </View>
                 </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row',marginTop: 32}}>
+                <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row',marginTop: 32}}>
                         <ComponentOnboardSubmitBtn label="GET VIP ACCESS" onPress={createUserAccount} />  
                 </View>
             </ImageBackground>
@@ -187,7 +187,7 @@ const ScreenOnboardPushPermission = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
     container: {        
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },

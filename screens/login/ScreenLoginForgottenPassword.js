@@ -52,7 +52,7 @@ const ScreenLoginForgottenPassword = ({navigation}) => {
                         <Text style={styles.label}>ENTER YOUR EMAIL ADDRESS AND WE'LL SEND YOU AN EMAIL TO RESET YOUR PASSWORD</Text>
                     </View>
                 </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="RESET PASSWORD" onPress={()=>{}} />
                 </View>
             </ImageBackground>
@@ -63,7 +63,7 @@ const ScreenLoginForgottenPassword = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {        
         flex: 1,
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },

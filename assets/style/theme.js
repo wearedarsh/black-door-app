@@ -1,9 +1,10 @@
 export const colors = {
-    gold: '#AF9A63',
-    slate: '#231F20',
-    slateMedium: '#555051',
-    white: '#ffffff',
-    lightGrey: '#F2F2F2'
+    primary: '#AF9A63',//primary
+    secondary: '#231F20',//secondary
+    secondaryMedium: '#343232', //secondary-medium
+    secondaryLight: '#999999', //secondary-light
+    white: '#ffffff', //white
+    offWhite: '#fefefe' //used for gmail links
 }
 
 export const brand = {
@@ -17,5 +18,6 @@ export const brand = {
     brandWebsiteDomain: 'https://blkdr.co.uk',
     brandAssetDomain: 'https://blkdr.co.uk',
     iosAppDownloadURL: 'https://iosAppDownloadURLInTheme.js',
-    androidAppDownloadURL: 'https://androidAppDownloadURL.js'
+    androidAppDownloadURL: 'https://androidAppDownloadURL.js',
+    trackingURL: 'https://blkdr.co.uk/et.php'
 }

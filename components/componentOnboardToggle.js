@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     btnTrue: {
-        backgroundColor: colors.gold,
+        backgroundColor: colors.primary,
     },
     btnFalse: {
         backgroundColor: 'rgba(35, 31, 32, 0.7)',

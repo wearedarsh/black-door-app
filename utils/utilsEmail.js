@@ -23,6 +23,8 @@ const UtilsEmail = {
        return contentTemplate
     },
     sendSingleTemplateEmail: async function(payload){
+        //insert campaign into firestore
+        
         //destruct payload mergefields array requires [{field: '%firstName%', value: 'string'}]
         const { emailSubjectTemplate, fromEmailNameTemplate, fromEmail, recipient, emailContentTemplate, mergeFieldsArray, configEmail =  ConfigEmail} = payload
         //merge content with variables

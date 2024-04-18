@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
     },
     codeInputCell: {
         borderWidth: 1,
-        borderColor: colors.slate,
+        borderColor: colors.secondary,
         width: 48,
         height: 48,
         textAlign: 'center',
         fontSize: 32,
         fontFamily: 'primary-regular',
-        color: colors.slate,
+        color: colors.secondary,
         justifyContent: 'center'
       }
 })

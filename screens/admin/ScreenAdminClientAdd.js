@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontFamily: 'primary-medium',
     fontSize: 16,
-    color: colors.slate,
+    color: colors.secondary,
     width:'100%',
     textAlign: 'center',
     letterSpacing: 2,

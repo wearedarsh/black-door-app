@@ -12,7 +12,7 @@ const ComponentAppBrandingHeader = (props) => {
     return(
         <>
             { gradient && <View style={styles.gradient}><LinearGradient style={{...styles.gradient,height:gradientHeight}} colors={[gradientFrom, gradientTo]} /></View>}
-            <View style={[styles.container, !gradient && {backgroundColor: colors.slate}]}>
+            <View style={[styles.container, !gradient && {backgroundColor: colors.secondary}]}>
                 { backButton && <ComponentBackButton onPress={onPress} /> }
                 <ComponentLogo />
             </View>

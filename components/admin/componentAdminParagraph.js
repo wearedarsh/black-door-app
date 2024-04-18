@@ -4,7 +4,7 @@ import { StyleSheet, View, Text } from 'react-native'
 import { colors } from '../../assets/style/theme'
 
 const ComponentAdminParagraph = (props) => {
-    const { copy = 'SET COPY PROP', textAlign = 'left', fontSize = 12, color = colors.slate, paddingBottom = 16} = props
+    const { copy = 'SET COPY PROP', textAlign = 'left', fontSize = 12, color = colors.secondary, paddingBottom = 16} = props
     return (
         <>
             <Text style={{...styles.paragraph, textAlign, fontSize, color, paddingBottom}}>{copy.toUpperCase()}</Text>

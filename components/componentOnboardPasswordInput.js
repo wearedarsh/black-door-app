@@ -16,7 +16,7 @@ const ComponentOnboardPasswordInput = (props) => {
             <View style={styles.container}>
                 <TextInput style={styles.input} value={value} secureTextEntry={!showPassword} onChangeText={onChangeText} />
                 <View style={styles.passwordBtn}>
-                    <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={32} color={colors.gold} onPress={()=>setShowPassword(!showPassword)} />
+                    <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={32} color={colors.primary} onPress={()=>setShowPassword(!showPassword)} />
                 </View>
             </View>
             <Text style={styles.information}>{information}</Text>

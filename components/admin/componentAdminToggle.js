@@ -38,21 +38,21 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     btnLabelFalse: {
-        color: colors.slate
+        color: colors.secondary
     },
     btnTrue: {
-        backgroundColor: colors.gold,
+        backgroundColor: colors.primary,
     },
     btnFalse: {
         borderWidth:1,
-        borderColor: colors.slate,
+        borderColor: colors.secondary,
     },
     label: {
         textAlign: 'center',
         fontFamily: 'primary-regular',
         marginBottom: 8,
         fontSize: 16,
-        color: colors.gold,
+        color: colors.primary,
         letterSpacing: 2,
         paddingLeft: Platform.OS === 'ios' ? 2 : 0
     },

@@ -24,12 +24,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16
     },
     btnSelected: {
-        backgroundColor: colors.gold
+        backgroundColor: colors.primary
     },
     btnUnselected: {
         backgroundColor: colors.white,
         borderWidth: 1,
-        borderColor: colors.slate
+        borderColor: colors.secondary
     },
     label: {
         fontFamily: 'primary-regular',
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         paddingLeft: Platform.OS === 'ios' ? 2 : 0
     },
     labelUnselected: {
-        color: colors.slate
+        color: colors.secondary
     },
     labelSelected: {
         color: colors.white
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         color: colors.white
     },
     iconUnselected: {
-        color: colors.slate
+        color: colors.secondary
     }
 })
 

@@ -106,7 +106,7 @@ const ScreenOnboardCheckDetails = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
     container: {        
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         width: '100%',
         height: '100%',
-        backgroundColor:colors.slate
+        backgroundColor:colors.secondary
     },
     form:{
         width:'100%',

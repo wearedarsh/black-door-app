@@ -14,11 +14,11 @@ const ScreenOnboardHome = ({navigation}) => {
                 <View style={{flex:8, justifyContent: 'center'}}>
                     <Text style={styles.hero}>{brand.appHomeStrapline}</Text>
                 </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
-                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.gold}} onPress={() => {navigation.navigate('ScreenOnboardEnterCode')}}>
+                <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row'}}>
+                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.primary}} onPress={() => {navigation.navigate('ScreenOnboardEnterCode')}}>
                         <Text style={{...styles.authBtnText}}>{brand.signupButton}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.slate}} onPress={() => {navigation.navigate('ScreenLoginEnterDetails')}}>
+                    <TouchableOpacity style={{...styles.authBtn, backgroundColor:colors.secondary}} onPress={() => {navigation.navigate('ScreenLoginEnterDetails')}}>
                         <Text style={{...styles.authBtnText}}>{brand.loginButton}</Text>
                     </TouchableOpacity>
                 </View>
@@ -30,7 +30,7 @@ const ScreenOnboardHome = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {        
         flex: 1,
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },

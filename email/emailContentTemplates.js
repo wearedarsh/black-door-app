@@ -18,14 +18,19 @@ export const systemEmailContentTemplates = {
     <p>Hi %firstName%,</p>
     <p>Here is your new VIP access code for the BLKDR Super prime property app.</p>
     <p>This will expire in 48 hours.</p>
-    <p style="font-size:48px;color:${colors.gold}">%inviteCode%</p>
+    <p style="font-size:48px;color:${colors.primary}">%inviteCode%</p>
     `,
     newListing: `
-    <p>Hi %firstName%,</p>
-    <p>A new listing has been added to the app for you.</p>
-    <div class="code-content-panel">
-        <p><strong>%title%</strong></p>
-        <div id="code-number-holder"><a class="cta-button" href="" target="_blank">View Listing</a></div>
-      </div>
+    <p><strong>Hi %firstName%</strong></p>
+      <p>A new listing has been added to the app for you.<br><br></p>
+          <div class="code-content-panel">
+              <p><strong>%title%</strong></p>
+              <p><img class="icon vMiddle" src="${brand.brandAssetDomain}/email/img/bed-icon@2x.png" /><span class="vMiddle">%bedrooms%</span><img class="icon vMiddle" style="margin-left:16px;" src="${brand.brandAssetDomain}/email/img/bath-icon@2x.png" /><span class="vMiddle">%bathrooms%</span></p>
+              <a href="${brand.brandAssetDomain}" target="_blank"><img src="%heroImageURL%" id="heroImage" /></a>
+              <div id="cta-content">
+                  <p><img class="icon vMiddle" src="${brand.brandAssetDomain}/email/img/price-icon@2x.png" width="40" /><span class="vMiddle" style="font-size:24px;line-height: 40px;">%price%</span></p>
+                  <p><a class="cta-button" href="${brand.brandAssetDomain}" target="_blank" style="margin-left:16px;color:${colors.offWhite}">View Listing</a></p>
+              </div> 
+          </div>
     `
 }

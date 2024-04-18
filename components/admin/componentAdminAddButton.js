@@ -21,7 +21,7 @@ const ComponentAdminAddButton = (props) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         height: 48,
         position: 'absolute',
         bottom: 16,

@@ -168,7 +168,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
                     </View>
                     </KeyboardAwareScrollView>
                 </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="LOG IN" onPress={formSubmit} />
                 </View>
             </ImageBackground>
@@ -178,7 +178,7 @@ const ScreenLoginEnterDetails = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
     container: {        
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center'
     },

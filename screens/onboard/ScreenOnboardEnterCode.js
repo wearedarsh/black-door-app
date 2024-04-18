@@ -136,7 +136,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                         <ComponentCodeEntry codeValue={codeValue} setCodeValue={setCodeValue} fulfillFunction={verifyCode} />
                     </KeyboardAwareScrollView>
                 
-                {/* <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                {/* <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="VERIFY CODE" onPress={()=>{verifyCode()}} />  
                 </View> */}
             </ImageBackground>
@@ -147,7 +147,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {        
         flex: 1,
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },

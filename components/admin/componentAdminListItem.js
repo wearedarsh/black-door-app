@@ -12,7 +12,7 @@ const ComponentAdminListItem = (props) => {
   return (
     <TouchableOpacity style={styles.listItem} onPress={onPress}>
         {icon && <View style={{flex: 1, alignItems:'center'}}>
-          <Ionicons name={icon} size={16} color={colors.slate} style={{marginRight:8}} />
+          <Ionicons name={icon} size={16} color={colors.secondary} style={{marginRight:8}} />
         </View>
         }
         <View style={{flex:6, justifyContent:'center', flexDirection:'column'}}>
@@ -20,7 +20,7 @@ const ComponentAdminListItem = (props) => {
           {subTitle && <Text style={styles.subTitle}>{subTitle}</Text> }
         </View>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Ionicons name="chevron-forward" size={32} color={colors.gold} />
+          <Ionicons name="chevron-forward" size={32} color={colors.primary} />
         </View>  
     </TouchableOpacity>
   );
@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         borderBottomWidth: 1,
-        borderBottomColor: colors.slate,
+        borderBottomColor: colors.secondary,
         padding:8,
         paddingHorizontal: 16
       },
       title: {
-        color:colors.slate,
+        color:colors.secondary,
         fontSize: 16,
         fontFamily: 'primary-medium',
         letterSpacing: 1,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         marginTop: -3
       },
       subTitle: {
-        color:colors.gold,
+        color:colors.primary,
         fontSize: 12,
         fontFamily: 'primary-medium',
         letterSpacing: 1,

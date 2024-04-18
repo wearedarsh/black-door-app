@@ -6,7 +6,7 @@ import { colors } from '../assets/style/theme'
 import { Ionicons } from '@expo/vector-icons'
 
 const ComponentAppBtnPrimary = (props) => {
-    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth', bgrColor = colors.gold} = props
+    const {label = 'SET MY LABEL PROP', onPress = () => {}, marginTop = 16, icon = false, iconName='earth', bgrColor = colors.primary} = props
     return( 
         <View style={{...styles.bgrWrapper, marginTop:marginTop, backgroundColor: bgrColor}}>
             <TouchableOpacity style={{...styles.btn, backgroundColor:bgrColor}} onPress={onPress}>
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         height:48,
-        backgroundColor: colors.gold,
+        backgroundColor: colors.primary,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row'

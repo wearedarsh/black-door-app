@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         width:'100%',
         fontSize: 16,
         color: colors.white,
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         fontFamily: 'primary-medium',
         textAlign:'center',
         padding:4,

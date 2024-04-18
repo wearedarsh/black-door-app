@@ -17,7 +17,7 @@ const ComponentAdminFeedback = (props) => {
 
 const styles = StyleSheet.create({
     wrapper: {
-        backgroundColor: colors.gold,
+        backgroundColor: colors.primary,
         width:'100%',
         alignItems: 'center',
         justifyContent:'center',

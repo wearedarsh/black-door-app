@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     wrapper: {
         paddingBottom:16,
         paddingHorizontal: 32,
-        backgroundColor:colors.slate,
+        backgroundColor:colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
         width:'100%'
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
           borderWidth:2,
           fontSize: 16,
           borderColor: colors.white,
-          backgroundColor: colors.slate,
+          backgroundColor: colors.secondary,
           color: colors.white,
           fontFamily: 'primary-regular',
           paddingLeft:16

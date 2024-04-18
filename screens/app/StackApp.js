@@ -29,7 +29,7 @@ const StackApp = () => {
               display:'none',
             },
             tabBarStyle:{
-              backgroundColor: colors.slate,
+              backgroundColor: colors.secondary,
               paddingBottom:8,//height:100,
               height:80,
               alignItems: 'flex-start',
@@ -64,7 +64,7 @@ const StackApp = () => {
                 ),
                 tabBarBadge: 2,
                 tabBarBadgeStyle: {
-                  backgroundColor: colors.gold, // Set the background color for the badge
+                  backgroundColor: colors.primary, // Set the background color for the badge
                   color: colors.white, // Set the text color for the badge
                   marginTop:Platform.OS === 'android' ? 12 : 4,
                   fontSize: 10

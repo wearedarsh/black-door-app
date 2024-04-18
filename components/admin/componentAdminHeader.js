@@ -21,7 +21,7 @@ const ComponentAdminHeader = (props) => {
 const styles = StyleSheet.create({
     wrapper: {
         width: '100%',
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         height:Platform.OS === 'ios' ? 100 : 80,
         justifyContent:'flex-end',
         paddingBottom:16

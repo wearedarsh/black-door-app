@@ -10,7 +10,7 @@ const { information = 'SET INFORMATION PROP', icon = true, iconName = 'informati
 
   return (
     <View style={styles.listItem}>
-       {icon && <Ionicons name={iconName} size={16} color={colors.slate} style={{marginRight:8}} />}
+       {icon && <Ionicons name={iconName} size={16} color={colors.secondary} style={{marginRight:8}} />}
         <View style={{flex:9, justifyContent:'flex-start'}}>
           <Text style={styles.title}>{information.toUpperCase()}</Text>
         </View>
@@ -23,12 +23,12 @@ const styles = StyleSheet.create({
     listItem: {
         flexDirection:'row',
         borderWidth: 1,
-        borderColor: colors.slate,
+        borderColor: colors.secondary,
         padding:8,
         alignItems:'center'
       },
       title: {
-        color:colors.slate,
+        color:colors.secondary,
         fontSize: 12,
         fontFamily: 'primary-medium',
         letterSpacing: 1,

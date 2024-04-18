@@ -9,7 +9,7 @@ const ComponentAppTabItem = (props) => {
     const {focused=false, icon='earth', label='set label prop' } = props
     return(
         <View style={styles.menuItemHolder}>
-            <Ionicons  name={icon}  style={{marginTop: Platform.OS === 'android' ? -16 : 0,}} color={focused ? colors.white : colors.slateMedium} size={32} />
+            <Ionicons  name={icon}  style={{marginTop: Platform.OS === 'android' ? -16 : 0,}} color={focused ? colors.white : colors.secondaryMedium} size={32} />
             <Text style={{...styles.menuLabel}}>{label}</Text>
         </View>  
     )

@@ -5,7 +5,7 @@ import { colors } from '../assets/style/theme'
 const ComponentOnboardSubmitBtn = (props) => {
     const { label, onPress } = props
     return (
-        <TouchableOpacity style={{...styles.submitBtn, backgroundColor:colors.gold}} onPress={onPress}>
+        <TouchableOpacity style={{...styles.submitBtn, backgroundColor:colors.primary}} onPress={onPress}>
             <Text style={{...styles.submitBtnText}}>{label}</Text>
         </TouchableOpacity>
     )

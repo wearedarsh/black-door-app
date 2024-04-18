@@ -28,7 +28,7 @@ const StackApp = () => {
               display:'none',
             },
             tabBarStyle:{
-              backgroundColor: colors.slate,
+              backgroundColor: colors.secondary,
               height:100,
               alignItems: 'flex-start',
               borderTopWidth: 0

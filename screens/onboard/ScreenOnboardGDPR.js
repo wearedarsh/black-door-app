@@ -27,7 +27,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
                         <Text style={styles.paragraph}>All notifications will be tailored for you from the {configApp.appName} and your data will never be shared with any third parties. You are able to opt out at any time in the settings section of your profile. </Text>
                     </View>
                 </View>
-                <View style={{height:80, backgroundColor:colors.gold, width:'100%', flexDirection: 'row'}}>
+                <View style={{height:80, backgroundColor:colors.primary, width:'100%', flexDirection: 'row'}}>
                     <ComponentOnboardSubmitBtn label="CREATE ACCOUNT" onPress={()=>{navigation.navigate('ScreenOnboardCheckDetails')}} />  
                 </View>
             </ImageBackground>
@@ -37,7 +37,7 @@ const ScreenOnboardEnterCode = ({navigation}) => {
 
 const styles = StyleSheet.create({
     container: {        
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundImage: {
         width: '100%',
         height: '100%',
-        backgroundColor: colors.slate
+        backgroundColor: colors.secondary
     },
     form:{
         width:'100%',

@@ -16,16 +16,16 @@ const ComponentAppPropertyBadge = (props) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.slate,
+    backgroundColor: colors.secondary,
     alignItems: 'center',
     justifyContent: 'center',
     padding:8,
     marginBottom: 32,
     borderWidth: 2,
-    borderColor: colors.gold,
+    borderColor: colors.primary,
   },
   badgeTitle: {
-    color: colors.gold,
+    color: colors.primary,
     fontFamily: 'primary-medium',
     textAlign:'center',
     fontSize: 12,

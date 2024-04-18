@@ -13,7 +13,7 @@ const ComponentAppCarouselSlide = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor:colors.slate
+        backgroundColor:colors.secondary
     },
     image: {
         height:'100%'

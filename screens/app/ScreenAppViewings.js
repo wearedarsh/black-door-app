@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
     },
 })
 

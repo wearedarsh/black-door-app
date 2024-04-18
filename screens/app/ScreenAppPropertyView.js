@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
 
     },
     row: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly'
     },
     wrapper: {
-        backgroundColor: colors.slate,
+        backgroundColor: colors.secondary,
         marginTop: Platform.OS === 'ios' ? 98 : 70
     },
     content: {

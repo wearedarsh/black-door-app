@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headline: {
-        color: colors.gold,
+        color: colors.primary,
         fontSize: 32,
         letterSpacing: 6,
         paddingLeft:Platform.OS === 'ios' ? 6 : 0,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         fontFamily: 'hero'
     },
     strapline: {
-        color: colors.gold,
+        color: colors.primary,
         fontSize: 12,
         letterSpacing: 16,
         paddingLeft:Platform.OS === 'ios' ? 16 : 0,
