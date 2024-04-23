@@ -10,8 +10,8 @@ export const systemEmailContentTemplates = {
       </div>
       <p><strong>Download the app</strong></p>
       <div id="download-holder" style="text-align: center;">
-        <a href="${brand.iosAppDownloadURL}"><img src="${brand.brandAssetDomain}/email/img/download-ios@2x.png?=v1" alt="Download iOS" width="124"></a>
-        <a href="${brand.androidAppDownloadURL}"><img src="${brand.brandAssetDomain}/email/img/download-android@2x.png?=v1" alt="Download android" width="111"></a>
+        <a href="%brandIosAppDownloadUrl%"><img src="%brandAssetDomain%/email/img/download-ios@2x.png?=v1" alt="Download iOS" width="124"></a>
+        <a href="%$brandAndroidAppDownloadUrl%"><img src="%brandAssetDomain%/email/img/download-android@2x.png?=v1" alt="Download android" width="111"></a>
       </div>
     `,
     newCode: `
